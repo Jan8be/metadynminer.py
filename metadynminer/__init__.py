@@ -1,8 +1,30 @@
-import numpy as np
-from matplotlib import pyplot as plt
-from matplotlib import cm
-import pandas as pd
-from mpl_toolkits import mplot3d
+name = "metadynminer"
+try:
+    import numpy as np
+except:
+    print("Error while loading numpy")
+    exit(0)
+try:
+    from matplotlib import pyplot as plt
+except:
+    print("Error while loading matplotlib pyplot")
+    exit(0)
+try:
+    from matplotlib import cm
+except:
+    print("Error while loading matplotlib cm")
+    exit(0)
+try:
+   import pandas as pd
+except:
+    print("Error while loading pandas")
+    exit(0)
+try:
+    from mpl_toolkits import mplot3d
+except:
+    print("Error while loading mpl_toolkits")
+    exit(0)
+
 
 class Hills:   
     def __init__(self, name="HILLS", encoding="utf8", ignoretime=True, periodic=[False, False], 
