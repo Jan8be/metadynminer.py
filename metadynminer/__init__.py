@@ -605,7 +605,7 @@ class Fes:
     
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "jet", 
                  energy_unit="kJ/mol", xlabel=None, ylabel=None, label_size=12, image_size=[10,7], 
-                 vmin = 0, vmax = None, opacity=0.2):
+                 vmin = 0, vmax = None, opacity=0.2, levels=None):
         if vmax == None:
             vmax = np.max(self.fes)-0.001
             
@@ -683,7 +683,10 @@ class Fes:
                 origin=(self.cv1min, self.cv2min, self.cv3min),
             )
             grid["vol"] = self.fes.ravel(order="F")
-            contours = grid.contour(np.arange(0, (vmax - 0.01), contours_spacing))
+            if levels == None:
+                contours = grid.contour(np.arange(0, (vmax - 0.01), contours_spacing))
+            else:
+                contours = grid.contour(levels)
 
             #%% Visualization
             pv.set_plot_theme('document')
