@@ -817,7 +817,58 @@ class Fes:
                 return None
         elif self.cvs == 3:
             ...
-        
+    
+    def make_gif(self, gif_name=None, cmap = "jet", 
+                 xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
+                  opacity=0.2, levels=None, show_points=True, point_size=4.0, frames=64):
+        if self.cvs == 3:
+            values = np.linspace(np.min(self.fes)+1, np.max(self.fes), num=frames)
+            grid = pv.UniformGrid(
+                dimensions=(self.res, self.res, self.res),
+                spacing=((self.cv1max-self.cv1min)/self.res,(self.cv2max-self.cv2min)/self.res,(self.cv3max-self.cv3min)/self.res),
+                origin=(self.cv1min, self.cv2min, self.cv3min),
+            )
+            grid["vol"] = self.fes.ravel(order="F")
+            surface = grid.contour(values[:1])
+            surfaces = [grid.contour([v]) for v in values]
+            surface = surfaces[0].copy()
+            if gif_name == None:
+                gif_name = "FES.gif"
+            
+            pv.set_plot_theme('document')
+            plotter = pv.Plotter(off_screen=True)
+            # Open a movie file
+            plotter.open_gif(gif_name)
+
+            # Add initial mesh
+            plotter.add_mesh(
+                surface,
+                opacity=0.3,
+                clim=grid.get_data_range(),
+                show_scalar_bar=False,
+                cmap="jet"
+            )
+            plotter.add_mesh(grid.outline_corners(), color="k")
+            if xlabel == None and ylabel == None and zlabel == None:
+                plotter.show_grid(xlabel=f"CV1 - {self.cv1_name}", ylabel=f"CV2 - {self.cv2_name}", zlabel=f"CV3 - {self.cv3_name}")
+            else:
+                plotter.show_grid(xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
+            plotter.set_background('white')
+            plotter.show(auto_close=False)
+
+            # Run through each frame
+            for surf in surfaces:
+                surface.copy_from(surf)
+                plotter.write_frame()  # Write this frame
+            # Run through backwards
+            for surf in surfaces[::-1]:
+                surface.copy_from(surf)
+                plotter.write_frame()  # Write this frame
+
+            # Be sure to close the plotter when finished
+            plotter.close()
+        else:
+            print("Error: gif_plot is only available for FES with 3 CVs.")
         
     
 class Minima(Fes):
