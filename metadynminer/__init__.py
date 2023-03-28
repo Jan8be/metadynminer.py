@@ -687,11 +687,15 @@ class Fes:
                 contours = grid.contour(np.arange(0, (vmax - 0.01), contours_spacing))
             else:
                 contours = grid.contour(levels)
-
+            fescolors = []
+            for i in range(contours.points.shape[0]):
+                fescolors.append(self.fes[int((contours.points[i,0]-self.cv1min)*self.res/(self.cv1max-self.cv1min)),
+                                       int((contours.points[i,1]-self.cv2min)*self.res/(self.cv2max-self.cv2min)),
+                                       int((contours.points[i,2]-self.cv3min)*self.res/(self.cv3max-self.cv3min))])
             #%% Visualization
             pv.set_plot_theme('document')
             p = pv.Plotter()
-            p.add_mesh(contours, scalars=contours.points[:, 2], opacity=opacity, cmap="jet", show_scalar_bar=False)
+            p.add_mesh(contours, scalars=fescolors, opacity=opacity, cmap=cmap, show_scalar_bar=False, interpolate_before_map=True)
             p.show_grid(xlabel=f"CV1 - {self.cv1_name}", ylabel=f"CV2 - {self.cv2_name}", zlabel=f"CV3 - {self.cv3_name}")
             p.show()
         
@@ -1001,7 +1005,154 @@ class Minima(Fes):
                                 self.minima=np.vstack((self.minima, np.array([round(bin_min, 6), int(min_cv1_b), \
                                                                               int(self.res-min_cv2_b), round(min_cv1, 6), round(min_cv2, 6)])))
         elif self.cvs == 3:
-            ...
+            for bin1 in range(0,nbins):
+                for bin2 in range(0,nbins):
+                    for bin3 in range(0, nbins):
+                        fes_slice = self.fes[bin1*bin_size:(bin1+1)*bin_size,
+                                             bin2*bin_size:(bin2+1)*bin_size, 
+                                             bin3*bin_size:(bin3+1)*bin_size]
+                        bin_min = np.min(fes_slice)
+                        argmin = np.argmin(fes_slice)
+                        # indexes of global minimum of a bin
+                        bin_min_arg = np.unravel_index(np.argmin(fes_slice), fes_slice.shape)
+                        # indexes of that minima in the original fes (indexes +1)
+                        min_cv1_b = int(bin_min_arg[0]+bin1*bin_size)
+                        min_cv2_b = int(bin_min_arg[1]+bin2*bin_size)
+                        min_cv3_b = int(bin_min_arg[2]+bin3*bin_size)
+                        if (bin_min_arg[0] > 0 and bin_min_arg[0]<(bin_size-1)) \
+                                        and (bin_min_arg[1] > 0 and bin_min_arg[1]<(bin_size-1))\
+                                        and (bin_min_arg[2] > 0 and bin_min_arg[2]<(bin_size-1)):
+                            min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
+                            min_cv2 = (((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))+cv2min
+                            min_cv3 = (((min_cv3_b+0.5)/self.res)*(cv3max-cv3min))+cv3min
+                            if self.minima == []:
+                                self.minima=np.array([round(bin_min, 6), int(min_cv1_b),\
+                                                      int(min_cv2_b), int(min_cv3_b), round(min_cv1, 6), \
+                                                      round(min_cv2, 6), round(min_cv3, 6)])
+                            else:
+                                self.minima=np.vstack((self.minima, np.array([round(bin_min, 6), int(min_cv1_b),\
+                                                      int(min_cv2_b), int(min_cv3_b), round(min_cv1, 6), \
+                                                      round(min_cv2, 6), round(min_cv3, 6)])))
+                        else:
+                            around = []
+                            min_cv1_b_low = min_cv1_b - 1
+                            if min_cv1_b_low == -1:
+                                if self.periodic[0]:
+                                    min_cv1_b_low = self.res - 1
+                                else:
+                                    min_cv1_b_low = float("nan")
+
+                            min_cv1_b_high = min_cv1_b + 1
+                            if min_cv1_b_high == self.res:
+                                if self.periodic[0]:
+                                    min_cv1_b_high = 0
+                                else:
+                                    min_cv1_b_high = float("nan")
+
+                            min_cv2_b_low = min_cv2_b - 1
+                            if min_cv2_b_low == -1:
+                                if self.periodic[0]:
+                                    min_cv2_b_low = self.res - 1
+                                else:
+                                    min_cv2_b_low = float("nan")
+
+                            min_cv2_b_high = min_cv2_b + 1
+                            if min_cv2_b_high == self.res:
+                                if self.periodic[0]:
+                                    min_cv2_b_high = 0
+                                else:
+                                    min_cv2_b_high = float("nan")
+                                                       
+                            min_cv3_b_low = min_cv3_b - 1
+                            if min_cv3_b_low == -1:
+                                if self.periodic[2]:
+                                    min_cv3_b_low = self.res - 1
+                                else:
+                                    min_cv3_b_low = float("nan")
+
+                            min_cv3_b_high = min_cv3_b + 1
+                            if min_cv3_b_high == self.res:
+                                if self.periodic[2]:
+                                    min_cv3_b_high = 0
+                                else:
+                                    min_cv3_b_high = float("nan")
+
+#cv3_b
+                            #1_b_low
+                            if not(np.isnan(min_cv1_b_low)):
+                                if not(np.isnan(min_cv2_b_low)):
+                                    around.append(self.fes[min_cv1_b_low,min_cv2_b_low,min_cv3_b])
+                                around.append(self.fes[min_cv1_b_low,min_cv2_b,min_cv3_b])
+                                if not(np.isnan(min_cv2_b_high)):
+                                    around.append(self.fes[min_cv1_b_low,min_cv2_b_high,min_cv3_b])
+                            #1_b
+                            if not(np.isnan(min_cv2_b_low)):
+                                around.append(self.fes[min_cv1_b,min_cv2_b_low,min_cv3_b])
+                            if not(np.isnan(min_cv2_b_high)):
+                                around.append(self.fes[min_cv1_b,min_cv2_b_high,min_cv3_b])
+                            #1_b_high
+                            if not(np.isnan(min_cv1_b_high)):
+                                if not(np.isnan(min_cv2_b_low)):
+                                    around.append(self.fes[min_cv1_b_high,min_cv2_b_low,min_cv3_b])
+                                around.append(self.fes[min_cv1_b_high,min_cv2_b,min_cv3_b])
+                                if not(np.isnan(min_cv2_b_high)):
+                                    around.append(self.fes[min_cv1_b_high,min_cv2_b_high,min_cv3_b])
+                           
+                            if not(np.isnan(min_cv3_b_low)):
+                            #1_b_low
+                                if not(np.isnan(min_cv1_b_low)):
+                                    if not(np.isnan(min_cv2_b_low)):
+                                        around.append(self.fes[min_cv1_b_low,min_cv2_b_low,min_cv3_b_low])
+                                    around.append(self.fes[min_cv1_b_low,min_cv2_b,min_cv3_b_low])
+                                    if not(np.isnan(min_cv2_b_high)):
+                                        around.append(self.fes[min_cv1_b_low,min_cv2_b_high,min_cv3_b_low])
+                                #1_b
+                                if not(np.isnan(min_cv2_b_low)):
+                                    around.append(self.fes[min_cv1_b,min_cv2_b_low,min_cv3_b_low])
+                                if not(np.isnan(min_cv2_b_high)):
+                                    around.append(self.fes[min_cv1_b,min_cv2_b_high,min_cv3_b_low])
+                                #1_b_high
+                                if not(np.isnan(min_cv1_b_high)):
+                                    if not(np.isnan(min_cv2_b_low)):
+                                        around.append(self.fes[min_cv1_b_high,min_cv2_b_low,min_cv3_b_low])
+                                    around.append(self.fes[min_cv1_b_high,min_cv2_b,min_cv3_b_low])
+                                    if not(np.isnan(min_cv2_b_high)):
+                                        around.append(self.fes[min_cv1_b_high,min_cv2_b_high,min_cv3_b_low])
+                            
+                            if not(np.isnan(min_cv2_b_high)):
+                                #1_b_low
+                                if not(np.isnan(min_cv1_b_low)):
+                                    if not(np.isnan(min_cv2_b_low)):
+                                        around.append(self.fes[min_cv1_b_low,min_cv2_b_low,min_cv3_b_high])
+                                    around.append(self.fes[min_cv1_b_low,min_cv2_b,min_cv3_b_high])
+                                    if not(np.isnan(min_cv2_b_high)):
+                                        around.append(self.fes[min_cv1_b_low,min_cv2_b_high,min_cv3_b_high])
+                                #1_b
+                                if not(np.isnan(min_cv2_b_low)):
+                                    around.append(self.fes[min_cv1_b,min_cv2_b_low,min_cv3_b_high])
+                                if not(np.isnan(min_cv2_b_high)):
+                                    around.append(self.fes[min_cv1_b,min_cv2_b_high,min_cv3_b_high])
+                                #1_b_high
+                                if not(np.isnan(min_cv1_b_high)):
+                                    if not(np.isnan(min_cv2_b_low)):
+                                        around.append(self.fes[min_cv1_b_high,min_cv2_b_low,min_cv3_b_high])
+                                    around.append(self.fes[min_cv1_b_high,min_cv2_b,min_cv3_b_high])
+                                    if not(np.isnan(min_cv2_b_high)):
+                                        around.append(self.fes[min_cv1_b_high,min_cv2_b_high,min_cv3_b_high])
+                            
+                            if bin_min < np.min(around):
+                                min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
+                                min_cv2 = (((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))+cv2min
+                                min_cv3 = (((min_cv3_b+0.5)/self.res)*(cv3max-cv3min))+cv3min
+                                if self.minima == []:
+                                    self.minima=np.array([round(bin_min, 6), int(min_cv1_b),\
+                                                      int(min_cv2_b), int(min_cv3_b), round(min_cv1, 6), \
+                                                      round(min_cv2, 6), round(min_cv3, 6)])
+                                else:
+                                    self.minima=np.vstack((self.minima, np.array([round(bin_min, 6), int(min_cv1_b),\
+                                                      int(min_cv2_b), int(min_cv3_b), round(min_cv1, 6), \
+                                                      round(min_cv2, 6), round(min_cv3, 6)])))
+        
         else:
             print("Fes object has unsupported number of CVs.")
         
@@ -1015,6 +1166,8 @@ class Minima(Fes):
         if len(self.minima.shape)>1:
             if self.minima.shape[1] < len(letters):
                 self.minima = np.column_stack((letters[0:self.minima.shape[0]],self.minima))
+            else:
+                print("Error: Too many minima to assign letters.")
         elif len(self.minima.shape) == 1:
             self.minima = np.append("A", self.minima)
         
@@ -1028,12 +1181,17 @@ class Minima(Fes):
                 self.minima = pd.DataFrame([self.minima], columns = ["Minimum", "free energy", "CV1bin", "CV2bin", 
                                                                "CV1 - "+self.cv1_name, "CV2 - "+self.cv2_name])
         elif self.cvs == 3:
-            ...
+            if len(self.minima.shape)>1:
+                self.minima = pd.DataFrame(np.array(self.minima), columns = ["Minimum", "free energy", "CV1bin", "CV2bin", "CV3bin", 
+                                                               "CV1 - "+self.cv1_name, "CV2 - "+self.cv2_name,  "CV3 - "+self.cv3_name])
+            elif len(self.minima.shape) == 1:
+                self.minima = pd.DataFrame([self.minima], columns = ["Minimum", "free energy", "CV1bin", "CV2bin", "CV3bin", 
+                                                               "CV1 - "+self.cv1_name, "CV2 - "+self.cv2_name,  "CV3 - "+self.cv3_name])
         
 
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "jet", 
                  energy_unit="kJ/mol", xlabel=None, ylabel=None, label_size=12, image_size=[10,7], 
-                 color=None, vmin = 0, vmax = None):
+                 color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0):
         if vmax == None:
             vmax = np.max(self.fes)
         color_set = True
@@ -1151,11 +1309,98 @@ class Minima(Fes):
                 plt.ylabel(ylabel, size=label_size)
         
         elif self.cvs == 3:
-            ...
+            min_ar = self.minima.iloc[:,5:8].values
+            min_ar = min_ar.astype(np.float32)
+            min_pv = pv.PolyData(min_ar)
+            grid = pv.UniformGrid(
+                dimensions=(self.res, self.res, self.res),
+                spacing=((self.cv1max-self.cv1min)/self.res,(self.cv2max-self.cv2min)/self.res,(self.cv3max-self.cv3min)/self.res),
+                origin=(self.cv1min, self.cv2min, self.cv3min),
+            )
+            grid["vol"] = self.fes.ravel(order="F")
+            if levels == None:
+                contours = grid.contour(np.arange(0, (vmax - 0.01), contours_spacing))
+            else:
+                contours = grid.contour(levels)
+            fescolors = []
+            for i in range(contours.points.shape[0]):
+                fescolors.append(self.fes[int((contours.points[i,0]-self.cv1min)*self.res/(self.cv1max-self.cv1min)),
+                                       int((contours.points[i,1]-self.cv2min)*self.res/(self.cv2max-self.cv2min)),
+                                       int((contours.points[i,2]-self.cv3min)*self.res/(self.cv3max-self.cv3min))])
+            #%% Visualization
+            pv.set_plot_theme('document')
+            p = pv.Plotter()
+            p.add_mesh(contours, scalars=fescolors, opacity=opacity, cmap=cmap, show_scalar_bar=False, interpolate_before_map=True)
+            p.show_grid(xlabel=f"CV1 - {self.cv1_name}", ylabel=f"CV2 - {self.cv2_name}", zlabel=f"CV3 - {self.cv3_name}")
+            p.add_point_labels(min_pv, self.minima.iloc[:,0], 
+                   show_points=show_points, always_visible = True, 
+                   point_color="black", point_size=point_size, 
+                   font_size=label_size, shape=None)
+            p.show()
         
         
         if png_name != None:
             plt.savefig(png_name)
+
+    def make_gif(self, gif_name=None, cmap = "jet", 
+                 xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
+                  opacity=0.2, levels=None, show_points=True, point_size=4.0, frames=64, minima=True):
+        if self.cvs == 3:
+            values = np.linspace(np.min(self.fes)+1, np.max(self.fes), num=frames)
+            grid = pv.UniformGrid(
+                dimensions=(self.res, self.res, self.res),
+                spacing=((self.cv1max-self.cv1min)/self.res,(self.cv2max-self.cv2min)/self.res,(self.cv3max-self.cv3min)/self.res),
+                origin=(self.cv1min, self.cv2min, self.cv3min),
+            )
+            grid["vol"] = self.fes.ravel(order="F")
+            surface = grid.contour(values[:1])
+            surfaces = [grid.contour([v]) for v in values]
+            surface = surfaces[0].copy()
+            if gif_name == None:
+                gif_name = "FES.gif"
+            
+            pv.set_plot_theme('document')
+            plotter = pv.Plotter(off_screen=True)
+            # Open a movie file
+            plotter.open_gif(gif_name)
+
+            # Add initial mesh
+            plotter.add_mesh(
+                surface,
+                opacity=0.3,
+                clim=grid.get_data_range(),
+                show_scalar_bar=False,
+                cmap="jet"
+            )
+            plotter.add_mesh(grid.outline_corners(), color="k")
+            if xlabel == None and ylabel == None and zlabel == None:
+                plotter.show_grid(xlabel=f"CV1 - {self.cv1_name}", ylabel=f"CV2 - {self.cv2_name}", zlabel=f"CV3 - {self.cv3_name}")
+            else:
+                plotter.show_grid(xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
+            if minima:
+                min_ar = self.minima.iloc[:,5:8].values
+                min_ar = min_ar.astype(np.float32)
+                min_pv = pv.PolyData(min_ar)
+                plotter.add_point_labels(min_pv, self.minima.iloc[:,0], 
+                               show_points=True, always_visible = True, 
+                               pickable = True, point_color="black", 
+                               point_size=4, font_size=16, shape=None)
+            plotter.set_background('white')
+            plotter.show(auto_close=False)
+
+            # Run through each frame
+            for surf in surfaces:
+                surface.copy_from(surf)
+                plotter.write_frame()  # Write this frame
+            # Run through backwards
+            for surf in surfaces[::-1]:
+                surface.copy_from(surf)
+                plotter.write_frame()  # Write this frame
+
+            # Be sure to close the plotter when finished
+            plotter.close()
+        else:
+            print("Error: gif_plot is only available for FES with 3 CVs.")
         
 class FEProfile:
     def __init__(self, minima, hills):
