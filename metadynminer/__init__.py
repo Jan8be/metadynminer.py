@@ -3,29 +3,27 @@ try:
     import numpy as np
 except:
     print("Error while loading numpy")
-    exit(0)
+    quit()
 try:
     from matplotlib import pyplot as plt
 except:
     print("Error while loading matplotlib pyplot")
-    exit(0)
+    quit()
 try:
     from matplotlib import cm
 except:
     print("Error while loading matplotlib cm")
-    exit(0)
+    quit()
 try:
     import pandas as pd
 except:
     print("Error while loading pandas")
-    exit(0)
+    quit()
 try:
     import pyvista as pv
 except:
     print("Error while loading pyvista")
-    exit(0)
-
-
+    quit()
 
 class Hills:   
     def __init__(self, name="HILLS", encoding="utf8", ignoretime=True, periodic=[False, False], 
@@ -161,7 +159,6 @@ class Hills:
     
     def get_heights(self):
         return(self.heights)
-
 
 class Fes: 
     def __init__(self, hills=None, resolution=256, original = False, calculate_new_fes = True):
@@ -331,8 +328,8 @@ class Fes:
                 gauss_res += 1
             
             x = np.arange((-(gauss_res-1)/2), ((gauss_res-1)/2)+1)
-            gauss = -np.outer(np.exp(-x*x/2.0/s2res/s2res),\
-                              np.exp(-x*x/2.0/s1res/s1res))
+            gauss = -np.outer(np.exp(-x*x/2.0/s1res/s1res),\
+                              np.exp(-x*x/2.0/s2res/s2res))
             
             fes = np.zeros((self.res,self.res))
             for line in range(len(cv1bin)):
@@ -345,57 +342,57 @@ class Fes:
                 
                 fes_to_edit_cv1 = [cv1bin[line]-1-gauss_center_to_end,
                                    cv1bin[line]-1+gauss_center_to_end]
-                fes_to_edit_cv2 = [(self.res-cv2bin[line])-gauss_center_to_end,
-                                   (self.res-cv2bin[line])+gauss_center_to_end]
+                fes_to_edit_cv2 = [cv2bin[line]-1-gauss_center_to_end,
+                                   cv2bin[line]-1+gauss_center_to_end]
                 fes_crop_cv1 = [max(0,fes_to_edit_cv1[0]),min(self.res-1,fes_to_edit_cv1[1])]
                 fes_crop_cv2 = [max(0,fes_to_edit_cv2[0]),min(self.res-1,fes_to_edit_cv2[1])]
                 
                 gauss_crop_cv1 = [max(0,gauss_center_to_end-(cv1bin[line]-1)),
                                       gauss_res-1-max(0,(cv1bin[line]-1)+gauss_center_to_end-self.res+1)]
-                gauss_crop_cv2 = [max(0,gauss_center_to_end-(self.res-cv2bin[line])),
-                                      gauss_res-1-max(0,(self.res-cv2bin[line])+gauss_center_to_end-self.res+1)]
+                gauss_crop_cv2 = [max(0,gauss_center_to_end-(cv2bin[line]-1)),
+                                      gauss_res-1-max(0,(cv2bin[line]-1)+gauss_center_to_end-self.res+1)]
                 
                 #print(f"\nfes cv1:{fes_crop_cv1}, cv2:{fes_crop_cv2}; \n gauss cv1:{gauss_crop_cv1}, cv2:  {gauss_crop_cv2}")
                 
-                fes[fes_crop_cv2[0]:fes_crop_cv2[1]+1,fes_crop_cv1[0]:fes_crop_cv1[1]+1]\
-                        += gauss[gauss_crop_cv2[0]:gauss_crop_cv2[1]+1,gauss_crop_cv1[0]:gauss_crop_cv1[1]+1]\
+                fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,fes_crop_cv2[0]:fes_crop_cv2[1]+1]\
+                        += gauss[gauss_crop_cv1[0]:gauss_crop_cv1[1]+1,gauss_crop_cv2[0]:gauss_crop_cv2[1]+1]\
                         * self.heights[line]
                 
                 if self.periodic[0]:
                     if cv1bin[line] < gauss_center_to_end:
                         fes_crop_cv1_p = [self.res-1+(cv1bin[line]-gauss_center_to_end),self.res-1]
                         gauss_crop_cv1_p = [0,gauss_center_to_end-cv1bin[line]]
-                        fes[fes_crop_cv2[0]:fes_crop_cv2[1]+1,fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1]\
-                                    += gauss[gauss_crop_cv2[0]:gauss_crop_cv2[1]+1,gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1]\
+                        fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,fes_crop_cv2[0]:fes_crop_cv2[1]+1]\
+                                    += gauss[gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1,gauss_crop_cv2[0]:gauss_crop_cv2[1]+1]\
                                     * self.heights[line]
                     
                     if cv1bin[line] > (self.res-gauss_center_to_end):
                         fes_crop_cv1_p = [0,gauss_center_to_end+cv1bin[line]-self.res-1]
                         gauss_crop_cv1_p = [gauss_res-(gauss_center_to_end+cv1bin[line]-self.res),gauss_res-1]
-                        fes[fes_crop_cv2[0]:fes_crop_cv2[1]+1,fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1]\
-                                    += gauss[gauss_crop_cv2[0]:gauss_crop_cv2[1]+1,gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1]\
+                        fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,fes_crop_cv2[0]:fes_crop_cv2[1]+1]\
+                                    += gauss[gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1,gauss_crop_cv2[0]:gauss_crop_cv2[1]+1]\
                                     * self.heights[line]
                 
                 if self.periodic[1]:
                     if cv2bin[line] > (self.res-gauss_center_to_end):
                         fes_crop_cv2_p = [self.res+self.res-cv2bin[line]-gauss_center_to_end,self.res-1]
                         gauss_crop_cv2_p = [0,gauss_center_to_end-(self.res-cv2bin[line])-1]
-                        fes[fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,fes_crop_cv1[0]:fes_crop_cv1[1]+1]\
-                                    += gauss[gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1,gauss_crop_cv1[0]:gauss_crop_cv1[1]+1]\
+                        fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1]\
+                                    += gauss[gauss_crop_cv1[0]:gauss_crop_cv1[1]+1,gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1]\
                                     * self.heights[line]
                     
                     if cv2bin[line] <= (gauss_center_to_end):
                         fes_crop_cv2_p = [0,gauss_center_to_end-cv2bin[line]]
                         gauss_crop_cv2_p = [gauss_res-(1+gauss_center_to_end-cv2bin[line]),gauss_res-1]
-                        fes[fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,fes_crop_cv1[0]:fes_crop_cv1[1]+1]\
-                                    += gauss[gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1,gauss_crop_cv1[0]:gauss_crop_cv1[1]+1]\
+                        fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1]\
+                                    += gauss[gauss_crop_cv1[0]:gauss_crop_cv1[1]+1,gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1]\
                                     * self.heights[line]
                 
                 if self.periodic[0] and self.periodic[1]:
                     if ((cv1bin[line] < gauss_center_to_end) or (cv1bin[line] > (self.res-gauss_center_to_end))) \
                             and ((cv2bin[line] > (self.res-gauss_center_to_end)) or (cv2bin[line] <= (gauss_center_to_end))):
-                        fes[fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1]\
-                                    += gauss[gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1,gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1]\
+                        fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1]\
+                                    += gauss[gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1,gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1]\
                                     * self.heights[line]
             print("\n")
             fes = fes-np.min(fes)
@@ -607,7 +604,7 @@ class Fes:
                  energy_unit="kJ/mol", xlabel=None, ylabel=None, label_size=12, image_size=[10,7], 
                  vmin = 0, vmax = None, opacity=0.2, levels=None):
         if vmax == None:
-            vmax = np.max(self.fes)-0.001
+            vmax = np.max(self.fes)+0.001
             
         if contours_spacing == 0.0:
             default_contours_spacing = (vmax-vmin)/5.0
@@ -654,15 +651,15 @@ class Fes:
                 plt.ylabel(ylabel, size=label_size)
             
         if self.cvs == 2:
-            plt.figure(figsize=(image_size[0],image_size[1]))
-            plt.imshow(self.fes, cmap=cmap, interpolation='nearest', 
+            fig = plt.figure(figsize=(image_size[0],image_size[1]))
+            plt.imshow(np.rot90(self.fes, axes=(0,1)), cmap=cmap, interpolation='nearest', 
                        extent=[cv1min, cv1max, cv2min, cv2max], 
                        aspect = (((cv1max-cv1min)/(cv2max-cv2min))/(aspect)),
                        vmin = vmin, vmax = vmax)
             cbar = plt.colorbar()
             cbar.set_label(energy_unit, size=label_size)
             if contours:
-                cont = plt.contour(self.fes, 
+                cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
                          levels = np.arange(0, (vmax - 0.01), contours_spacing), 
                          extent=[cv1min, cv1max, cv2max, cv2min], 
                          colors = "k")
@@ -727,7 +724,7 @@ class Fes:
             #    fes_sp[fes_sp > vmax] = vmax
             # 
             x = np.linspace(self.cv1min, self.cv1max, self.res)
-            y = np.linspace(self.cv2max, self.cv2min, self.res)
+            y = np.linspace(self.cv2min, self.cv2max, self.res)
             
             X, Y = np.meshgrid(x, y)
             Z = self.fes
@@ -754,7 +751,7 @@ class Fes:
     
     def removeCV(self, CV=None, energy_unit="kJ/mol", temp=300.0):
         CV = int(float(CV))
-        print(f"Will remove CV {CV}.")
+        print(f"Removing CV {CV}.")
         if CV > self.cvs:
             print("Error: The CV to remove is not available in this FES object.")
             return None
@@ -816,7 +813,99 @@ class Fes:
                 print("Error: unknown energy unit")
                 return None
         elif self.cvs == 3:
-            ...
+            if energy_unit == "kJ/mol":
+                probabilities = np.exp(-1000*self.fes/8.314/temp)
+                if CV == 1:
+                    new_prob = np.sum(probabilities, axis=0)
+                    new_fes = Fes(hills=None)
+                    new_fes.fes = -8.314*temp*np.log(new_prob)/1000
+                    new_fes.fes = new_fes.fes - np.min(new_fes.fes)
+                    new_fes.cvs = 2
+                    new_fes.res = self.res
+                    new_fes.periodic = [self.periodic[1], self.periodic[2]]
+                    new_fes.cv1min = self.cv2min
+                    new_fes.cv1max = self.cv2max
+                    new_fes.cv2min = self.cv3min
+                    new_fes.cv2max = self.cv3max
+                    new_fes.cv1_name = self.cv2_name
+                    new_fes.cv2_name = self.cv3_name
+                if CV == 2:
+                    new_prob = np.sum(probabilities, axis=1)
+                    new_fes = Fes(hills=None)
+                    new_fes.fes = -8.314*temp*np.log(new_prob)/1000
+                    new_fes.fes = new_fes.fes - np.min(new_fes.fes)
+                    new_fes.cvs = 2
+                    new_fes.res = self.res
+                    new_fes.periodic = [self.periodic[0], self.periodic[2]]
+                    new_fes.cv1min = self.cv1min
+                    new_fes.cv1max = self.cv1max
+                    new_fes.cv2min = self.cv3min
+                    new_fes.cv2max = self.cv3max
+                    new_fes.cv1_name = self.cv1_name
+                    new_fes.cv2_name = self.cv3_name
+                if CV == 3:
+                    new_prob = np.sum(probabilities, axis=2)
+                    new_fes = Fes(hills=None)
+                    new_fes.fes = -8.314*temp*np.log(new_prob)/1000
+                    new_fes.fes = new_fes.fes - np.min(new_fes.fes)
+                    new_fes.cvs = 2
+                    new_fes.res = self.res
+                    new_fes.periodic = [self.periodic[0], self.periodic[1]]
+                    new_fes.cv1min = self.cv1min
+                    new_fes.cv1max = self.cv1max
+                    new_fes.cv2min = self.cv2min
+                    new_fes.cv2max = self.cv2max
+                    new_fes.cv1_name = self.cv1_name
+                    new_fes.cv2_name = self.cv2_name
+                return new_fes
+            elif energy_unit == "kcal/mol":
+                probabilities = np.exp(-1000*4.184*self.fes/8.314/temp)
+                if CV == 1:
+                    new_prob = np.sum(probabilities, axis=0)
+                    new_fes = Fes(hills=None)
+                    new_fes.fes = -8.314*temp*np.log(new_prob)/1000/4.184
+                    new_fes.fes = new_fes.fes - np.min(new_fes.fes)
+                    new_fes.cvs = 2
+                    new_fes.res = self.res
+                    new_fes.periodic = [self.periodic[1], self.periodic[2]]
+                    new_fes.cv1min = self.cv2min
+                    new_fes.cv1max = self.cv2max
+                    new_fes.cv2min = self.cv3min
+                    new_fes.cv2max = self.cv3max
+                    new_fes.cv1_name = self.cv2_name
+                    new_fes.cv2_name = self.cv3_name
+                if CV == 2:
+                    new_prob = np.sum(probabilities, axis=1)
+                    new_fes = Fes(hills=None)
+                    new_fes.fes = -8.314*temp*np.log(new_prob)/1000/4.184
+                    new_fes.fes = new_fes.fes - np.min(new_fes.fes)
+                    new_fes.cvs = 2
+                    new_fes.res = self.res
+                    new_fes.periodic = [self.periodic[0], self.periodic[2]]
+                    new_fes.cv1min = self.cv1min
+                    new_fes.cv1max = self.cv1max
+                    new_fes.cv2min = self.cv3min
+                    new_fes.cv2max = self.cv3max
+                    new_fes.cv1_name = self.cv1_name
+                    new_fes.cv2_name = self.cv3_name
+                if CV == 3:
+                    new_prob = np.sum(probabilities, axis=2)
+                    new_fes = Fes(hills=None)
+                    new_fes.fes = -8.314*temp*np.log(new_prob)/1000/4.184
+                    new_fes.fes = new_fes.fes - np.min(new_fes.fes)
+                    new_fes.cvs = 2
+                    new_fes.res = self.res
+                    new_fes.periodic = [self.periodic[0], self.periodic[1]]
+                    new_fes.cv1min = self.cv1min
+                    new_fes.cv1max = self.cv1max
+                    new_fes.cv2min = self.cv2min
+                    new_fes.cv2max = self.cv2max
+                    new_fes.cv1_name = self.cv2_name
+                    new_fes.cv2_name = self.cv2_name
+                return new_fes
+            else:
+                print("Error: unknown energy unit")
+                return None
     
     def make_gif(self, gif_name=None, cmap = "jet", 
                  xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
@@ -868,8 +957,7 @@ class Fes:
             # Be sure to close the plotter when finished
             plotter.close()
         else:
-            print("Error: gif_plot is only available for FES with 3 CVs.")
-        
+            print("Error: gif_plot is only available for FES with 3 CVs.")     
     
 class Minima(Fes):
     def __init__(self, fes, nbins = 8):
@@ -983,21 +1071,20 @@ class Minima(Fes):
                     bin_min = np.min(fes_slice)
                     argmin = np.argmin(fes_slice)
                     # indexes of global minimum of a bin
-                    bin_min_arg_cv1 = int(argmin%bin_size)
-                    bin_min_arg_cv2 = int((argmin-bin_min_arg_cv1)/bin_size)
+                    bin_min_arg = np.unravel_index(np.argmin(fes_slice), fes_slice.shape)
                     # indexes of that minima in the original fes (indexes +1)
-                    min_cv1_b = int(bin_min_arg_cv1+bin1*bin_size)
-                    min_cv2_b = int(bin_min_arg_cv2+bin2*bin_size)
-                    if (bin_min_arg_cv1 > 0 and bin_min_arg_cv1<(bin_size-1)) \
-                                    and (bin_min_arg_cv2 > 0 and bin_min_arg_cv2<(bin_size-1)):
+                    min_cv1_b = int(bin_min_arg[0]+bin1*bin_size)
+                    min_cv2_b = int(bin_min_arg[1]+bin2*bin_size)
+                    if (bin_min_arg[0] > 0 and bin_min_arg[0]<(bin_size-1)) \
+                                    and (bin_min_arg[1] > 0 and bin_min_arg[1]<(bin_size-1)):
                         min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
-                        min_cv2 = cv2max-(((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))#+cv2min
+                        min_cv2 = (((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))+cv2min
                         if self.minima == []:
                             self.minima=np.array([round(bin_min, 6), int(min_cv1_b),\
-                                                  int(self.res-min_cv2_b), round(min_cv1, 6), round(min_cv2, 6)])
+                                                  int(min_cv2_b), round(min_cv1, 6), round(min_cv2, 6)])
                         else:
                             self.minima=np.vstack((self.minima, np.array([round(bin_min, 6), int(min_cv1_b), \
-                                                                          int(self.res-min_cv2_b), round(min_cv1, 6), round(min_cv2, 6)])))
+                                                                          int(min_cv2_b), round(min_cv1, 6), round(min_cv2, 6)])))
                     else:
                         around = []
                         min_cv1_b_low = min_cv1_b - 1
@@ -1030,31 +1117,31 @@ class Minima(Fes):
                         #1_b_low
                         if not(np.isnan(min_cv1_b_low)):
                             if not(np.isnan(min_cv2_b_low)):
-                                around.append(self.fes[min_cv2_b_low,min_cv1_b_low])
-                            around.append(self.fes[min_cv2_b,min_cv1_b_low])
+                                around.append(self.fes[min_cv1_b_low, min_cv2_b_low])
+                            around.append(self.fes[min_cv1_b_low,min_cv2_b])
                             if not(np.isnan(min_cv2_b_high)):
-                                around.append(self.fes[min_cv2_b_high,min_cv1_b_low])
+                                around.append(self.fes[min_cv1_b_low, min_cv2_b_high])
                         #1_b
                         if not(np.isnan(min_cv2_b_low)):
-                            around.append(self.fes[min_cv2_b_low,min_cv1_b])
+                            around.append(self.fes[min_cv1_b, min_cv2_b_low])
                         if not(np.isnan(min_cv2_b_high)):
-                            around.append(self.fes[min_cv2_b_high,min_cv1_b])
+                            around.append(self.fes[min_cv1_b, min_cv2_b_high])
                         #1_b_high
                         if not(np.isnan(min_cv1_b_high)):
                             if not(np.isnan(min_cv2_b_low)):
-                                around.append(self.fes[min_cv2_b_low,min_cv1_b_high])
-                            around.append(self.fes[min_cv2_b,min_cv1_b_high])
+                                around.append(self.fes[min_cv1_b_high, min_cv2_b_low])
+                            around.append(self.fes[min_cv1_b_high, min_cv2_b])
                             if not(np.isnan(min_cv2_b_high)):
-                                around.append(self.fes[min_cv2_b_high,min_cv1_b_high])
+                                around.append(self.fes[min_cv1_b_high, min_cv2_b_high])
                         if bin_min < np.min(around):
                             min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
-                            min_cv2 = cv2max-(((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))
+                            min_cv2 = (((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))+cv2min
                             if self.minima == []:
-                                self.minima=np.array([round(bin_min, 6), int(min_cv1_b), int(self.res-min_cv2_b), \
+                                self.minima=np.array([round(bin_min, 6), int(min_cv1_b), int(min_cv2_b), \
                                                       round(min_cv1, 6), round(min_cv2, 6)])
                             else:
                                 self.minima=np.vstack((self.minima, np.array([round(bin_min, 6), int(min_cv1_b), \
-                                                                              int(self.res-min_cv2_b), round(min_cv1, 6), round(min_cv2, 6)])))
+                                                                              int(min_cv2_b), round(min_cv1, 6), round(min_cv2, 6)])))
         elif self.cvs == 3:
             for bin1 in range(0,nbins):
                 for bin2 in range(0,nbins):
@@ -1310,12 +1397,8 @@ class Minima(Fes):
                 plt.ylabel(ylabel, size=label_size)
             
         elif self.cvs == 2:        
-            plt.figure(figsize=(image_size[0],image_size[1]))
-            im = plt.imshow(self.fes, cmap=cmap, interpolation='nearest', 
-                       extent=[cv1min, cv1max, cv2min, cv2max], 
-                       aspect = (((cv1max-cv1min)/(cv2max-cv2min))/(aspect)),
-                       vmin = vmin, vmax = vmax)
-            plt.imshow(self.fes, cmap=cmap, interpolation='nearest', 
+            fig = plt.figure(figsize=(image_size[0],image_size[1]))
+            plt.imshow(np.rot90(self.fes, axes=(0,1)), cmap=cmap, interpolation='nearest', 
                        extent=[cv1min, cv1max, cv2min, cv2max], 
                        aspect = (((cv1max-cv1min)/(cv2max-cv2min))/(aspect)),
                        vmin = vmin, vmax = vmax)
@@ -1345,11 +1428,11 @@ class Minima(Fes):
                              verticalalignment='center', c=color)
 
             if contours:
-                cont = plt.contour(self.fes, 
-                         levels = np.arange(0, (vmax+0.01), contours_spacing), 
+                cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
+                         levels = np.arange(0, (vmax + 0.01), contours_spacing), 
                          extent=[cv1min, cv1max, cv2max, cv2min], 
                          colors = "k")
-                plt.clabel(cont, levels = np.arange(0, (vmax+0.01), contours_spacing))
+                plt.clabel(cont, levels = np.arange(0, (vmax + 0.01), contours_spacing))
             if xlabel == None:
                 plt.xlabel(f'CV1 - {self.cv1_name}', size=label_size)
             else:
@@ -1455,7 +1538,6 @@ class Minima(Fes):
         
 class FEProfile:
     def __init__(self, minima, hills):
-        #self.periodic = minima.periodic
         self.cvs = minima.cvs
         self.res = minima.res
         self.minima = minima.minima
@@ -1580,9 +1662,6 @@ class FEProfile:
 
 
             elif self.cvs == 2:        
-                cv1bin = []
-                cv2bin = []
-
                 cv1min = self.cv1min
                 cv2min = self.cv2min
 
@@ -1600,6 +1679,7 @@ class FEProfile:
                     cv2min -= cv2range*0.15          
                     cv2max += cv2range*0.15
 
+                print("Computing CV bin values. ")
                 cv1bin = np.ceil((self.cv1-cv1min)*self.res/(cv1max-cv1min))
                 cv2bin = np.ceil((self.cv2-cv2min)*self.res/(cv2max-cv2min))
 
@@ -1609,24 +1689,19 @@ class FEProfile:
                 s1res = (self.s1[0]*self.res)/(cv1max - cv1min)
                 s2res = (self.s2[0]*self.res)/(cv2max - cv2min)
 
-                gauss_res = max(6*s1res, 6*s2res)
+                gauss_res = max(8*s1res, 8*s2res)
                 gauss_res = int(gauss_res)
                 if gauss_res%2 == 0:
                     gauss_res += 1
 
                 x = np.arange((-(gauss_res-1)/2), ((gauss_res-1)/2)+1)
-                gauss = -np.outer(np.exp(-x*x/2.0/s2res/s2res),\
-                                  np.exp(-x*x/2.0/s1res/s1res))
-                #print(gauss)
-            # crop the unsignificant edges of the gaussian
-                #under_threshold_indices = gauss > -1e-4
-                #gauss[under_threshold_indices] = 0.0
-
+                gauss = -np.outer(np.exp(-x*x/2.0/s1res/s1res),\
+                                  np.exp(-x*x/2.0/s2res/s2res))
 
                 fes = np.zeros((self.res,self.res))
                 for line in range(len(cv1bin)):
                     if (line) % 500 == 0:
-                        print(f"Constructing free energy profile: {((line+1)/len(cv1bin)):.1%} finished", end="\r")
+                        print(f"Constructing free energy surface: {((line+1)/len(cv1bin)):.1%} finished", end="\r")
 
                     fes_center = int((self.res-1)/2)
                     gauss_center_to_end = int((gauss_res-1)/2)
@@ -1634,73 +1709,276 @@ class FEProfile:
 
                     fes_to_edit_cv1 = [cv1bin[line]-1-gauss_center_to_end,
                                        cv1bin[line]-1+gauss_center_to_end]
-                    fes_to_edit_cv2 = [(self.res-cv2bin[line])-gauss_center_to_end,
-                                       (self.res-cv2bin[line])+gauss_center_to_end]
+                    fes_to_edit_cv2 = [cv2bin[line]-1-gauss_center_to_end,
+                                       cv2bin[line]-1+gauss_center_to_end]
                     fes_crop_cv1 = [max(0,fes_to_edit_cv1[0]),min(self.res-1,fes_to_edit_cv1[1])]
                     fes_crop_cv2 = [max(0,fes_to_edit_cv2[0]),min(self.res-1,fes_to_edit_cv2[1])]
 
                     gauss_crop_cv1 = [max(0,gauss_center_to_end-(cv1bin[line]-1)),
                                           gauss_res-1-max(0,(cv1bin[line]-1)+gauss_center_to_end-self.res+1)]
-                    gauss_crop_cv2 = [max(0,gauss_center_to_end-(self.res-cv2bin[line])),
-                                          gauss_res-1-max(0,(self.res-cv2bin[line])+gauss_center_to_end-self.res+1)]
+                    gauss_crop_cv2 = [max(0,gauss_center_to_end-(cv2bin[line]-1)),
+                                          gauss_res-1-max(0,(cv2bin[line]-1)+gauss_center_to_end-self.res+1)]
 
                     #print(f"\nfes cv1:{fes_crop_cv1}, cv2:{fes_crop_cv2}; \n gauss cv1:{gauss_crop_cv1}, cv2:  {gauss_crop_cv2}")
 
-                    fes[fes_crop_cv2[0]:fes_crop_cv2[1]+1,fes_crop_cv1[0]:fes_crop_cv1[1]+1]\
-                            += gauss[gauss_crop_cv2[0]:gauss_crop_cv2[1]+1,gauss_crop_cv1[0]:gauss_crop_cv1[1]+1]\
+                    fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,fes_crop_cv2[0]:fes_crop_cv2[1]+1]\
+                            += gauss[gauss_crop_cv1[0]:gauss_crop_cv1[1]+1,gauss_crop_cv2[0]:gauss_crop_cv2[1]+1]\
                             * self.heights[line]
 
                     if self.periodic[0]:
                         if cv1bin[line] < gauss_center_to_end:
                             fes_crop_cv1_p = [self.res-1+(cv1bin[line]-gauss_center_to_end),self.res-1]
                             gauss_crop_cv1_p = [0,gauss_center_to_end-cv1bin[line]]
-                            fes[fes_crop_cv2[0]:fes_crop_cv2[1]+1,fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1]\
-                                        += gauss[gauss_crop_cv2[0]:gauss_crop_cv2[1]+1,gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1]\
+                            fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,fes_crop_cv2[0]:fes_crop_cv2[1]+1]\
+                                        += gauss[gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1,gauss_crop_cv2[0]:gauss_crop_cv2[1]+1]\
                                         * self.heights[line]
 
                         if cv1bin[line] > (self.res-gauss_center_to_end):
                             fes_crop_cv1_p = [0,gauss_center_to_end+cv1bin[line]-self.res-1]
                             gauss_crop_cv1_p = [gauss_res-(gauss_center_to_end+cv1bin[line]-self.res),gauss_res-1]
-                            fes[fes_crop_cv2[0]:fes_crop_cv2[1]+1,fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1]\
-                                        += gauss[gauss_crop_cv2[0]:gauss_crop_cv2[1]+1,gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1]\
+                            fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,fes_crop_cv2[0]:fes_crop_cv2[1]+1]\
+                                        += gauss[gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1,gauss_crop_cv2[0]:gauss_crop_cv2[1]+1]\
                                         * self.heights[line]
 
                     if self.periodic[1]:
                         if cv2bin[line] > (self.res-gauss_center_to_end):
                             fes_crop_cv2_p = [self.res+self.res-cv2bin[line]-gauss_center_to_end,self.res-1]
                             gauss_crop_cv2_p = [0,gauss_center_to_end-(self.res-cv2bin[line])-1]
-                            fes[fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,fes_crop_cv1[0]:fes_crop_cv1[1]+1]\
-                                        += gauss[gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1,gauss_crop_cv1[0]:gauss_crop_cv1[1]+1]\
+                            fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1]\
+                                        += gauss[gauss_crop_cv1[0]:gauss_crop_cv1[1]+1,gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1]\
                                         * self.heights[line]
 
                         if cv2bin[line] <= (gauss_center_to_end):
                             fes_crop_cv2_p = [0,gauss_center_to_end-cv2bin[line]]
                             gauss_crop_cv2_p = [gauss_res-(1+gauss_center_to_end-cv2bin[line]),gauss_res-1]
-                            fes[fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,fes_crop_cv1[0]:fes_crop_cv1[1]+1]\
-                                        += gauss[gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1,gauss_crop_cv1[0]:gauss_crop_cv1[1]+1]\
+                            fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1]\
+                                        += gauss[gauss_crop_cv1[0]:gauss_crop_cv1[1]+1,gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1]\
                                         * self.heights[line]
 
                     if self.periodic[0] and self.periodic[1]:
                         if ((cv1bin[line] < gauss_center_to_end) or (cv1bin[line] > (self.res-gauss_center_to_end))) \
                                 and ((cv2bin[line] > (self.res-gauss_center_to_end)) or (cv2bin[line] <= (gauss_center_to_end))):
-                            fes[fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1]\
-                                        += gauss[gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1,gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1]\
+                            fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1]\
+                                        += gauss[gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1,gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1]\
                                         * self.heights[line]
 
                     if (line in scantimes):
                         profileline = [line]
                         for m in range(number_of_minima):
-                            profileline.append(fes[(self.res-int(float(self.minima.iloc[m,3]))),int(float(self.minima.iloc[m,2]))]-\
-                                               fes[(self.res-int(float(self.minima.iloc[0,3]))),int(float(self.minima.iloc[0,2]))])
+                            profileline.append(fes[int(float(self.minima.iloc[m,2])),int(float(self.minima.iloc[m,3]))]-\
+                                               fes[int(float(self.minima.iloc[0,2])),int(float(self.minima.iloc[0,3]))])
                         self.feprofile = np.vstack([self.feprofile, profileline]) 
-
-
+                        
             elif self.cvs == 3:
-                ...
+                cv1min = self.cv1min
+                cv2min = self.cv2min
+                cv3min = self.cv3min
+
+                cv1max = self.cv1max
+                cv2max = self.cv2max
+                cv3max = self.cv3max
+
+                #if CV is NOT periodic, enlarge the fes
+                if not self.periodic[0]:
+                    cv1range = self.cv1max-self.cv1min
+                    cv1min -= cv1range*0.15          
+                    cv1max += cv1range*0.15
+
+                if not self.periodic[1]:
+                    cv2range = self.cv2max-self.cv2min
+                    cv2min -= cv2range*0.15          
+                    cv2max += cv2range*0.15
+
+                if not self.periodic[2]:
+                    cv2range = self.cv2max-self.cv2min
+                    cv2min -= cv2range*0.15          
+                    cv2max += cv2range*0.15
+
+                cv1bin = np.ceil((self.cv1-cv1min)*self.res/(cv1max-cv1min))
+                cv2bin = np.ceil((self.cv2-cv2min)*self.res/(cv2max-cv2min))
+                cv3bin = np.ceil((self.cv3-cv3min)*self.res/(cv3max-cv3min))
+
+                cv1bin = cv1bin.astype(int)
+                cv2bin = cv2bin.astype(int)
+                cv3bin = cv3bin.astype(int)
+
+                s1res = (self.s1[0]*self.res)/(cv1max - cv1min)
+                s2res = (self.s2[0]*self.res)/(cv2max - cv2min)
+                s3res = (self.s3[0]*self.res)/(cv3max - cv3min)
+
+                gauss_res = max(8*s1res, 8*s2res, 8*s3res)
+                gauss_res = int(gauss_res)
+                if gauss_res%2 == 0:
+                    gauss_res += 1
+
+                x = np.arange((-(gauss_res-1)/2), ((gauss_res-1)/2)+1)
+                gauss2d = -np.outer(np.exp(-x*x/2.0/s2res/s2res),\
+                                    np.exp(-x*x/2.0/s1res/s1res))
+                gauss = np.multiply.outer(gauss2d, np.exp(-x*x/2.0/s3res/s3res))
+
+                fes = np.zeros((self.res, self.res, self.res))
+                for line in range(len(cv1bin)):
+                    if (line) % 500 == 0:
+                        print(f"Constructing free energy surface: {((line+1)/len(cv1bin)):.1%} finished", end="\r")
+
+                    fes_center = int((self.res-1)/2)
+                    gauss_center_to_end = int((gauss_res-1)/2)
+                    #print(f"\ng_res: {gauss_res}, gauss_center_to_end: {gauss_center_to_end}")
+
+                    fes_to_edit_cv1 = [cv1bin[line]-1-gauss_center_to_end,
+                                       cv1bin[line]-1+gauss_center_to_end]
+                    fes_to_edit_cv2 = [(cv2bin[line]-1)-gauss_center_to_end,
+                                       (cv2bin[line]-1)+gauss_center_to_end]
+                    fes_to_edit_cv3 = [(cv3bin[line]-1)-gauss_center_to_end,
+                                       (cv3bin[line]-1)+gauss_center_to_end]
+                    fes_crop_cv1 = [max(0,fes_to_edit_cv1[0]),min(self.res-1,fes_to_edit_cv1[1])]
+                    fes_crop_cv2 = [max(0,fes_to_edit_cv2[0]),min(self.res-1,fes_to_edit_cv2[1])]
+                    fes_crop_cv3 = [max(0,fes_to_edit_cv3[0]),min(self.res-1,fes_to_edit_cv3[1])]
+
+                    gauss_crop_cv1 = [max(0,gauss_center_to_end-(cv1bin[line]-1)),
+                                          gauss_res-1-max(0,(cv1bin[line]-1)+gauss_center_to_end-self.res+1)]
+                    gauss_crop_cv2 = [max(0,gauss_center_to_end-(cv2bin[line]-1)),
+                                          gauss_res-1-max(0,(cv2bin[line]-1)+gauss_center_to_end-self.res+1)]
+                    gauss_crop_cv3 = [max(0,gauss_center_to_end-(cv3bin[line]-1)),
+                                          gauss_res-1-max(0,(cv3bin[line]-1)+gauss_center_to_end-self.res+1)]
+
+                    #print(f"\nfes cv1:{fes_crop_cv1}, cv2:{fes_crop_cv2}; \n gauss cv1:{gauss_crop_cv1}, cv2:  {gauss_crop_cv2}")
+
+                    fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,\
+                        fes_crop_cv2[0]:fes_crop_cv2[1]+1,\
+                        fes_crop_cv3[0]:fes_crop_cv3[1]+1]\
+                            += gauss[gauss_crop_cv1[0]:gauss_crop_cv1[1]+1,\
+                                     gauss_crop_cv2[0]:gauss_crop_cv2[1]+1,\
+                                     gauss_crop_cv3[0]:gauss_crop_cv3[1]+1]\
+                            * self.heights[line]
+
+                    if self.periodic[0]:
+                        if cv1bin[line] < gauss_center_to_end:
+                            fes_crop_cv1_p = [self.res-1+(cv1bin[line]-gauss_center_to_end),self.res-1]
+                            gauss_crop_cv1_p = [0,gauss_center_to_end-cv1bin[line]]
+                            fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,\
+                                fes_crop_cv2[0]:fes_crop_cv2[1]+1,\
+                                fes_crop_cv3[0]:fes_crop_cv3[1]+1]\
+                                        += gauss[gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1,\
+                                                 gauss_crop_cv2[0]:gauss_crop_cv2[1]+1,\
+                                                 gauss_crop_cv3[0]:gauss_crop_cv3[1]+1]\
+                                        * self.heights[line]
+
+                        if cv1bin[line] > (self.res-gauss_center_to_end):
+                            fes_crop_cv1_p = [0,gauss_center_to_end+cv1bin[line]-self.res-1]
+                            gauss_crop_cv1_p = [gauss_res-(gauss_center_to_end+cv1bin[line]-self.res),gauss_res-1]
+                            fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,\
+                                fes_crop_cv2[0]:fes_crop_cv2[1]+1,\
+                                fes_crop_cv3[0]:fes_crop_cv3[1]+1]\
+                                        += gauss[gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1,\
+                                                 gauss_crop_cv2[0]:gauss_crop_cv2[1]+1,\
+                                                 gauss_crop_cv3[0]:gauss_crop_cv3[1]+1]\
+                                        * self.heights[line]
+
+                    if self.periodic[1]:
+                        if cv2bin[line] > (self.res-gauss_center_to_end):
+                            fes_crop_cv2_p = [self.res+self.res-cv2bin[line]-gauss_center_to_end,self.res-1]
+                            gauss_crop_cv2_p = [0,gauss_center_to_end-(self.res-cv2bin[line])-1]
+                            fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,\
+                                fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,\
+                                fes_crop_cv3[0]:fes_crop_cv3[1]+1]\
+                                        += gauss[gauss_crop_cv1[0]:gauss_crop_cv1[1]+1,\
+                                                 gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1,\
+                                                 gauss_crop_cv3[0]:gauss_crop_cv3[1]+1]\
+                                        * self.heights[line]
+
+                        if cv2bin[line] <= (gauss_center_to_end):
+                            fes_crop_cv2_p = [0,gauss_center_to_end-cv2bin[line]]
+                            gauss_crop_cv2_p = [gauss_res-(1+gauss_center_to_end-cv2bin[line]),gauss_res-1]
+                            fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,\
+                                fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,\
+                                fes_crop_cv3[0]:fes_crop_cv3[1]+1]\
+                                        += gauss[gauss_crop_cv1[0]:gauss_crop_cv1[1]+1,\
+                                                 gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1,\
+                                                 gauss_crop_cv3[0]:gauss_crop_cv3[1]+1]\
+                                        * self.heights[line]
+                    if self.periodic[2]:
+                        if cv3bin[line] > (self.res-gauss_center_to_end):
+                            fes_crop_cv3_p = [self.res+self.res-cv3bin[line]-gauss_center_to_end,self.res-1]
+                            gauss_crop_cv3_p = [0,gauss_center_to_end-(self.res-cv3bin[line])-1]
+                            fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,\
+                                fes_crop_cv2[0]:fes_crop_cv2[1]+1,\
+                                fes_crop_cv3_p[0]:fes_crop_cv3_p[1]+1]\
+                                        += gauss[gauss_crop_cv1[0]:gauss_crop_cv1[1]+1,\
+                                                 gauss_crop_cv2[0]:gauss_crop_cv2[1]+1,\
+                                                 gauss_crop_cv3_p[0]:gauss_crop_cv3_p[1]+1]\
+                                        * self.heights[line]
+
+                        if cv3bin[line] <= (gauss_center_to_end):
+                            fes_crop_cv3_p = [0,gauss_center_to_end-cv3bin[line]]
+                            gauss_crop_cv3_p = [gauss_res-(1+gauss_center_to_end-cv3bin[line]),gauss_res-1]
+                            fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,\
+                                fes_crop_cv2[0]:fes_crop_cv2[1]+1,\
+                                fes_crop_cv3_p[0]:fes_crop_cv3_p[1]+1]\
+                                        += gauss[gauss_crop_cv1[0]:gauss_crop_cv1[1]+1,\
+                                                 gauss_crop_cv2[0]:gauss_crop_cv2[1]+1,\
+                                                 gauss_crop_cv3_p[0]:gauss_crop_cv3_p[1]+1]\
+                                        * self.heights[line]
+
+                    if self.periodic[0] and self.periodic[1]:
+                        if ((cv1bin[line] < gauss_center_to_end) or (cv1bin[line] > (self.res-gauss_center_to_end))) \
+                                and ((cv2bin[line] > (self.res-gauss_center_to_end)) or (cv2bin[line] <= (gauss_center_to_end))):
+                            fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,\
+                                fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,\
+                                fes_crop_cv3[0]:fes_crop_cv3[1]+1]\
+                                        += gauss[gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1,\
+                                                 gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1,\
+                                                 gauss_crop_cv3[0]:gauss_crop_cv3[1]+1]\
+                                        * self.heights[line]
+
+                    if self.periodic[0] and self.periodic[2]:
+                        if ((cv1bin[line] < gauss_center_to_end) or (cv1bin[line] > (self.res-gauss_center_to_end))) \
+                                and ((cv3bin[line] > (self.res-gauss_center_to_end)) or (cv3bin[line] <= (gauss_center_to_end))):
+                            fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,\
+                                fes_crop_cv2[0]:fes_crop_cv2[1]+1,\
+                                fes_crop_cv3_p[0]:fes_crop_cv3_p[1]+1]\
+                                        += gauss[gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1,\
+                                                 gauss_crop_cv2[0]:gauss_crop_cv2[1]+1,\
+                                                 gauss_crop_cv3_p[0]:gauss_crop_cv3_p[1]+1]\
+                                        * self.heights[line]
+
+                    if self.periodic[1] and self.periodic[2]:
+                        if ((cv2bin[line] < gauss_center_to_end) or (cv2bin[line] > (self.res-gauss_center_to_end))) \
+                                and ((cv3bin[line] > (self.res-gauss_center_to_end)) or (cv3bin[line] <= (gauss_center_to_end))):
+                            fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,\
+                                fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,\
+                                fes_crop_cv3_p[0]:fes_crop_cv3_p[1]+1]\
+                                        += gauss[gauss_crop_cv1[0]:gauss_crop_cv1[1]+1,\
+                                                 gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1,\
+                                                 gauss_crop_cv3_p[0]:gauss_crop_cv3_p[1]+1]\
+                                        * self.heights[line]
+
+                    if self.periodic[0] and self.periodic[1] and self.periodic[2]:
+                        if ((cv1bin[line] < gauss_center_to_end) or (cv1bin[line] > (self.res-gauss_center_to_end)))\
+                                and ((cv2bin[line] < gauss_center_to_end) or (cv2bin[line] > (self.res-gauss_center_to_end))) \
+                                and ((cv3bin[line] > (self.res-gauss_center_to_end)) or (cv3bin[line] <= (gauss_center_to_end))):
+                            fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,\
+                                fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,\
+                                fes_crop_cv3_p[0]:fes_crop_cv3_p[1]+1]\
+                                        += gauss[gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1,\
+                                                 gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1,\
+                                                 gauss_crop_cv3_p[0]:gauss_crop_cv3_p[1]+1]\
+                                        * self.heights[line]
+                
+                    if (line in scantimes):
+                        profileline = [line]
+                        for m in range(number_of_minima):
+                            profileline.append(fes[int(float(self.minima.iloc[m,2])),
+                                                   int(float(self.minima.iloc[m,3])),
+                                                   int(float(self.minima.iloc[m,4]))]-\
+                                               fes[int(float(self.minima.iloc[0,2])),
+                                                   int(float(self.minima.iloc[0,3])),
+                                                   int(float(self.minima.iloc[0,4]))])
+                        self.feprofile = np.vstack([self.feprofile, profileline])                                                
             else:
                 print("Fes object doesn't have supported number of CVs.")
         else:
-            ...
+            ...#Need original fes2
     
     def plot(self, name="FEprofile.png",image_size=[10,7], xlabel=None, ylabel=None, label_size=12, cmap="jet"):       
         plt.figure(figsize=(image_size[0],image_size[1]))
