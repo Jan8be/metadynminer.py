@@ -161,7 +161,7 @@ class Hills:
         return(self.heights)
 
 class Fes: 
-    def __init__(self, hills=None, resolution=256, original = False, calculate_new_fes = True):
+    def __init__(self, hills=None, resolution=256, original=False, calculate_new_fes=True):
         if hills != None:
             self.hills = hills
             self.cvs = hills.get_number_of_cvs()
@@ -221,12 +221,10 @@ class Fes:
             
             if not original:
                 if calculate_new_fes: 
-                    if original:
-                        ...
-                    else:
-                        self.makefes(self.hills, resolution)
+                    self.makefes(self.hills, resolution)
             else:
-                ...#self.makefes2(self.hills, resolution)
+                if calculate_new_fes:
+                    self.makefes2(self.hills, resolution)
         
     def makefes(self, hills, resolution=256):
         self.res = resolution
@@ -600,6 +598,186 @@ class Fes:
         else:
             print("Fes object doesn't have supported number of CVs.")
     
+    def makefes2(self, hills, resolution):
+        self.res = resolution
+        cutoff=6.25 # cutoff for stretched gaussian, should be 6.25
+        
+        if self.cvs == 1:
+            ...
+        elif self.cvs == 2:
+            cv1min = self.cv1min
+            cv2min = self.cv2min
+            
+            cv1max = self.cv1max
+            cv2max = self.cv2max
+            
+            #if CV is NOT periodic, enlarge the fes
+            if not self.periodic[0]:
+                cv1range = self.cv1max-self.cv1min
+                cv1min -= cv1range*0.15          
+                cv1max += cv1range*0.15
+            
+            if not self.periodic[1]:
+                cv2range = self.cv2max-self.cv2min
+                cv2min -= cv2range*0.15          
+                cv2max += cv2range*0.15
+            
+            if self.periodic[0]:
+                cv1_per_range = np.abs(self.cv1per[1]-self.cv1per[0])
+            else:
+                cv1_fes_range = cv1max - cv1min
+            if self.periodic[1]:
+                cv2_per_range = np.abs(self.cv2per[1]-self.cv2per[0])
+            else:
+                cv2_fes_range = cv2max - cv2min
+            
+            fes = np.zeros((self.res, self.res))
+            
+            progress = 0
+            max_progress = self.res ** self.cvs
+            
+            for x in range(self.res):
+                if self.periodic[0]:
+                    xcv1 = (x+0.5)*cv1_per_range/self.res + self.cv1per[0]
+                else:
+                    xcv1 = (x+0.5)*cv1_fes_range/self.res + cv1min
+                for y in range(self.res):
+                    if self.periodic[1]:
+                        ycv2 = (y+0.5)*cv2_per_range/self.res + self.cv2per[0]
+                    else:
+                        ycv2 = (y+0.5)*cv2_fes_range/self.res + cv2min
+                        
+                    progress += 1
+                    if (progress) % 200 == 0:
+                        print(f"Constructing free energy surface: {(progress/max_progress):.2%} finished", end="\r")
+
+                    if self.periodic[0]:
+                        dist_cv1 = self.cv1-xcv1
+                        dist_cv1[dist_cv1<-0.5*cv1_per_range] += cv1_per_range
+                        dist_cv1[dist_cv1>+0.5*cv1_per_range] -= cv1_per_range
+                    else:
+                        dist_cv1 = self.cv1-xcv1
+
+                    if self.periodic[1]:
+                        dist_cv2 = self.cv2-ycv2
+                        dist_cv2[dist_cv2<-0.5*cv2_per_range] += cv2_per_range
+                        dist_cv2[dist_cv2>+0.5*cv2_per_range] -= cv2_per_range
+                    else:
+                        dist_cv2 = self.cv2-ycv2
+
+                    dp2 = dist_cv1**2/(2*self.s1**2) + dist_cv2**2/(2*self.s2**2)
+                    bias = np.zeros(self.cv1.shape)
+                    # stretch it at cutoff
+                    bias[dp2<cutoff] = self.heights[dp2<cutoff] * (np.exp(-dp2[dp2<cutoff]) * 1.00193418799744762399 - 0.00193418799744762399)
+                    fes[x,y] = -bias.sum()
+                    
+            fes = fes - np.min(fes)
+            self.fes = np.array(fes)
+            
+        elif self.cvs == 3:
+            cv1min = self.cv1min
+            cv2min = self.cv2min
+            cv3min = self.cv3min
+            
+            cv1max = self.cv1max
+            cv2max = self.cv2max
+            cv3max = self.cv3max
+            
+            #if CV is NOT periodic, enlarge the fes
+            if not self.periodic[0]:
+                cv1range = self.cv1max-self.cv1min
+                cv1min -= cv1range*0.15          
+                cv1max += cv1range*0.15
+            
+            if not self.periodic[1]:
+                cv2range = self.cv2max-self.cv2min
+                cv2min -= cv2range*0.15          
+                cv2max += cv2range*0.15
+                
+            if not self.periodic[2]:
+                cv2range = self.cv2max-self.cv2min
+                cv2min -= cv2range*0.15          
+                cv2max += cv2range*0.15
+            
+            if self.periodic[0]:
+                cv1_per_range = np.abs(self.cv1per[1]-self.cv1per[0])
+            else:
+                cv1_fes_range = cv1max - cv1min
+            if self.periodic[1]:
+                cv2_per_range = np.abs(self.cv2per[1]-self.cv2per[0])
+            else:
+                cv2_fes_range = cv2max - cv2min
+            if self.periodic[2]:
+                cv3_per_range = np.abs(self.cv3per[1]-self.cv3per[0])
+            else:
+                cv3_fes_range = cv3max - cv3min
+            
+            fes = np.zeros((self.res, self.res, self.res))
+            
+            progress = 0
+            max_progress = self.res ** self.cvs
+            
+            for x in range(self.res):
+                if self.periodic[0]:
+                    xcv1 = (x+0.5)*cv1_per_range/self.res + self.cv1per[0]
+                else:
+                    xcv1 = (x+0.5)*cv1_fes_range/self.res + cv1min
+                for y in range(self.res):
+                    if self.periodic[1]:
+                        ycv2 = (y+0.5)*cv2_per_range/self.res + self.cv2per[0]
+                    else:
+                        ycv2 = (y+0.5)*cv2_fes_range/self.res + cv2min
+                    for z in range(self.res):
+                        if self.periodic[2]:
+                            zcv3 = (z+0.5)*cv3_per_range/self.res + self.cv3per[0]
+                        else:
+                            zcv3 = (z+0.5)*cv3_fes_range/self.res + cv3min
+                        
+                        progress += 1
+                        if (progress) % 100 == 0:
+                            print(f"Constructing free energy surface: {(progress/max_progress):.2%} finished", end="\r")
+                        
+                        dist_cv1 = self.cv1-xcv1
+                        if self.periodic[0]:
+                            dist_cv1[dist_cv1<-0.5*cv1_per_range] += cv1_per_range
+                            dist_cv1[dist_cv1>+0.5*cv1_per_range] -= cv1_per_range
+                        
+                        dist_cv2 = self.cv2-ycv2
+                        if self.periodic[1]:
+                            dist_cv2[dist_cv2<-0.5*cv2_per_range] += cv2_per_range
+                            dist_cv2[dist_cv2>+0.5*cv2_per_range] -= cv2_per_range
+                        
+                        dist_cv3 = self.cv3-zcv3
+                        if self.periodic[2]:
+                            dist_cv3[dist_cv3<-0.5*cv3_per_range] += cv3_per_range
+                            dist_cv3[dist_cv3>+0.5*cv3_per_range] -= cv3_per_range
+                            
+                        
+                        dp2 = dist_cv1**2/(2*self.s1**2) + dist_cv2**2/(2*self.s2**2) + dist_cv3**2/(2*self.s3**2) 
+                        bias = np.zeros(self.cv1.shape)
+                        # stretch it at cutoff
+                        bias[dp2<cutoff] = -self.heights[dp2<cutoff] * (np.exp(-dp2[dp2<cutoff]) * 1.00193418799744762399 - 0.00193418799744762399)
+                        fes[x,y,z] = -bias.sum()
+            fes = fes - np.min(fes)
+            self.fes = np.array(fes)
+        else:
+            print("Error: unexpected number of CVs.")
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "jet", 
                  energy_unit="kJ/mol", xlabel=None, ylabel=None, label_size=12, image_size=[10,7], 
                  vmin = 0, vmax = None, opacity=0.2, levels=None):
@@ -620,22 +798,22 @@ class Fes:
                 cv1min = self.cv1min - (self.cv1max-self.cv1min)*0.15
                 cv1max = self.cv1max + (self.cv1max-self.cv1min)*0.15
             else:
-                cv1min = self.cv1min
-                cv1max = self.cv1max 
+                cv1min = self.cv1per[0]
+                cv1max = self.cv1per[1] 
         if self.cvs >=2:
             if not self.periodic[1]:
                 cv2min = self.cv2min - (self.cv2max-self.cv2min)*0.15
                 cv2max = self.cv2max + (self.cv2max-self.cv2min)*0.15
             else:
-                cv2min = self.cv2min
-                cv2max = self.cv2max 
+                cv2min = self.cv2per[0]
+                cv2max = self.cv2per[1] 
         if self.cvs == 3:
             if not self.periodic[2]:
                 cv3min = self.cv3min - (self.cv3max-self.cv3min)*0.15
                 cv3max = self.cv3max + (self.cv3max-self.cv3min)*0.15
             else:
-                cv3min = self.cv3min
-                cv3max = self.cv3max 
+                cv3min = self.cv3per[0]
+                cv3max = self.cv3per[1] 
         
         if self.cvs == 1:
             plt.figure(figsize=(image_size[0],image_size[1]))
@@ -676,8 +854,8 @@ class Fes:
         if self.cvs == 3:
             grid = pv.UniformGrid(
                 dimensions=(self.res, self.res, self.res),
-                spacing=((self.cv1max-self.cv1min)/self.res,(self.cv2max-self.cv2min)/self.res,(self.cv3max-self.cv3min)/self.res),
-                origin=(self.cv1min, self.cv2min, self.cv3min),
+                spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
+                origin=(cv1min, cv2min, cv3min),
             )
             grid["vol"] = self.fes.ravel(order="F")
             if levels == None:
@@ -1066,8 +1244,8 @@ class Minima(Fes):
         elif self.cvs == 2:
             for bin1 in range(0,nbins):
                 for bin2 in range(0,nbins):
-                    fes_slice = self.fes[bin2*bin_size:(bin2+1)*bin_size,
-                                         bin1*bin_size:(bin1+1)*bin_size]
+                    fes_slice = self.fes[bin1*bin_size:(bin1+1)*bin_size,
+                                         bin2*bin_size:(bin2+1)*bin_size]
                     bin_min = np.min(fes_slice)
                     argmin = np.argmin(fes_slice)
                     # indexes of global minimum of a bin
@@ -1406,7 +1584,7 @@ class Minima(Fes):
             cbar.set_label(energy_unit, size=label_size)
 
             if self.minima.shape[0] == 1:
-                background = im.cmap(im.get_array()[int(float(self.minima.iloc[0,2])),int(float(self.minima.iloc[0,3]))]/255)
+                background = cmap((float(self.minima.iloc[1])-vmin)/(vmax-vmin))
                 luma = background[0]*0.2126+background[1]*0.7152+background[3]*0.0722
                 if luma > 0.6 and not color_set:
                     color = "black"
@@ -1417,7 +1595,7 @@ class Minima(Fes):
                              verticalalignment='center', c=color)
             elif self.minima.shape[0] > 1:
                 for m in range(len(self.minima.iloc[:,0])):
-                    background = im.cmap((float(self.minima.iloc[m,1])-vmin)/(vmax-vmin))
+                    background = cmap((float(self.minima.iloc[m,1])-vmin)/(vmax-vmin))
                     luma = background[0]*0.2126+background[1]*0.7152+background[3]*0.0722
                     if luma > 0.6 and not color_set:
                         color = "black"
@@ -1576,7 +1754,7 @@ class FEProfile:
             print("There is only one local minimum on the free energy surface.")
         
         
-    def makefeprofile(self, hills):
+    def makefeprofile(self, hills, original=False):
         hillslenght = len(hills.get_cv1())
         
         if hillslenght < 256:
@@ -1592,7 +1770,7 @@ class FEProfile:
         
         self.feprofile = np.zeros((self.minima.Minimum.shape[0]+1))
                
-        if self.sigmas_dont_change:
+        if self.sigmas_dont_change and not(original):
             if self.cvs == 1:
                 cv1min = self.cv1min
 
@@ -1841,8 +2019,6 @@ class FEProfile:
                                           gauss_res-1-max(0,(cv2bin[line]-1)+gauss_center_to_end-self.res+1)]
                     gauss_crop_cv3 = [max(0,gauss_center_to_end-(cv3bin[line]-1)),
                                           gauss_res-1-max(0,(cv3bin[line]-1)+gauss_center_to_end-self.res+1)]
-
-                    #print(f"\nfes cv1:{fes_crop_cv1}, cv2:{fes_crop_cv2}; \n gauss cv1:{gauss_crop_cv1}, cv2:  {gauss_crop_cv2}")
 
                     fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,\
                         fes_crop_cv2[0]:fes_crop_cv2[1]+1,\
