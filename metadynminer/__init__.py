@@ -1,39 +1,87 @@
 name = "metadynminer"
+"""
+Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. It is based on Metadynminer package for R programming language, but it is not just a port from R to Python, as it is updated and improved in many aspects. It supports HILLS files with one, two or three collective variables. 
+
+Short sample code:
+
+# load your HILLS file
+hillsfile = metadynminer.Hills(name="HILLS", periodic=[True,True])
+
+# compute the free energy surface using the fast Bias Sum Algorithm
+fes = metadynminer.Fes(hillsfile)
+
+# you can also use slower (but exact) algorithm to sum the hills and compute the free energy surface 
+# with the option original=True. This algorithm was checked and it gives the same result 
+# (to the machine level precision) as the PLUMED sum_hills function (for plumed v2.8.0)
+fes2 = metadynminer.Fes(hillsfile, original=True)
+
+# visualize the free energy surface
+fes.plot()
+
+# find local minima on the FES and print them
+minima = metadynminer.Minima(fes)
+print(minima.minima)
+
+# You can also plot free energy profile to see, how the differences between each minima were evolving 
+# during the simulation. 
+fep = metadynminer.FEProfile(minima, hillsfile)
+fep.plot()
+
+These functions can be easily customized with many parameters. You can learn more about that later in the documentation. 
+There are also other predefined functions allowing you for example to remove a CV from existing FES or enhance your presentation with animated 3D FES. 
+"""
 try:
     import numpy as np
 except:
     print("Error while loading numpy")
-    quit()
+    exit()
 try:
     from matplotlib import pyplot as plt
 except:
     print("Error while loading matplotlib pyplot")
-    quit()
+    exit()
 try:
-    from matplotlib import cm
+    from matplotlib import colormaps as cm
 except:
     print("Error while loading matplotlib cm")
-    quit()
+    exit()
 try:
     import pandas as pd
 except:
     print("Error while loading pandas")
-    quit()
+    exit()
 try:
     import pyvista as pv
 except:
     print("Error while loading pyvista")
-    quit()
+    exit()
 
-class Hills:   
+class Hills:
+    """
+    Object of Hills class are created for loading HILLS files, and obtaining the necessary information from them. 
+
+    Hills files are loaded with command:
+    hillsfile = metadynminer.Hills()
+        optional parameters:
+            name (default="HILLS") = string with name of HILLS file
+            ignoretime (default=True) = boolean, if set to False, it will save the time in the HILLS file;
+                                        if set to True, and timestep is not set, 
+                                                each time value will be incremented by the same amount as the time of the first step.
+            timestep = numeric value of the time difference between hills, in picoseconds
+            periodic (default=[False, False]) = list of boolean values telling which CV is periodic. 
+            cv1per, cv2per, cv3per (defaults = [-numpy.pi, numpy.pi]) = List of two numeric values defining the periodicity of given CV. 
+                                                Has to be provided for each periodic CV.
+
+
+    """
     def __init__(self, name="HILLS", encoding="utf8", ignoretime=True, periodic=[False, False], 
-                 cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi]):
+                 cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=None):
         self.read(name, encoding, ignoretime, periodic, 
-                 cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi])
+                 cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=timestep)
         self.hillsfilename = name
     
     def read(self, name="HILLS", encoding="utf8", ignoretime=True, periodic=None, 
-                 cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi]):
+                 cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=None):
         with open(name, 'r', encoding=encoding) as hillsfile:
             lines = hillsfile.readlines()
         columns = lines[0].split() 
@@ -73,11 +121,20 @@ class Hills:
                 print(f"Argument 'periodic' has wrong number of parameters({len(periodic)})")
         else:
             print("Unexpected number of columns in provided HILLS file.")
-            
+        
+        
+        if ignoretime:
+            if timestep != None:
+                dt = timestep
+            else:
+                for line in range(len(lines)):
+                    if lines[line][0] != "#":
+                        dt = round(float(lines[line].split()[0]),14)
+                        break
         t = 0
         for line in range(len(lines)):
             if lines[line][0] != "#":
-                t += 1
+                t += 1 
                 if t == 1:
                     if self.cvs == 1:
                         self.sigma1 = float(lines[line].split()[2])
@@ -96,15 +153,15 @@ class Hills:
                     if self.cvs == 1 and len(lines[line].split()) == 5:
                         self.hills.append(lines[line].split())
                         if ignoretime:
-                            self.hills[t-1][0] = t
+                            self.hills[t-1][0] = t*dt
                     if self.cvs == 2 and len(lines[line].split()) == 7:
                         self.hills.append(lines[line].split())
                         if ignoretime:
-                            self.hills[t-1][0] = t
+                            self.hills[t-1][0] = t*dt
                     if self.cvs == 3 and len(lines[line].split()) == 9:
                         self.hills.append(lines[line].split())
                         if ignoretime:
-                            self.hills[t-1][0] = t
+                            self.hills[t-1][0] = t*dt
                     
         
         self.hills = np.array(self.hills, dtype=np.double)
@@ -171,6 +228,19 @@ class Hills:
         return(self.heights)
 
 class Fes: 
+    """
+    Object of this class is created to compute the free energy surface corresponding to the provided Hills object. 
+    Command:
+    f = metadynminer.Fes(hills=hillsfile)
+    
+    parameters:
+            hills = Hills object
+            resolution (default=256) = should be positive integer, controls the resolution of FES
+            original (default=False) = boolean, if False, FES will be calculated using very fast, but not 'exact' Bias Sum Algorithm
+                                                if True, FES will be calculated with slower algorithm, but it will be exactly the same as FES calculated 
+                                                with PLUMED sum_hills function
+            cv1range, cv2range, cv3range = lists of two numbers, defining lower and upper bound of the respective CV (in the units of the CVs)
+    """
     def __init__(self, hills=None, resolution=256, original=False, calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None):
         self.res = resolution
         if hills != None:
@@ -237,36 +307,41 @@ class Fes:
                         For this file, you need the slower but exact, algorithm, to do that, 
                         set the argument 'original' to True.""")
             
-            if not original:
-                if calculate_new_fes: 
+            if calculate_new_fes:
+                if not original:
                     self.makefes(resolution, cv1range, cv2range, cv3range)
-            else:
-                if calculate_new_fes:
+                else:
                     self.makefes2(resolution, cv1range, cv2range, cv3range)
         
     def makefes(self, resolution, cv1range, cv2range, cv3range):
+        """
+        Function used internally for summing hills in Hills object with the fast Bias Sum Algorithm. 
+        """
         self.res = resolution
         #if self.res % 2 == 0:
         #    self.res += 1
                 
         if self.cvs == 1:
             if cv1range == None:
-                cv1min = self.cv1min
-                cv1max = self.cv1max
-
-                if not self.periodic[0]:
+                if self.periodic[0]:
+                    cv1min = self.cv1per[0]
+                    cv1max = self.cv1per[1]
+                else:
+                    cv1min = self.cv1min
+                    cv1max = self.cv1max
                     cv1range = self.cv1max-self.cv1min
                     cv1min -= cv1range*0.15          
                     cv1max += cv1range*0.15
             else:
                 cv1min = cv1range[0]
                 cv1max = cv1range[1]
+                self.cv1range = cv1range
             cv1_fes_range = cv1max-cv1min
                 
-            cv1bin = np.ceil((self.cv1-cv1min)*self.res/(cv1_fes_range))
+            cv1bin = np.ceil((self.cv1-cv1min)*(self.res)/(cv1_fes_range))
             cv1bin = cv1bin.astype(int)
             s1res = (self.s1[0]*self.res)/(cv1max - cv1min)
-            
+            self.cv1bin = cv1bin
             gauss_res = 8*s1res
             gauss_res = int(gauss_res)
             if gauss_res%2 == 0:
@@ -286,7 +361,7 @@ class Fes:
                 if (line) % 500 == 0:
                     print(f"Constructing free energy surface: {((line+1)/len(cv1bin)):.1%} finished", end="\r")
                 
-                fes_center = int((self.res-1)/2)
+                #fes_center = int((self.res-1)/2)
                 gauss_center_to_end = int((gauss_res-1)/2)
                 
                 fes_to_edit_cv1 = [cv1bin[line]-1-gauss_center_to_end,
@@ -321,10 +396,10 @@ class Fes:
             
         elif self.cvs == 2:
             if cv1range == None:
-                cv1min = self.cv1per[0]
-                cv1max = self.cv1per[1]
-
-                if not self.periodic[0]:
+                if self.periodic[0]:
+                    cv1min = self.cv1per[0]
+                    cv1max = self.cv1per[1]
+                else:
                     cv1min = self.cv1min
                     cv1max = self.cv1max
                     cv1range = self.cv1max-self.cv1min
@@ -333,13 +408,14 @@ class Fes:
             else:
                 cv1min = cv1range[0]
                 cv1max = cv1range[1]
+                self.cv1range = cv1range
             cv1_fes_range = cv1max-cv1min
             
             if cv2range == None:
-                cv2min = self.cv2per[0]
-                cv2max = self.cv2per[1]
-
-                if not self.periodic[0]:
+                if self.periodic[1]:
+                    cv2min = self.cv2per[0]
+                    cv2max = self.cv2per[1]
+                else:
                     cv2min = self.cv2min
                     cv2max = self.cv2max
                     cv2range = self.cv2max-self.cv2min
@@ -348,6 +424,7 @@ class Fes:
             else:
                 cv2min = cv2range[0]
                 cv2max = cv2range[1]
+                self.cv2range = cv2range
             cv2_fes_range = cv2max-cv2min
             
             cv1bin = np.ceil((self.cv1-cv1min)*self.res/(cv1max-cv1min))
@@ -378,7 +455,7 @@ class Fes:
                 if (line) % 500 == 0:
                     print(f"Constructing free energy surface: {((line+1)/len(cv1bin)):.1%} finished", end="\r")
                 
-                fes_center = int((self.res-1)/2)
+                #fes_center = int((self.res-1)/2)
                 gauss_center_to_end = int((gauss_res-1)/2)
                 #print(f"\ng_res: {gauss_res}, gauss_center_to_end: {gauss_center_to_end}")
                 
@@ -439,10 +516,10 @@ class Fes:
             self.fes = np.array(fes)
         elif self.cvs == 3:
             if cv1range == None:
-                cv1min = self.cv1per[0]
-                cv1max = self.cv1per[1]
-
-                if not self.periodic[0]:
+                if self.periodic[0]:
+                    cv1min = self.cv1per[0]
+                    cv1max = self.cv1per[1]
+                else:
                     cv1min = self.cv1min
                     cv1max = self.cv1max
                     cv1range = self.cv1max-self.cv1min
@@ -451,13 +528,14 @@ class Fes:
             else:
                 cv1min = cv1range[0]
                 cv1max = cv1range[1]
+                self.cv1range = cv1range
             cv1_fes_range = cv1max-cv1min
             
             if cv2range == None:
-                cv2min = self.cv2per[0]
-                cv2max = self.cv2per[1]
-
-                if not self.periodic[0]:
+                if self.periodic[1]:
+                    cv2min = self.cv2per[0]
+                    cv2max = self.cv2per[1]
+                else:
                     cv2min = self.cv2min
                     cv2max = self.cv2max
                     cv2range = self.cv2max-self.cv2min
@@ -466,13 +544,14 @@ class Fes:
             else:
                 cv2min = cv2range[0]
                 cv2max = cv2range[1]
+                self.cv2range = cv2range
             cv2_fes_range = cv2max-cv2min
             
-            if cv3range == None:
-                cv3min = self.cv3per[0]
-                cv3max = self.cv3per[1]
-
-                if not self.periodic[0]:
+            if cv1range == None:
+                if self.periodic[2]:
+                    cv3min = self.cv3per[0]
+                    cv3max = self.cv3per[1]
+                else:
                     cv3min = self.cv3min
                     cv3max = self.cv3max
                     cv3range = self.cv3max-self.cv3min
@@ -481,7 +560,8 @@ class Fes:
             else:
                 cv3min = cv3range[0]
                 cv3max = cv3range[1]
-            cv3fesrange = cv3max-cv3min
+                self.cv3range = cv3range
+            cv3_fes_range = cv3max-cv3min
             
             cv1bin = np.ceil((self.cv1-cv1min)*self.res/(cv1max-cv1min))
             cv2bin = np.ceil((self.cv2-cv2min)*self.res/(cv2max-cv2min))
@@ -495,7 +575,7 @@ class Fes:
             s2res = (self.s2[0]*self.res)/(cv2max - cv2min)
             s3res = (self.s3[0]*self.res)/(cv3max - cv3min)
             
-            gauss_res = max(8*s1res, 8*s2res, 8*s3res)
+            gauss_res = max(10*s1res, 10*s2res, 10*s3res)
             gauss_res = int(gauss_res)
             if gauss_res%2 == 0:
                 gauss_res += 1
@@ -517,9 +597,8 @@ class Fes:
                 if (line) % 500 == 0:
                     print(f"Constructing free energy surface: {((line+1)/len(cv1bin)):.1%} finished", end="\r")
                 
-                fes_center = int((self.res-1)/2)
+                #fes_center = int((self.res-1)/2)
                 gauss_center_to_end = int((gauss_res-1)/2)
-                #print(f"\ng_res: {gauss_res}, gauss_center_to_end: {gauss_center_to_end}")
                 
                 fes_to_edit_cv1 = [cv1bin[line]-1-gauss_center_to_end,
                                    cv1bin[line]-1+gauss_center_to_end]
@@ -570,9 +649,9 @@ class Fes:
                                     * self.heights[line]
                 
                 if self.periodic[1]:
-                    if cv2bin[line] > (self.res-gauss_center_to_end):
-                        fes_crop_cv2_p = [self.res+self.res-cv2bin[line]-gauss_center_to_end,self.res-1]
-                        gauss_crop_cv2_p = [0,gauss_center_to_end-(self.res-cv2bin[line])-1]
+                    if cv2bin[line] < gauss_center_to_end:
+                        fes_crop_cv2_p = [self.res-1+(cv2bin[line]-gauss_center_to_end),self.res-1]
+                        gauss_crop_cv2_p = [0,gauss_center_to_end-cv2bin[line]]
                         fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,\
                             fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,\
                             fes_crop_cv3[0]:fes_crop_cv3[1]+1]\
@@ -581,9 +660,9 @@ class Fes:
                                              gauss_crop_cv3[0]:gauss_crop_cv3[1]+1]\
                                     * self.heights[line]
                     
-                    if cv2bin[line] <= (gauss_center_to_end):
-                        fes_crop_cv2_p = [0,gauss_center_to_end-cv2bin[line]]
-                        gauss_crop_cv2_p = [gauss_res-(1+gauss_center_to_end-cv2bin[line]),gauss_res-1]
+                    if cv2bin[line] > (self.res-gauss_center_to_end):
+                        fes_crop_cv2_p = [0,gauss_center_to_end+cv2bin[line]-self.res-1]
+                        gauss_crop_cv2_p = [gauss_res-(gauss_center_to_end+cv2bin[line]-self.res),gauss_res-1]
                         fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,\
                             fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,\
                             fes_crop_cv3[0]:fes_crop_cv3[1]+1]\
@@ -592,9 +671,9 @@ class Fes:
                                              gauss_crop_cv3[0]:gauss_crop_cv3[1]+1]\
                                     * self.heights[line]
                 if self.periodic[2]:
-                    if cv3bin[line] > (self.res-gauss_center_to_end):
-                        fes_crop_cv3_p = [self.res+self.res-cv3bin[line]-gauss_center_to_end,self.res-1]
-                        gauss_crop_cv3_p = [0,gauss_center_to_end-(self.res-cv3bin[line])-1]
+                    if cv3bin[line] < gauss_center_to_end:
+                        fes_crop_cv3_p = [self.res-1+(cv3bin[line]-gauss_center_to_end),self.res-1]
+                        gauss_crop_cv3_p = [0,gauss_center_to_end-cv3bin[line]]
                         fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,\
                             fes_crop_cv2[0]:fes_crop_cv2[1]+1,\
                             fes_crop_cv3_p[0]:fes_crop_cv3_p[1]+1]\
@@ -603,9 +682,9 @@ class Fes:
                                              gauss_crop_cv3_p[0]:gauss_crop_cv3_p[1]+1]\
                                     * self.heights[line]
                     
-                    if cv3bin[line] <= (gauss_center_to_end):
-                        fes_crop_cv3_p = [0,gauss_center_to_end-cv3bin[line]]
-                        gauss_crop_cv3_p = [gauss_res-(1+gauss_center_to_end-cv3bin[line]),gauss_res-1]
+                    if cv3bin[line] > (self.res-gauss_center_to_end):
+                        fes_crop_cv3_p = [0,gauss_center_to_end+cv3bin[line]-self.res-1]
+                        gauss_crop_cv3_p = [gauss_res-(gauss_center_to_end+cv3bin[line]-self.res),gauss_res-1]
                         fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,\
                             fes_crop_cv2[0]:fes_crop_cv2[1]+1,\
                             fes_crop_cv3_p[0]:fes_crop_cv3_p[1]+1]\
@@ -616,7 +695,7 @@ class Fes:
                 
                 if self.periodic[0] and self.periodic[1]:
                     if ((cv1bin[line] < gauss_center_to_end) or (cv1bin[line] > (self.res-gauss_center_to_end))) \
-                            and ((cv2bin[line] > (self.res-gauss_center_to_end)) or (cv2bin[line] <= (gauss_center_to_end))):
+                            and ((cv2bin[line] < gauss_center_to_end) or (cv2bin[line] > (self.res-gauss_center_to_end))):
                         fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,\
                             fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,\
                             fes_crop_cv3[0]:fes_crop_cv3[1]+1]\
@@ -627,7 +706,7 @@ class Fes:
                 
                 if self.periodic[0] and self.periodic[2]:
                     if ((cv1bin[line] < gauss_center_to_end) or (cv1bin[line] > (self.res-gauss_center_to_end))) \
-                            and ((cv3bin[line] > (self.res-gauss_center_to_end)) or (cv3bin[line] <= (gauss_center_to_end))):
+                            and ((cv3bin[line] < gauss_center_to_end) or (cv3bin[line] > (self.res-gauss_center_to_end))):
                         fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,\
                             fes_crop_cv2[0]:fes_crop_cv2[1]+1,\
                             fes_crop_cv3_p[0]:fes_crop_cv3_p[1]+1]\
@@ -638,7 +717,7 @@ class Fes:
                 
                 if self.periodic[1] and self.periodic[2]:
                     if ((cv2bin[line] < gauss_center_to_end) or (cv2bin[line] > (self.res-gauss_center_to_end))) \
-                            and ((cv3bin[line] > (self.res-gauss_center_to_end)) or (cv3bin[line] <= (gauss_center_to_end))):
+                            and ((cv3bin[line] < gauss_center_to_end) or (cv3bin[line] > (self.res-gauss_center_to_end))):
                         fes[fes_crop_cv1[0]:fes_crop_cv1[1]+1,\
                             fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,\
                             fes_crop_cv3_p[0]:fes_crop_cv3_p[1]+1]\
@@ -650,7 +729,7 @@ class Fes:
                 if self.periodic[0] and self.periodic[1] and self.periodic[2]:
                     if ((cv1bin[line] < gauss_center_to_end) or (cv1bin[line] > (self.res-gauss_center_to_end)))\
                             and ((cv2bin[line] < gauss_center_to_end) or (cv2bin[line] > (self.res-gauss_center_to_end))) \
-                            and ((cv3bin[line] > (self.res-gauss_center_to_end)) or (cv3bin[line] <= (gauss_center_to_end))):
+                            and ((cv3bin[line] < gauss_center_to_end) or (cv3bin[line] > (self.res-gauss_center_to_end))) :
                         fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,\
                             fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1,\
                             fes_crop_cv3_p[0]:fes_crop_cv3_p[1]+1]\
@@ -666,6 +745,9 @@ class Fes:
             print("Fes object doesn't have supported number of CVs.")
     
     def makefes2(self, resolution, cv1range, cv2range, cv3range):
+        """
+        Function internally used to sum Hills in the same way as Plumed sum_hills. 
+        """
         self.res = resolution
         if self.cvs == 1:
             if cv1range==None:
@@ -683,6 +765,7 @@ class Fes:
             else:
                 cv1min = cv1range[0]
                 cv1max = cv1range[1]
+                self.cv1range = cv1range
                 cv1_fes_range = cv1max-cv1min
             
             fes = np.zeros((self.res))
@@ -725,6 +808,7 @@ class Fes:
             else:
                 cv1min = cv1range[0]
                 cv1max = cv1range[1]
+                self.cv1range = cv1range
                 cv1_fes_range = cv1max-cv1min
             
             if cv2range == None:
@@ -742,6 +826,7 @@ class Fes:
             else:
                 cv2min = cv2range[0]
                 cv2max = cv2range[1]
+                self.cv2range = cv2range
                 cv2_fes_range = cv2max-cv2min
             
             fes = np.zeros((self.res, self.res))
@@ -790,6 +875,7 @@ class Fes:
             else:
                 cv1min = cv1range[0]
                 cv1max = cv1range[1]
+                self.cv1range = cv1range
                 cv1_fes_range = cv1max-cv1min
             
             if cv2range == None:
@@ -807,6 +893,7 @@ class Fes:
             else:
                 cv2min = cv2range[0]
                 cv2max = cv2range[1]
+                self.cv2range = cv2range
                 cv2_fes_range = cv2max-cv2min
             
             if cv3range == None:
@@ -824,6 +911,7 @@ class Fes:
             else:
                 cv3min = cv3range[0]
                 cv3max = cv3range[1]
+                self.cv3range = cv3range
                 cv3_fes_range = cv3max-cv3min
             
             fes = np.zeros((self.res, self.res, self.res))
@@ -865,14 +953,32 @@ class Fes:
             print(f"Error: unsupported number of CVs: {self.cvs}.")
     
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "jet", 
-                 energy_unit="kJ/mol", xlabel=None, ylabel=None, label_size=12, image_size=[10,7], 
+                 energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
                  vmin = 0, vmax = None, opacity=0.2, levels=None):
+        """
+        Function used to visualize FES. 
+        Parameters:
+                png_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+                contours (default=True) = whether contours should be shown on 2D FES
+                contours_spacing (default=0.0) = when a positive number is set, it will be used as spacing for contours on 2D FES. 
+                        Otherwise, if contours=True, there will be five equally spaced contour levels.
+                aspect (default = 1.0) = aspect ratio of the graph. Works with 1D and 2D FES. 
+                cmap (default = "jet") = Matplotlib colormap used to color 2D or 3D FES
+                energy_unit (default="kJ/mol") = String, used in description of colorbar
+                xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graphs
+                labelsize (default = 12) = size of text in labels
+                image_size (default = [10,7]) = List of the width and height of the picture
+                vmin (default=0) = real number, lower bound for the colormap on 2D FES
+                vmax = real number, upper bound for the colormap on 2D FES
+                opacity (default=0.2) = number between 0 and 1, is the opacity of isosurfaces of 3D FES
+                levels = Here you can specify list of free energy values for isosurfaces on 3D FES. 
+                        If not provided, default values from contours parameters will be used instead. 
+        """
         if vmax == None:
-            vmax = np.max(self.fes)+0.001
+            vmax = np.max(self.fes)+0.01 # if the addition is smaller than 0.01, the 3d plot stops working. 
             
         if contours_spacing == 0.0:
-            default_contours_spacing = (vmax-vmin)/5.0
-            contours_spacing = default_contours_spacing
+            contours_spacing = (vmax-vmin)/5.0
         
         cmap = cm.get_cmap(cmap)
         
@@ -938,10 +1044,17 @@ class Fes:
                 plt.ylabel(ylabel, size=label_size)
         
         if self.cvs == 3:
+            if xlabel == None:
+                xlabel = "CV1 - " + self.cv1_name
+            if ylabel == None:
+                ylabel = "CV2 - " + self.cv2_name
+            if zlabel == None:
+                zlabel = "CV3 - " + self.cv3_name
+            
             grid = pv.UniformGrid(
                 dimensions=(self.res, self.res, self.res),
                 spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
-                origin=(cv1min, cv2min, cv3min),
+                origin=(cv1min, cv2min, cv3min)
             )
             grid["vol"] = self.fes.ravel(order="F")
             if levels == None:
@@ -950,16 +1063,15 @@ class Fes:
                 contours = grid.contour(levels)
             fescolors = []
             for i in range(contours.points.shape[0]):
-                fescolors.append(self.fes[int((contours.points[i,0]-self.cv1min)*self.res/(self.cv1max-self.cv1min)),
-                                       int((contours.points[i,1]-self.cv2min)*self.res/(self.cv2max-self.cv2min)),
-                                       int((contours.points[i,2]-self.cv3min)*self.res/(self.cv3max-self.cv3min))])
+                fescolors.append(self.fes[int((contours.points[i,0]-cv1min)*self.res/(cv1max-cv1min)),
+                                          int((contours.points[i,1]-cv2min)*self.res/(cv2max-cv2min)),
+                                          int((contours.points[i,2]-cv3min)*self.res/(cv3max-cv3min))])
             #%% Visualization
             pv.set_plot_theme('document')
             p = pv.Plotter()
             p.add_mesh(contours, scalars=fescolors, opacity=opacity, cmap=cmap, show_scalar_bar=False, interpolate_before_map=True)
-            p.show_grid(xlabel=f"CV1 - {self.cv1_name}", ylabel=f"CV2 - {self.cv2_name}", zlabel=f"CV3 - {self.cv3_name}")
+            p.show_grid(xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
             p.show()
-        
         if png_name != None:
             plt.savefig(name)
         
@@ -969,35 +1081,56 @@ class Fes:
     def surface_plot(self, cmap = "jet", 
                      energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel = None, 
                      label_size=12, image_size=[12,7], rstride=1, cstride=1, vmin = 0, vmax = None):
+        """
+        Function for visualization of 2D FES as 3D surface plot. For now, it is based on Matplotlib, but there are issues with interactivity. 
+        It can be interacted with in jupyter notebook or jupyter lab in %widget mode. Otherwise it is just static image of the 3D plot. 
+        There are future plans to implement this function using PyVista. 
+        Hovewer, in current version of PyVista (0.38.5) there is an issue that labels on the 3rd axis for free energy are showing wrong values. 
+        """
         if self.cvs == 2:
-            if not self.periodic[0]:
-                cv1min = self.cv1min - (self.cv1max-self.cv1min)*0.15
-                cv1max = self.cv1max + (self.cv1max-self.cv1min)*0.15
+            if self.cv1range==None:
+                if self.periodic[0]:
+                    cv1min = self.cv1per[0]
+                    cv1max = self.cv1per[1]
+                    cv1_fes_range = np.abs(self.cv1per[1]-self.cv1per[0])
+                else:
+                    cv1range = self.cv1max-self.cv1min
+                    cv1min = self.cv1min
+                    cv1max = self.cv1max
+                    cv1min -= cv1range*0.15          
+                    cv1max += cv1range*0.15
+                    cv1_fes_range = cv1max - cv1min
             else:
-                cv1min = self.cv1min
-                cv1max = self.cv1max 
-            if not self.periodic[1]:
-                cv2min = self.cv2min - (self.cv2max-self.cv2min)*0.15
-                cv2max = self.cv2max + (self.cv2max-self.cv2min)*0.15
-            else:
-                cv2min = self.cv2min
-                cv2max = self.cv2max
+                cv1min = self.cv1range[0]
+                cv1max = self.cv1range[1]
+                cv1_fes_range = cv1max-cv1min
             
-            #fes_sp = self.fes
-            #if (vmax != None) and vmax < np.max(self.fes):
-            #    fes_sp[fes_sp > vmax] = vmax
-            # 
+            if self.cv2range == None:
+                if self.periodic[1]:
+                    cv2min = self.cv2per[0]
+                    cv2max = self.cv2per[1]
+                    cv2_fes_range = np.abs(self.cv2per[1]-self.cv2per[0])
+                else:
+                    cv2range = self.cv2max-self.cv2min
+                    cv2min = self.cv2min
+                    cv2max = self.cv2max
+                    cv2min -= cv2range*0.15          
+                    cv2max += cv2range*0.15
+                    cv2_fes_range = cv2max - cv2min
+            else:
+                cv2min = self.cv2range[0]
+                cv2max = self.cv2range[1]
+                cv2_fes_range = cv2max-cv2min
+            
             x = np.linspace(self.cv1min, self.cv1max, self.res)
             y = np.linspace(self.cv2min, self.cv2max, self.res)
             
             X, Y = np.meshgrid(x, y)
             Z = self.fes
             
-            fig = plt.figure(figsize=(image_size[0],image_size[1]))
-            ax = plt.axes(projection='3d')
-            ax.plot_surface(X, Y, Z, rstride=rstride, cstride=cstride,
-                            cmap=cmap, edgecolor='none', vmin=vmin, vmax=vmax)
-            #labels
+            grid = pv.StructuredGrid(X, Y, Z)
+            grid.plot()
+            
             if xlabel == None:
                 ax.set_xlabel(f'CV1 - {self.cv1_name}', size=label_size)
             else:
@@ -1014,6 +1147,14 @@ class Fes:
             print(f"Surface plot only works for FES with exactly two CVs, and this FES has {self.cvs}")
     
     def removeCV(self, CV=None, energy_unit="kJ/mol", temp=300.0):
+        """
+        This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities 
+        are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. 
+        Parameters:
+                CV = integer, number of CV to be removed
+                energy_unit (default="kJ/mol") = has to be either "kJ/mol" or "kcal/mol"
+                temp (default=300) = temperature of the simulation in Kelvins.
+        """
         CV = int(float(CV))
         print(f"Removing CV {CV}.")
         if CV > self.cvs:
@@ -1036,6 +1177,7 @@ class Fes:
                     new_fes.cv1min = self.cv2min
                     new_fes.cv1max = self.cv2max
                     new_fes.cv1_name = self.cv2_name
+                    new_fes.cv1per = self.cv2per
                 if CV == 2:
                     new_prob = np.sum(probabilities, axis=0)
                     new_fes = Fes(hills=None)
@@ -1047,6 +1189,7 @@ class Fes:
                     new_fes.cv1min = self.cv1min
                     new_fes.cv1max = self.cv1max
                     new_fes.cv1_name = self.cv1_name
+                    new_fes.cv1per = self.cv1per
                 return new_fes
             elif energy_unit == "kcal/mol":
                 probabilities = np.exp(-1000*4.184*self.fes/8.314/temp)
@@ -1061,6 +1204,7 @@ class Fes:
                     new_fes.cv1min = self.cv2min
                     new_fes.cv1max = self.cv2max
                     new_fes.cv1_name = self.cv2_name
+                    new_fes.cv1per = self.cv2per
                 if CV == 2:
                     new_prob = np.sum(probabilities, axis=0)
                     new_fes = Fes(hills=None)
@@ -1072,6 +1216,7 @@ class Fes:
                     new_fes.cv1min = self.cv1min
                     new_fes.cv1max = self.cv1max
                     new_fes.cv1_name = self.cv1_name
+                    new_fes.cv1per = self.cv1per
                 return new_fes
             else:
                 print("Error: unknown energy unit")
@@ -1093,6 +1238,8 @@ class Fes:
                     new_fes.cv2max = self.cv3max
                     new_fes.cv1_name = self.cv2_name
                     new_fes.cv2_name = self.cv3_name
+                    new_fes.cv1per = self.cv2per
+                    new_fes.cv2per = self.cv3per
                 if CV == 2:
                     new_prob = np.sum(probabilities, axis=1)
                     new_fes = Fes(hills=None)
@@ -1107,6 +1254,8 @@ class Fes:
                     new_fes.cv2max = self.cv3max
                     new_fes.cv1_name = self.cv1_name
                     new_fes.cv2_name = self.cv3_name
+                    new_fes.cv1per = self.cv1per
+                    new_fes.cv2per = self.cv3per
                 if CV == 3:
                     new_prob = np.sum(probabilities, axis=2)
                     new_fes = Fes(hills=None)
@@ -1121,6 +1270,8 @@ class Fes:
                     new_fes.cv2max = self.cv2max
                     new_fes.cv1_name = self.cv1_name
                     new_fes.cv2_name = self.cv2_name
+                    new_fes.cv1per = self.cv1per
+                    new_fes.cv2per = self.cv2per
                 return new_fes
             elif energy_unit == "kcal/mol":
                 probabilities = np.exp(-1000*4.184*self.fes/8.314/temp)
@@ -1138,6 +1289,8 @@ class Fes:
                     new_fes.cv2max = self.cv3max
                     new_fes.cv1_name = self.cv2_name
                     new_fes.cv2_name = self.cv3_name
+                    new_fes.cv1per = self.cv2per
+                    new_fes.cv2per = self.cv3per
                 if CV == 2:
                     new_prob = np.sum(probabilities, axis=1)
                     new_fes = Fes(hills=None)
@@ -1152,6 +1305,8 @@ class Fes:
                     new_fes.cv2max = self.cv3max
                     new_fes.cv1_name = self.cv1_name
                     new_fes.cv2_name = self.cv3_name
+                    new_fes.cv1per = self.cv1per
+                    new_fes.cv2per = self.cv3per
                 if CV == 3:
                     new_prob = np.sum(probabilities, axis=2)
                     new_fes = Fes(hills=None)
@@ -1164,8 +1319,10 @@ class Fes:
                     new_fes.cv1max = self.cv1max
                     new_fes.cv2min = self.cv2min
                     new_fes.cv2max = self.cv2max
-                    new_fes.cv1_name = self.cv2_name
+                    new_fes.cv1_name = self.cv1_name
                     new_fes.cv2_name = self.cv2_name
+                    new_fes.cv1per = self.cv1per
+                    new_fes.cv2per = self.cv2per
                 return new_fes
             else:
                 print("Error: unknown energy unit")
@@ -1173,13 +1330,48 @@ class Fes:
     
     def make_gif(self, gif_name=None, cmap = "jet", 
                  xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
-                  opacity=0.2, levels=None, show_points=True, point_size=4.0, frames=64):
+                  opacity=0.2, levels=None, frames=64):
+        """
+        Function that generates animation of 3D FES showing different isosurfaces.
+        Parameters:
+                gif_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+                cmap (default = "jet") = Matplotlib colormap used to color the 3D FES
+                xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graph
+                labelsize (default = 12) = size of text in labels
+                image_size (default = [10,7]) = List of the width and height of the picture
+                opacity (default = 0.2) = number between 0 and 1, is the opacity of isosurfaces of 3D FES
+                levels = Here you can specify list of free energy values for isosurfaces on 3D FES. 
+                        If not provided, default values from contours parameters will be used instead. 
+                frames (default = 64) = Number of frames the animation will be made of. 
+        """
         if self.cvs == 3:
-            values = np.linspace(np.min(self.fes)+1, np.max(self.fes), num=frames)
+            if self.cvs >= 1:
+                if not self.periodic[0]:
+                    cv1min = self.cv1min - (self.cv1max-self.cv1min)*0.15
+                    cv1max = self.cv1max + (self.cv1max-self.cv1min)*0.15
+                else:
+                    cv1min = self.cv1per[0]
+                    cv1max = self.cv1per[1] 
+            if self.cvs >=2:
+                if not self.periodic[1]:
+                    cv2min = self.cv2min - (self.cv2max-self.cv2min)*0.15
+                    cv2max = self.cv2max + (self.cv2max-self.cv2min)*0.15
+                else:
+                    cv2min = self.cv2per[0]
+                    cv2max = self.cv2per[1] 
+            if self.cvs == 3:
+                if not self.periodic[2]:
+                    cv3min = self.cv3min - (self.cv3max-self.cv3min)*0.15
+                    cv3max = self.cv3max + (self.cv3max-self.cv3min)*0.15
+                else:
+                    cv3min = self.cv3per[0]
+                    cv3max = self.cv3per[1] 
+            
+            values = np.linspace(np.min(self.fes)+0.01, np.max(self.fes), num=frames)
             grid = pv.UniformGrid(
                 dimensions=(self.res, self.res, self.res),
-                spacing=((self.cv1max-self.cv1min)/self.res,(self.cv2max-self.cv2min)/self.res,(self.cv3max-self.cv3min)/self.res),
-                origin=(self.cv1min, self.cv2min, self.cv3min),
+                spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
+                origin=(cv1min, cv2min, cv3min),
             )
             grid["vol"] = self.fes.ravel(order="F")
             surface = grid.contour(values[:1])
@@ -1224,6 +1416,26 @@ class Fes:
             print("Error: gif_plot is only available for FES with 3 CVs.")     
     
 class Minima(Fes):
+    """
+    Object of Minima class is created to find local free energy minima on FES. 
+    The FES is first divided to some number of bins, 
+    (the number of bins can be set with option nbins, default is 8)
+    and the absolute minima is found for each bin. Then the algorithm checks 
+    if this point is really a local minimum by comparing to the surrounding points of FES.
+    
+    The list of minima is stored as pandas dataframe. 
+    
+    Command:
+    minima = metadynminer.Minima(fes=f, nbins=8)
+    
+    List of minima can be later called like this:
+    
+    print(minima.minima)
+    
+    parameters:
+            fes = Fes object to find the minima on
+            nbins (default = 8) = number of bins to divide the FES
+    """
     def __init__(self, fes, nbins = 8):
         super().__init__(fes.hills, calculate_new_fes=False)
         self.fes = fes.fes
@@ -1247,6 +1459,9 @@ class Minima(Fes):
         self.findminima(nbins=nbins)
 
     def findminima(self, nbins=8):
+        """
+        Internal method for finding local minima on FES.
+        """
         if int(nbins) != nbins:
             nbins = int(nbins)
             print(f"Number of bins must be an integer, it will be set to {nbins}.")
@@ -1592,43 +1807,70 @@ class Minima(Fes):
         
 
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "jet", 
-                 energy_unit="kJ/mol", xlabel=None, ylabel=None, label_size=12, image_size=[10,7], 
+                 energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
                  color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0):
+        """
+        The same function as for visualizing Fes objects, but this time 
+        with the positions of local minima shown as letters on the graph.
+        Parameters:
+                png_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+                contours (default=True) = whether contours should be shown on 2D FES
+                contours_spacing (default=0.0) = when a positive number is set, it will be used as spacing for contours on 2D FES. 
+                        Otherwise, if contours=True, there will be five equally spaced contour levels.
+                aspect (default = 1.0) = aspect ratio of the graph. Works with 1D and 2D FES. 
+                cmap (default = "jet") = Matplotlib colormap used to color 2D or 3D FES
+                energy_unit (default="kJ/mol") = String, used in description of colorbar
+                xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graphs
+                labelsize (default = 12) = size of text in labels
+                image_size (default = [10,7]) = List of the width and height of the picture
+                color = string, if set, the color will be used for the letters. 
+                        If not set, the color should be automatically either black or white, 
+                        depending on what will be better visible on given place on FES with given colormap (for 2D FES).
+                vmin (default=0) = real number, lower bound for the colormap on 2D FES
+                vmax = real number, upper bound for the colormap on 2D FES
+                opacity (default=0.2) = number between 0 and 1, is the opacity of isosurfaces of 3D FES
+                levels = Here you can specify list of free energy values for isosurfaces on 3D FES. 
+                        If not provided, default values from contours parameters will be used instead. 
+                show_points (default=True) = boolean, tells if points should be visualized too, instead of just the letters. Only on 3D FES. 
+                point_size (default=4.0) = float, sets the size of points if show_points=True
+        """
+        
         if vmax == None:
-            vmax = np.max(self.fes)
-        color_set = True
-        if color == None:
-            color_set = False
+            vmax = np.max(self.fes)+0.01 # if the addition is smaller than 0.01, the 3d plot stops working. 
+            
         if contours_spacing == 0.0:
-            default_contours_spacing = (vmax-vmin)/5.0
-            contours_spacing = default_contours_spacing
+            contours_spacing = (vmax-vmin)/5.0
         
         cmap = cm.get_cmap(cmap)
         
         cmap.set_over("white")
         cmap.set_under("white")
         
+        color_set = True
+        if color == None:
+            color_set = False
+        
         if self.cvs >= 1:
             if not self.periodic[0]:
                 cv1min = self.cv1min - (self.cv1max-self.cv1min)*0.15
                 cv1max = self.cv1max + (self.cv1max-self.cv1min)*0.15
             else:
-                cv1min = self.cv1min
-                cv1max = self.cv1max 
+                cv1min = self.cv1per[0]
+                cv1max = self.cv1per[1] 
         if self.cvs >=2:
             if not self.periodic[1]:
                 cv2min = self.cv2min - (self.cv2max-self.cv2min)*0.15
                 cv2max = self.cv2max + (self.cv2max-self.cv2min)*0.15
             else:
-                cv2min = self.cv2min
-                cv2max = self.cv2max 
+                cv2min = self.cv2per[0]
+                cv2max = self.cv2per[1] 
         if self.cvs == 3:
             if not self.periodic[2]:
                 cv3min = self.cv3min - (self.cv3max-self.cv3min)*0.15
                 cv3max = self.cv3max + (self.cv3max-self.cv3min)*0.15
             else:
-                cv3min = self.cv3min
-                cv3max = self.cv3max 
+                cv3min = self.cv3per[0]
+                cv3max = self.cv3per[1] 
         
         if self.cvs == 1:
             plt.figure(figsize=(image_size[0],image_size[1]))
@@ -1660,7 +1902,7 @@ class Minima(Fes):
             else:
                 plt.ylabel(ylabel, size=label_size)
             
-        elif self.cvs == 2:        
+        elif self.cvs == 2:
             fig = plt.figure(figsize=(image_size[0],image_size[1]))
             plt.imshow(np.rot90(self.fes, axes=(0,1)), cmap=cmap, interpolation='nearest', 
                        extent=[cv1min, cv1max, cv2min, cv2max], 
@@ -1707,42 +1949,51 @@ class Minima(Fes):
                 plt.ylabel(ylabel, size=label_size)
         
         elif self.cvs == 3:
+            if xlabel == None:
+                xlabel = "CV1 - " + self.cv1_name
+            if ylabel == None:
+                ylabel = "CV2 - " + self.cv2_name
+            if zlabel == None:
+                zlabel = "CV3 - " + self.cv3_name
+            
             min_ar = self.minima.iloc[:,5:8].values
             min_ar = min_ar.astype(np.float32)
             min_pv = pv.PolyData(min_ar)
             grid = pv.UniformGrid(
                 dimensions=(self.res, self.res, self.res),
-                spacing=((self.cv1max-self.cv1min)/self.res,(self.cv2max-self.cv2min)/self.res,(self.cv3max-self.cv3min)/self.res),
-                origin=(self.cv1min, self.cv2min, self.cv3min),
+                spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
+                origin=(cv1min, cv2min, cv3min)
             )
             grid["vol"] = self.fes.ravel(order="F")
             if levels == None:
-                contours = grid.contour(np.arange(0, (vmax - 0.01), contours_spacing))
+                contours = grid.contour(np.arange(0, (vmax - 0.1), contours_spacing))
             else:
                 contours = grid.contour(levels)
             fescolors = []
             for i in range(contours.points.shape[0]):
-                fescolors.append(self.fes[int((contours.points[i,0]-self.cv1min)*self.res/(self.cv1max-self.cv1min)),
-                                       int((contours.points[i,1]-self.cv2min)*self.res/(self.cv2max-self.cv2min)),
-                                       int((contours.points[i,2]-self.cv3min)*self.res/(self.cv3max-self.cv3min))])
+                fescolors.append(self.fes[int((contours.points[i,0]-cv1min)*self.res/(cv1max-cv1min)),
+                                          int((contours.points[i,1]-cv2min)*self.res/(cv2max-cv2min)),
+                                          int((contours.points[i,2]-cv3min)*self.res/(cv3max-cv3min))])
             #%% Visualization
             pv.set_plot_theme('document')
             p = pv.Plotter()
             p.add_mesh(contours, scalars=fescolors, opacity=opacity, cmap=cmap, show_scalar_bar=False, interpolate_before_map=True)
-            p.show_grid(xlabel=f"CV1 - {self.cv1_name}", ylabel=f"CV2 - {self.cv2_name}", zlabel=f"CV3 - {self.cv3_name}")
+            p.show_grid(xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
             p.add_point_labels(min_pv, self.minima.iloc[:,0], 
                    show_points=show_points, always_visible = True, 
                    point_color="black", point_size=point_size, 
                    font_size=label_size, shape=None)
             p.show()
-        
-        
+            
         if png_name != None:
             plt.savefig(png_name)
 
     def make_gif(self, gif_name=None, cmap = "jet", 
                  xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
-                  opacity=0.2, levels=None, show_points=True, point_size=4.0, frames=64, minima=True):
+                  opacity=0.2, levels=None, show_points=True, point_size=4.0, frames=64):
+        """
+        Equvivalent to Fes.make_gif()
+        """
         if self.cvs == 3:
             values = np.linspace(np.min(self.fes)+1, np.max(self.fes), num=frames)
             grid = pv.UniformGrid(
@@ -1775,7 +2026,7 @@ class Minima(Fes):
                 plotter.show_grid(xlabel=f"CV1 - {self.cv1_name}", ylabel=f"CV2 - {self.cv2_name}", zlabel=f"CV3 - {self.cv3_name}")
             else:
                 plotter.show_grid(xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
-            if minima:
+            if show_points:
                 min_ar = self.minima.iloc[:,5:8].values
                 min_ar = min_ar.astype(np.float32)
                 min_pv = pv.PolyData(min_ar)
@@ -1801,6 +2052,15 @@ class Minima(Fes):
             print("Error: gif_plot is only available for FES with 3 CVs.")
         
 class FEProfile:
+    """
+    Free energy profile is a visualization of differences between local 
+    minima points during metadynamics simulation. If the values seem 
+    to converge to a mean value of the difference, it suggests, 
+    but not fully proof, that the FES did converge to the correct shape.
+    
+    Command:
+    fep = metadynminer.FEProfile(minima, hillsfile)
+    """
     def __init__(self, minima, hills):
         self.cvs = minima.cvs
         self.res = minima.res
@@ -1837,6 +2097,9 @@ class FEProfile:
         
         
     def makefeprofile(self, hills):
+        """
+        Internal method to calculate free energy profile.
+        """
         hillslenght = len(hills.get_cv1())
         
         if hillslenght < 256:
@@ -2031,7 +2294,17 @@ class FEProfile:
         else:
             print("Fes object doesn't have supported number of CVs.")
     
-    def plot(self, name="FEprofile.png",image_size=[10,7], xlabel=None, ylabel=None, label_size=12, cmap="jet"):       
+    def plot(self, name="FEprofile.png",image_size=[10,7], xlabel=None, ylabel=None, label_size=12, cmap="jet"):
+        """
+        Simple visualization function for plotting FEP. 
+        Parameters:
+                name (default="FEProfile.png") = name for .png file to save the plot to
+                image_size (default=[10,7]) = list of two dimensions of the picture
+                xlabel (default="time (ps)")
+                ylabel (default="free energy difference (kJ/mol)") 
+                label_size (default=12) = size of labels
+                cmap (default="jet") = matplotlib colormap used for coloring the line of the minima
+        """
         plt.figure(figsize=(image_size[0],image_size[1]))
         
         cmap=cm.get_cmap(cmap)
@@ -2050,5 +2323,4 @@ class FEProfile:
             plt.ylabel('free energy difference (kJ/mol)', size=label_size)
         else:
             plt.ylabel(ylabel, size=label_size)
-        plt.savefig(name)
         plt.savefig(name)
