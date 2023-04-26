@@ -170,12 +170,14 @@ class Hills:
             self.cv1 = self.hills[:,1]
             self.sigma1 = self.hills[:,2]
             self.heights = self.hills[:,3]
+            self.biasf = self.hills[:,4]
         elif self.cvs == 2:
             self.cv1 = self.hills[:,1]
             self.cv2 = self.hills[:,2]
             self.sigma1 = self.hills[:,3]
             self.sigma2 = self.hills[:,4]
             self.heights = self.hills[:,5]
+            self.biasf = self.hills[:,6]
         elif self.cvs == 3:
             self.cv1 = self.hills[:,1]
             self.cv2 = self.hills[:,2]
@@ -184,6 +186,7 @@ class Hills:
             self.sigma2 = self.hills[:,5]
             self.sigma3 = self.hills[:,6]
             self.heights = self.hills[:,7]
+            self.biasf = self.hills[:,8]
         return self
     
     
@@ -241,13 +244,18 @@ class Fes:
                                                 with PLUMED sum_hills function
             cv1range, cv2range, cv3range = lists of two numbers, defining lower and upper bound of the respective CV (in the units of the CVs)
     """
-    def __init__(self, hills=None, resolution=256, original=False, calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None):
+    def __init__(self, hills=None, resolution=256, original=False, calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, 
+                 time_min=0, time_max=None):
         self.res = resolution
+        self.cv1range = cv1range
+        self.cv2range = cv2range
+        self.cv3range = cv3range
         if hills != None:
             self.hills = hills
             self.cvs = hills.get_number_of_cvs()
             self.heights = hills.get_heights()
             self.periodic = hills.get_periodic()
+            self.biasf = hills.biasf
             
             if cv1range!=None and len(cv1range) != 2:
                 print("Error: You have to specify CV1 range as a list of two values. ")
@@ -306,14 +314,21 @@ class Fes:
                         in which all hills have the same width of given CV. 
                         For this file, you need the slower but exact, algorithm, to do that, 
                         set the argument 'original' to True.""")
+            if time_max != None:     
+                if time_max <= time_min:
+                    print("Error: End time is lower than start time")
+                if time_max > len(self.cv1):
+                    time_max = len(self.cv1)
+                    print(f"Error: End time {time_max} is higher than number of lines in HILLS file {len(self.cv1)}, which will be used instead. ")
             
             if calculate_new_fes:
                 if not original:
-                    self.makefes(resolution, cv1range, cv2range, cv3range)
+                    self.makefes(resolution, cv1range, cv2range, cv3range, time_min, time_max)
                 else:
-                    self.makefes2(resolution, cv1range, cv2range, cv3range)
+                    self.makefes2(resolution, cv1range, cv2range, cv3range, time_min, time_max)
+                        
         
-    def makefes(self, resolution, cv1range, cv2range, cv3range):
+    def makefes(self, resolution, cv1range, cv2range, cv3range, time_min, time_max):
         """
         Function used internally for summing hills in Hills object with the fast Bias Sum Algorithm. 
         """
@@ -744,11 +759,13 @@ class Fes:
         else:
             print("Fes object doesn't have supported number of CVs.")
     
-    def makefes2(self, resolution, cv1range, cv2range, cv3range):
+    def makefes2(self, resolution, cv1range, cv2range, cv3range, time_min, time_max):
         """
         Function internally used to sum Hills in the same way as Plumed sum_hills. 
         """
+        
         self.res = resolution
+        
         if self.cvs == 1:
             if cv1range==None:
                 if self.periodic[0]:
@@ -945,18 +962,23 @@ class Fes:
                         tmp = np.zeros(self.cv1.shape)
                         tmp[dp2<6.25] = self.heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
                         fes[x,y,z] = -tmp.sum()
+                        
+                        
                     
             fes = fes - np.min(fes)
             self.fes = np.array(fes)
             print("\n")
         else:
             print(f"Error: unsupported number of CVs: {self.cvs}.")
+        
+    
+    
     
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "jet", 
                  energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
                  vmin = 0, vmax = None, opacity=0.2, levels=None):
         """
-        Function used to visualize FES. 
+        Function used to visualize FES, based on Matplotlib and PyVista. 
         Parameters:
                 png_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
                 contours (default=True) = whether contours should be shown on 2D FES
@@ -1122,14 +1144,18 @@ class Fes:
                 cv2max = self.cv2range[1]
                 cv2_fes_range = cv2max-cv2min
             
-            x = np.linspace(self.cv1min, self.cv1max, self.res)
-            y = np.linspace(self.cv2min, self.cv2max, self.res)
+            x = np.linspace(cv1min, cv1max, self.res)
+            y = np.linspace(cv2min, cv2max, self.res)
             
             X, Y = np.meshgrid(x, y)
             Z = self.fes
             
-            grid = pv.StructuredGrid(X, Y, Z)
-            grid.plot()
+            #grid = pv.StructuredGrid(X, Y, Z)
+            #grid.plot()
+            
+            fig = plt.figure()
+            ax = plt.axes(projection="3d")
+            ax.plot_surface(X,Y,Z, cmap=cmap, rstride=rstride, cstride=cstride)
             
             if xlabel == None:
                 ax.set_xlabel(f'CV1 - {self.cv1_name}', size=label_size)
@@ -1150,6 +1176,9 @@ class Fes:
         """
         This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities 
         are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. 
+        
+        Interactivity was working in jupyter notebook/lab with "%matplotlib widget".
+        
         Parameters:
                 CV = integer, number of CV to be removed
                 energy_unit (default="kJ/mol") = has to be either "kJ/mol" or "kcal/mol"
@@ -1414,7 +1443,9 @@ class Fes:
             plotter.close()
         else:
             print("Error: gif_plot is only available for FES with 3 CVs.")     
-    
+
+            
+            
 class Minima(Fes):
     """
     Object of Minima class is created to find local free energy minima on FES. 
