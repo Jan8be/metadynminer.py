@@ -4,6 +4,7 @@ Metadynminer is a package designed to help you analyse output HILLS files from P
 
 Short sample code:
 
+```python
 # load your HILLS file
 hillsfile = metadynminer.Hills(name="HILLS", periodic=[True,True])
 
@@ -26,6 +27,7 @@ print(minima.minima)
 # during the simulation. 
 fep = metadynminer.FEProfile(minima, hillsfile)
 fep.plot()
+```
 
 These functions can be easily customized with many parameters. You can learn more about that later in the documentation. 
 There are also other predefined functions allowing you for example to remove a CV from existing FES or enhance your presentation with animated 3D FES. 
@@ -61,16 +63,24 @@ class Hills:
     Object of Hills class are created for loading HILLS files, and obtaining the necessary information from them. 
 
     Hills files are loaded with command:
+    ```python
     hillsfile = metadynminer.Hills()
-        optional parameters:
-            name (default="HILLS") = string with name of HILLS file
-            ignoretime (default=True) = boolean, if set to False, it will save the time in the HILLS file;
-                                        if set to True, and timestep is not set, 
-                                                each time value will be incremented by the same amount as the time of the first step.
-            timestep = numeric value of the time difference between hills, in picoseconds
-            periodic (default=[False, False]) = list of boolean values telling which CV is periodic. 
-            cv1per, cv2per, cv3per (defaults = [-numpy.pi, numpy.pi]) = List of two numeric values defining the periodicity of given CV. 
-                                                Has to be provided for each periodic CV.
+    ```
+    
+    optional parameters:
+    
+    * name (default="HILLS") = string with name of HILLS file
+    
+    * ignoretime (default=True) = boolean, if set to False, it will save the time in the HILLS file;
+                                if set to True, and timestep is not set, 
+                                        each time value will be incremented by the same amount as the time of the first step.
+                                        
+    * timestep = numeric value of the time difference between hills, in picoseconds
+    
+    * periodic (default=[False, False]) = list of boolean values telling which CV is periodic.
+    
+    * cv1per, cv2per, cv3per (defaults = [-numpy.pi, numpy.pi]) = List of two numeric values defining the periodicity of given CV. 
+                                        Has to be provided for each periodic CV.
 
 
     """
@@ -234,15 +244,21 @@ class Fes:
     """
     Object of this class is created to compute the free energy surface corresponding to the provided Hills object. 
     Command:
-    f = metadynminer.Fes(hills=hillsfile)
-    
+    ```python
+    fes = metadynminer.Fes(hills=hillsfile)
+    ```
     parameters:
-            hills = Hills object
-            resolution (default=256) = should be positive integer, controls the resolution of FES
-            original (default=False) = boolean, if False, FES will be calculated using very fast, but not 'exact' Bias Sum Algorithm
-                                                if True, FES will be calculated with slower algorithm, but it will be exactly the same as FES calculated 
-                                                with PLUMED sum_hills function
-            cv1range, cv2range, cv3range = lists of two numbers, defining lower and upper bound of the respective CV (in the units of the CVs)
+    
+    * hills = Hills object
+    
+    * resolution (default=256) = should be positive integer, controls the resolution of FES
+    
+    * original (default=False) = boolean, if False, FES will be calculated using very fast, but not
+    'exact' Bias Sum Algorithm
+                                        if True, FES will be calculated with slower algorithm, but it will be exactly the same as FES calculated 
+                                        with PLUMED sum_hills function
+                                        
+    * cv1range, cv2range, cv3range = lists of two numbers, defining lower and upper bound of the respective CV (in the units of the CVs)
     """
     def __init__(self, hills=None, resolution=256, original=False, calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, 
                  time_min=0, time_max=None):
@@ -979,21 +995,39 @@ class Fes:
                  vmin = 0, vmax = None, opacity=0.2, levels=None):
         """
         Function used to visualize FES, based on Matplotlib and PyVista. 
+        
+        ```python
+        fes.plot()
+        ```
+        
         Parameters:
-                png_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
-                contours (default=True) = whether contours should be shown on 2D FES
-                contours_spacing (default=0.0) = when a positive number is set, it will be used as spacing for contours on 2D FES. 
-                        Otherwise, if contours=True, there will be five equally spaced contour levels.
-                aspect (default = 1.0) = aspect ratio of the graph. Works with 1D and 2D FES. 
-                cmap (default = "jet") = Matplotlib colormap used to color 2D or 3D FES
-                energy_unit (default="kJ/mol") = String, used in description of colorbar
-                xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graphs
-                labelsize (default = 12) = size of text in labels
-                image_size (default = [10,7]) = List of the width and height of the picture
-                vmin (default=0) = real number, lower bound for the colormap on 2D FES
-                vmax = real number, upper bound for the colormap on 2D FES
-                opacity (default=0.2) = number between 0 and 1, is the opacity of isosurfaces of 3D FES
-                levels = Here you can specify list of free energy values for isosurfaces on 3D FES. 
+        
+        * png_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+        
+        * contours (default=True) = whether contours should be shown on 2D FES
+        
+        * contours_spacing (default=0.0) = when a positive number is set, it will be used as spacing for contours on 2D FES. 
+                Otherwise, if contours=True, there will be five equally spaced contour levels.
+        
+        * aspect (default = 1.0) = aspect ratio of the graph. Works with 1D and 2D FES. 
+        
+        * cmap (default = "jet") = Matplotlib colormap used to color 2D or 3D FES
+        
+        * energy_unit (default="kJ/mol") = String, used in description of colorbar
+        
+        * xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graphs
+        
+        * labelsize (default = 12) = size of text in labels
+        
+        * image_size (default = [10,7]) = List of the width and height of the picture
+        
+        * vmin (default=0) = real number, lower bound for the colormap on 2D FES
+        
+        * vmax = real number, upper bound for the colormap on 2D FES
+        
+        * opacity (default=0.2) = number between 0 and 1, is the opacity of isosurfaces of 3D FES
+        
+        * levels = Here you can specify list of free energy values for isosurfaces on 3D FES. 
                         If not provided, default values from contours parameters will be used instead. 
         """
         if vmax == None:
@@ -1101,11 +1135,18 @@ class Fes:
         self.fes = fes
         
     def surface_plot(self, cmap = "jet", 
-                     energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel = None, 
+                     energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, 
                      label_size=12, image_size=[12,7], rstride=1, cstride=1, vmin = 0, vmax = None):
         """
         Function for visualization of 2D FES as 3D surface plot. For now, it is based on Matplotlib, but there are issues with interactivity. 
-        It can be interacted with in jupyter notebook or jupyter lab in %widget mode. Otherwise it is just static image of the 3D plot. 
+        
+        It can be interacted with in jupyter notebook or jupyter lab in %matplotlib widget mode. Otherwise it is just static image of the 3D surface plot. 
+        
+        ```python
+        %matplotlib widget
+        fes.surface_plot()
+        ```
+        
         There are future plans to implement this function using PyVista. 
         Hovewer, in current version of PyVista (0.38.5) there is an issue that labels on the 3rd axis for free energy are showing wrong values. 
         """
@@ -1180,9 +1221,12 @@ class Fes:
         Interactivity was working in jupyter notebook/lab with "%matplotlib widget".
         
         Parameters:
-                CV = integer, number of CV to be removed
-                energy_unit (default="kJ/mol") = has to be either "kJ/mol" or "kcal/mol"
-                temp (default=300) = temperature of the simulation in Kelvins.
+        
+        * CV = integer, the CV to be removed
+        
+        * energy_unit (default="kJ/mol") = has to be either "kJ/mol" or "kcal/mol"
+        
+        * temp (default=300) = temperature of the simulation in Kelvins.
         """
         CV = int(float(CV))
         print(f"Removing CV {CV}.")
@@ -1362,16 +1406,29 @@ class Fes:
                   opacity=0.2, levels=None, frames=64):
         """
         Function that generates animation of 3D FES showing different isosurfaces.
+        
+        ```python
+        fes.make_gif()
+        ```
+        
         Parameters:
-                gif_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
-                cmap (default = "jet") = Matplotlib colormap used to color the 3D FES
-                xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graph
-                labelsize (default = 12) = size of text in labels
-                image_size (default = [10,7]) = List of the width and height of the picture
-                opacity (default = 0.2) = number between 0 and 1, is the opacity of isosurfaces of 3D FES
-                levels = Here you can specify list of free energy values for isosurfaces on 3D FES. 
-                        If not provided, default values from contours parameters will be used instead. 
-                frames (default = 64) = Number of frames the animation will be made of. 
+        
+        * gif_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+        
+        * cmap (default = "jet") = Matplotlib colormap used to color the 3D FES
+        
+        * xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graph
+        
+        * labelsize (default = 12) = size of text in labels
+        
+        * image_size (default = [10,7]) = List of the width and height of the picture
+        
+        * opacity (default = 0.2) = number between 0 and 1, is the opacity of isosurfaces of 3D FES
+        
+        * levels = Here you can specify list of free energy values for isosurfaces on 3D FES. 
+                If not provided, default values from contours parameters will be used instead. 
+        
+        * frames (default = 64) = Number of frames the animation will be made of. 
         """
         if self.cvs == 3:
             if self.cvs >= 1:
@@ -1446,7 +1503,7 @@ class Fes:
 
             
             
-class Minima(Fes):
+class Minima():
     """
     Object of Minima class is created to find local free energy minima on FES. 
     The FES is first divided to some number of bins, 
@@ -1457,15 +1514,21 @@ class Minima(Fes):
     The list of minima is stored as pandas dataframe. 
     
     Command:
+    ```python
     minima = metadynminer.Minima(fes=f, nbins=8)
+    ```
     
     List of minima can be later called like this:
     
+    ```python
     print(minima.minima)
+    ```
     
-    parameters:
-            fes = Fes object to find the minima on
-            nbins (default = 8) = number of bins to divide the FES
+    Parameters:
+    
+    * fes = Fes object to find the minima on
+    
+    * nbins (default = 8) = number of bins to divide the FES
     """
     def __init__(self, fes, nbins = 8):
         super().__init__(fes.hills, calculate_new_fes=False)
@@ -1843,27 +1906,48 @@ class Minima(Fes):
         """
         The same function as for visualizing Fes objects, but this time 
         with the positions of local minima shown as letters on the graph.
+        
+        ```python
+        minima.plot()
+        ```
+        
         Parameters:
-                png_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
-                contours (default=True) = whether contours should be shown on 2D FES
-                contours_spacing (default=0.0) = when a positive number is set, it will be used as spacing for contours on 2D FES. 
-                        Otherwise, if contours=True, there will be five equally spaced contour levels.
-                aspect (default = 1.0) = aspect ratio of the graph. Works with 1D and 2D FES. 
-                cmap (default = "jet") = Matplotlib colormap used to color 2D or 3D FES
-                energy_unit (default="kJ/mol") = String, used in description of colorbar
-                xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graphs
-                labelsize (default = 12) = size of text in labels
-                image_size (default = [10,7]) = List of the width and height of the picture
-                color = string, if set, the color will be used for the letters. 
-                        If not set, the color should be automatically either black or white, 
-                        depending on what will be better visible on given place on FES with given colormap (for 2D FES).
-                vmin (default=0) = real number, lower bound for the colormap on 2D FES
-                vmax = real number, upper bound for the colormap on 2D FES
-                opacity (default=0.2) = number between 0 and 1, is the opacity of isosurfaces of 3D FES
-                levels = Here you can specify list of free energy values for isosurfaces on 3D FES. 
-                        If not provided, default values from contours parameters will be used instead. 
-                show_points (default=True) = boolean, tells if points should be visualized too, instead of just the letters. Only on 3D FES. 
-                point_size (default=4.0) = float, sets the size of points if show_points=True
+        
+        * png_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+        
+        * contours (default=True) = whether contours should be shown on 2D FES
+        
+        * contours_spacing (default=0.0) = when a positive number is set, it will be used as spacing for contours on 2D FES. 
+                Otherwise, if contours=True, there will be five equally spaced contour levels.
+        
+        * aspect (default = 1.0) = aspect ratio of the graph. Works with 1D and 2D FES. 
+        
+        * cmap (default = "jet") = Matplotlib colormap used to color 2D or 3D FES
+        
+        * energy_unit (default="kJ/mol") = String, used in description of colorbar
+        
+        * xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graphs
+        
+        * labelsize (default = 12) = size of text in labels
+        
+        * image_size (default = [10,7]) = List of the width and height of the picture
+        
+        * color = string = name of color in matplotlib, if set, the color will be used for the letters. 
+                If not set, the color should be automatically either black or white, 
+                depending on what will be better visible on given place on FES with given colormap (for 2D FES).
+        
+        * vmin (default=0) = real number, lower bound for the colormap on 2D FES
+        
+        * vmax = real number, upper bound for the colormap on 2D FES
+        
+        * opacity (default=0.2) = number between 0 and 1, is the opacity of isosurfaces of 3D FES
+        
+        * levels = Here you can specify list of free energy values for isosurfaces on 3D FES. 
+                If not provided, default values from contours parameters will be used instead. 
+        
+        * show_points (default=True) = boolean, tells if points should be visualized too, instead of just the letters. Only on 3D FES. 
+        
+        * point_size (default=4.0) = float, sets the size of points if show_points=True
         """
         
         if vmax == None:
@@ -2090,7 +2174,16 @@ class FEProfile:
     but not fully proof, that the FES did converge to the correct shape.
     
     Command:
+    ```python
     fep = metadynminer.FEProfile(minima, hillsfile)
+    ```
+    
+    Parameters:
+    
+    * minima = metadynminer.Minima object
+    
+    * hillsfile = metadynminer.Hills object
+    
     """
     def __init__(self, minima, hills):
         self.cvs = minima.cvs
@@ -2327,14 +2420,27 @@ class FEProfile:
     
     def plot(self, name="FEprofile.png",image_size=[10,7], xlabel=None, ylabel=None, label_size=12, cmap="jet"):
         """
-        Simple visualization function for plotting FEP. 
+        Visualization function for FEP. 
+        
+        ```python
+        fep.plot()
+        ```
+        
+        
         Parameters:
-                name (default="FEProfile.png") = name for .png file to save the plot to
-                image_size (default=[10,7]) = list of two dimensions of the picture
-                xlabel (default="time (ps)")
-                ylabel (default="free energy difference (kJ/mol)") 
-                label_size (default=12) = size of labels
-                cmap (default="jet") = matplotlib colormap used for coloring the line of the minima
+        
+        
+        * name (default="FEProfile.png") = name for .png file to save the plot to
+        
+        * image_size (default=[10,7]) = list of two dimensions of the picture
+        
+        * xlabel (default="time (ps)")
+        
+        * ylabel (default="free energy difference (kJ/mol)") 
+        
+        * label_size (default=12) = size of labels
+        
+        * cmap (default="jet") = matplotlib colormap used for coloring the line of the minima
         """
         plt.figure(figsize=(image_size[0],image_size[1]))
         
