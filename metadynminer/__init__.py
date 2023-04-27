@@ -1,4 +1,6 @@
 name = "metadynminer"
+__version__ = "0.1.0"
+__author__ = 'Jan Beránek'
 """
 Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. It is based on Metadynminer package for R programming language, but it is not just a port from R to Python, as it is updated and improved in many aspects. It supports HILLS files with one, two or three collective variables. 
 
@@ -1128,8 +1130,9 @@ class Fes:
             p.add_mesh(contours, scalars=fescolors, opacity=opacity, cmap=cmap, show_scalar_bar=False, interpolate_before_map=True)
             p.show_grid(xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
             p.show()
+            
         if png_name != None:
-            plt.savefig(name)
+            plt.savefig(png_name)
         
     def set_fes(self, fes):
         self.fes = fes
@@ -1401,7 +1404,7 @@ class Fes:
                 print("Error: unknown energy unit")
                 return None
     
-    def make_gif(self, gif_name=None, cmap = "jet", 
+    def make_gif(self, gif_name="FES.gif", cmap = "jet", 
                  xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
                   opacity=0.2, levels=None, frames=64):
         """
@@ -1413,7 +1416,7 @@ class Fes:
         
         Parameters:
         
-        * gif_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+        * gif_name (default="FES.gif") = String. Name of the gif of FES that will be saved in the current working directory.
         
         * cmap (default = "jet") = Matplotlib colormap used to color the 3D FES
         
@@ -1463,8 +1466,6 @@ class Fes:
             surface = grid.contour(values[:1])
             surfaces = [grid.contour([v]) for v in values]
             surface = surfaces[0].copy()
-            if gif_name == None:
-                gif_name = "FES.gif"
             
             pv.set_plot_theme('document')
             plotter = pv.Plotter(off_screen=True)
@@ -2103,7 +2104,7 @@ class Minima():
         if png_name != None:
             plt.savefig(png_name)
 
-    def make_gif(self, gif_name=None, cmap = "jet", 
+    def make_gif(self, gif_name="FES.gif", cmap = "jet", 
                  xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
                   opacity=0.2, levels=None, show_points=True, point_size=4.0, frames=64):
         """
@@ -2120,8 +2121,6 @@ class Minima():
             surface = grid.contour(values[:1])
             surfaces = [grid.contour([v]) for v in values]
             surface = surfaces[0].copy()
-            if gif_name == None:
-                gif_name = "FES.gif"
             
             pv.set_plot_theme('document')
             plotter = pv.Plotter(off_screen=True)
