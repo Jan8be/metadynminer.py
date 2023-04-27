@@ -1,5 +1,5 @@
 name = "metadynminer"
-__version__ = "0.1.2"
+__version__ = "0.1.3"
 __author__ = 'Jan Beránek'
 """
 Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. It is based on Metadynminer package for R programming language, but it is not just a port from R to Python, as it is updated and improved in many aspects. It supports HILLS files with one, two or three collective variables. 
@@ -47,7 +47,7 @@ except:
 try:
     from matplotlib import colormaps as cm
 except:
-    print("Error while loading matplotlib cm")
+    print("Error while loading matplotlib colormaps")
     exit()
 try:
     import pandas as pd
@@ -262,7 +262,8 @@ class Fes:
                                         
     * cv1range, cv2range, cv3range = lists of two numbers, defining lower and upper bound of the respective CV (in the units of the CVs)
     """
-    def __init__(self, hills=None, resolution=256, original=False, calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, 
+    def __init__(self, hills=None, resolution=256, original=False, \
+                 calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, \
                  time_min=0, time_max=None):
         self.res = resolution
         self.cv1range = cv1range
@@ -1532,7 +1533,6 @@ class Minima():
     * nbins (default = 8) = number of bins to divide the FES
     """
     def __init__(self, fes, nbins = 8):
-        super().__init__(fes.hills, calculate_new_fes=False)
         self.fes = fes.fes
         self.periodic = fes.periodic
         self.cvs = fes.cvs
@@ -1542,14 +1542,17 @@ class Minima():
             self.cv1_name = fes.cv1_name
             self.cv1min = fes.cv1min
             self.cv1max = fes.cv1max
+            self.cv1per = fes.cv1per
         if self.cvs >= 2:
             self.cv2min = fes.cv2min
             self.cv2max = fes.cv2max
             self.cv2_name = fes.cv2_name
+            self.cv2per = fes.cv2per
         if self.cvs == 3:
             self.cv3min = fes.cv3min
             self.cv3max = fes.cv3max
             self.cv3_name = fes.cv3_name
+            self.cv3per = fes.cv3per
         
         self.findminima(nbins=nbins)
 
