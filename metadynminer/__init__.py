@@ -1,5 +1,5 @@
 name = "metadynminer"
-__version__ = "0.1.3"
+__version__ = "0.1.4"
 __author__ = 'Jan Beránek'
 """
 Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. It is based on Metadynminer package for R programming language, but it is not just a port from R to Python, as it is updated and improved in many aspects. It supports HILLS files with one, two or three collective variables. 
@@ -1887,7 +1887,11 @@ class Minima():
             self.minima = np.append("A", self.minima)
         
         if self.cvs == 1:
-            self.minima = pd.DataFrame(self.minima, columns = ["Minimum", "free energy", "CV1bin", "CV1 - "+self.cv1_name])
+            if len(self.minima.shape)>1:
+                self.minima = pd.DataFrame(np.array(self.minima), columns = ["Minimum", "free energy", "CV1bin", "CV1 - "+self.cv1_name])
+            elif len(self.minima.shape) == 1:
+                self.minima = pd.DataFrame([self.minima], columns = ["Minimum", "free energy", "CV1bin", "CV1 - "+self.cv1_name])
+                
         elif self.cvs == 2:
             if len(self.minima.shape)>1:
                 self.minima = pd.DataFrame(np.array(self.minima), columns = ["Minimum", "free energy", "CV1bin", "CV2bin", 
