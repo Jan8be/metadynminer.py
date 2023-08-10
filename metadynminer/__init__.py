@@ -1,5 +1,5 @@
 name = "metadynminer"
-__version__ = "0.1.4"
+__version__ = "0.2.0"
 __author__ = 'Jan Beránek'
 """
 Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. It is based on Metadynminer package for R programming language, but it is not just a port from R to Python, as it is updated and improved in many aspects. It supports HILLS files with one, two or three collective variables. 
@@ -117,7 +117,7 @@ class Hills:
                 self.cv1per = cv1per
                 self.cv2per = cv2per
             else:
-                print(f"Argument 'periodic' has wrong number of parameters({len(periodic)})")
+                print(f"Error: argument 'periodic' has wrong number of parameters({len(periodic)})")
         elif number_of_columns_head == 9:
             self.cvs = 3
             self.cv1_name = lines[0].split()[3]
@@ -241,6 +241,41 @@ class Hills:
     
     def get_heights(self):
         return(self.heights)
+
+    def plot_heights(self, png_name=None, energy_unit="kJ/mol", xlabel=None, ylabel=None, label_size=12, image_size=[10,7]):
+        """
+        Function used to visualize heights of the hills, based on Matplotlib. 
+        
+        ```python
+        hills.plot_heights()
+        ```
+        
+        Parameters:
+        
+        * png_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+        
+        * energy_unit (default="kJ/mol") = String, used in description of the y axis
+        
+        * xlabel, ylabel = Strings, if provided, they will be used as labels for the graphs
+        
+        * labelsize (default = 12) = size of text in labels
+        
+        * image_size (default = [10,7]) = List of the width and height of the picture
+        
+        """
+        plt.figure(figsize=(image_size[0],image_size[1]))
+        plt.plot(range(len(self.heights)), self.heights)
+        if xlabel == None:
+            plt.xlabel(f'time (ps)', size=label_size)
+        else:
+            plt.xlabel(xlabel, size=label_size)
+        if ylabel == None:
+            plt.ylabel(f'free energy ({energy_unit})', size=label_size)
+        else:
+            plt.ylabel(ylabel, size=label_size)
+            
+        if png_name != None:
+            plt.savefig(png_name)
 
 class Fes: 
     """
