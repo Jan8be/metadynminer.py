@@ -1,0 +1,77 @@
+name: Build
+
+on: [ push, pull_request ]
+
+env:
+  CORE_CHANGED: false
+  APP_CHANGED: false
+
+jobs:
+  install-metadynminer:
+    name: ${{ matrix.os }}, python ${{ matrix.python-version }}, ${{ matrix.keras-backend }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-18.04, ubuntu-latest, macos-latest ]
+        python-version: [ 3.7, 3.8 ]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Download Miniconda for ${{ matrix.os }} and python 3.7
+        if: contains( matrix.python-version, '3.7' )
+        run: |
+          wget https://repo.continuum.io/miniconda/Miniconda3-py37_4.9.2-${{ startsWith(matrix.os,  'ubuntu' ) && 'Linux' || 'MacOSX' }}-x86_64.sh -O miniconda.sh
+
+      - name: Download Miniconda for ${{ matrix.os }} and python 3.8
+        if: contains( matrix.python-version, '3.8' )
+        run: |
+          wget https://repo.continuum.io/miniconda/Miniconda3-py38_4.9.2-${{ startsWith(matrix.os,  'ubuntu' ) && 'Linux' || 'MacOSX' }}-x86_64.sh -O miniconda.sh
+
+      - name: Install Miniconda for Ubuntu
+        shell: bash
+        if: ${{ startsWith( matrix.os , 'ubuntu') }}
+        run: |
+          bash miniconda.sh -b -p $HOME/miniconda
+          echo "$HOME/miniconda/bin:$PATH" >> $GITHUB_PATH
+          echo "$HOME/miniconda/envs/test-environment/lib/:$LD_LIBRARY_PATH" >> $GITHUB_PATH
+          conda config --set always_yes yes --set changeps1 no
+          conda update -q conda
+          conda info -a
+          conda create -q -n test-environment python=${{ matrix.python-version }} pandas
+
+      - name: Install Miniconda for MacOS
+        shell: bash
+        if: ${{ startsWith( matrix.os , 'macos') }}
+        run: |
+          /usr/bin/sudo chown -R runner:staff /usr/local/miniconda
+          bash miniconda.sh -b -p $HOME/miniconda
+          /usr/local/miniconda/condabin/conda init --all
+          conda config --set always_yes yes --set changeps1 no
+          conda install python=${{ matrix.python-version }}
+          conda info -a
+          conda create -q -n test-environment python=${{ matrix.python-version }} pandas
+
+      - name: Install dependencies for Ubuntu
+        if: ${{ startsWith( matrix.os , 'ubuntu') }}
+        run: |
+          python --version
+          python -m pip install --upgrade pip
+          pip install tensorflow
+          conda install numpy pytest pytest-cov
+          pip install -e .[tests]
+
+      - name: Install dependencies for MacOS
+        if: ${{ startsWith( matrix.os , 'macos') }}
+        run: |
+          python3 --version
+          python3 -m pip install --upgrade pip
+          conda install numpy
+          pip3 install -e .[tests]
+
+      - name: Run tests
+        run: |
+          echo -e "Running tests"
+          pytest --cov=metadynminer tests/
