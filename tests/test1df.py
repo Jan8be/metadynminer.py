@@ -6,7 +6,7 @@ import numpy as np
 
 def test_it():
   #load hills
-  h1 = mm.Hills(name="acealanme1d", periodic=[True])
+  h1 = mm.Hills(name="../data/acealanme1d", periodic=[True])
   #prepare FES
   metadynminer_cv1_fast = mm.Fes(h1, resolution=256, original=False).fes.T
   #load plumed FES
