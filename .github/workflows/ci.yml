@@ -31,7 +31,14 @@ jobs:
           pip3 install pytest pytest-cov
           pip3 install -e .
 
-      - name: Run tests
+      - name: Run tests on ${{ matrix.os }}
+        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
         run: |
           echo -e "Running tests"
           pytest tests/*.py
+
+      - name: Run tests on Windows
+        if: startsWith(matrix.os, 'windows')
+        run: |
+          pytest tests/*.py
+        
