@@ -29,7 +29,7 @@ jobs:
           python --version
           python3 -m pip install --upgrade pip
           conda install numpy pytest pytest-cov matplotlib
-          pip install -e .[tests]
+          pip install -e .
 
       - name: Install dependencies for MacOS
         if: ${{ startsWith( matrix.os , 'macos') }}
@@ -38,7 +38,7 @@ jobs:
           python3 -m pip install --upgrade pip
           pip3 install pytest pytest-cov
           conda install numpy matplotlib
-          pip3 install -e .[tests]
+          pip3 install -e .
 
       - name: Run tests
         run: |
