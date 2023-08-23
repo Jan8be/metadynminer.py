@@ -39,6 +39,7 @@ jobs:
 
       - name: Run tests on Windows
         if: startsWith(matrix.os, 'windows')
+        shell: pwsh
         run: |
-          cd tests; pytest
+          pytest tests/*.py
         
