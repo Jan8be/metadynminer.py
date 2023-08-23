@@ -18,7 +18,7 @@ def test_it():
   max_error_limit_fast = 4
   mean_error = np.mean(metadynminer_cv1_fast-plumed1)
   max_error = np.max(np.abs(metadynminer_cv1_fast-plumed1))
-  assert(max_error < max_error_limit_fast & mean_error < mean_error_limit_fast)
+  assert(max_error < max_error_limit_fast and mean_error < mean_error_limit_fast)
 
 if __name__ == '__main__':
   pytest.main([__file__])
