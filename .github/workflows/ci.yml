@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-latest ]
-        python-version: [ 3.7, 3.8, 3.9, 3.10, 3.11 ]
+        python-version: [ "3.7", "3.8", "3.9", "3.10", "3.11" ]
 
     steps:
       - uses: actions/checkout@v2
@@ -28,22 +28,22 @@ jobs:
       - name: Download Miniconda for ${{ matrix.os }} and python 3.8
         if: contains( matrix.python-version, '3.8' )
         run: |
-          wget https://repo.continuum.io/miniconda/Miniconda3-py38_22.11.1-1-${{ startsWith(matrix.os,  'ubuntu' ) && 'Linux' || 'MacOSX' }}-x86_64.sh -O miniconda.sh
+          wget https://repo.continuum.io/miniconda/Miniconda3-py38_23.5.2-0-${{ startsWith(matrix.os,  'ubuntu' ) && 'Linux' || 'MacOSX' }}-x86_64.sh -O miniconda.sh
 
       - name: Download Miniconda for ${{ matrix.os }} and python 3.9
         if: contains( matrix.python-version, '3.9' )
         run: |
-          wget https://repo.continuum.io/miniconda/Miniconda3-py39_22.11.1-1-${{ startsWith(matrix.os,  'ubuntu' ) && 'Linux' || 'MacOSX' }}-x86_64.sh -O miniconda.sh
+          wget https://repo.continuum.io/miniconda/Miniconda3-py39_23.5.2-0-${{ startsWith(matrix.os,  'ubuntu' ) && 'Linux' || 'MacOSX' }}-x86_64.sh -O miniconda.sh
 
       - name: Download Miniconda for ${{ matrix.os }} and python 3.10
         if: contains( matrix.python-version, '3.10' )
         run: |
-          wget https://repo.continuum.io/miniconda/Miniconda3-py310_22.11.1-1-${{ startsWith(matrix.os,  'ubuntu' ) && 'Linux' || 'MacOSX' }}-x86_64.sh -O miniconda.sh
+          wget https://repo.continuum.io/miniconda/Miniconda3-py310_23.5.2-0-${{ startsWith(matrix.os,  'ubuntu' ) && 'Linux' || 'MacOSX' }}-x86_64.sh -O miniconda.sh
 
       - name: Download Miniconda for ${{ matrix.os }} and python 3.11
         if: contains( matrix.python-version, '3.11' )
         run: |
-          wget https://repo.continuum.io/miniconda/Miniconda3-py311_22.11.1-1-${{ startsWith(matrix.os,  'ubuntu' ) && 'Linux' || 'MacOSX' }}-x86_64.sh -O miniconda.sh
+          wget https://repo.continuum.io/miniconda/Miniconda3-py311_23.5.2-0-${{ startsWith(matrix.os,  'ubuntu' ) && 'Linux' || 'MacOSX' }}-x86_64.sh -O miniconda.sh
 
       - name: Install Miniconda for Ubuntu
         shell: bash
