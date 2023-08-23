@@ -13,7 +13,7 @@ requirements:
     - python
 
   run:
-    - pandas >=1.5.3
+    - pandas >=1.3.5
     - matplotlib >=3.5.3
     - pyvista >=0.38.5
     - numpy >=1.21.6
