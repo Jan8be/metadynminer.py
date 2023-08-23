@@ -10,7 +10,7 @@ def test_it():
   #prepare FES
   metadynminer_cv1_fast = mm.Fes(h1, resolution=256, original=False).fes.T
   #load plumed FES
-  plumed1 = np.loadtxt("plumed_acealanme1d.dat")
+  plumed1 = np.loadtxt("./tests/plumed_acealanme1d.dat")
   plumed1 = np.reshape(plumed1[:,1], (256))
   plumed1 = plumed1 - np.min(plumed1)
   #compare
