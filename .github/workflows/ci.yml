@@ -52,7 +52,7 @@ jobs:
           conda config --set always_yes yes --set changeps1 no
           conda install python=${{ matrix.python-version }}
           conda info -a
-          conda create -q -n test-environment python=${{ matrix.python-version }} numpy pytest pytest-cov matplotlib
+          conda create -q -n test-environment python=${{ matrix.python-version }} pandas
 
       - name: Install dependencies for Ubuntu
         if: ${{ startsWith( matrix.os , 'ubuntu') }}
@@ -73,4 +73,4 @@ jobs:
       - name: Run tests
         run: |
           echo -e "Running tests"
-          pytest tests/
+          pytest tests/*.py
