@@ -64,17 +64,17 @@ def test_3p():
     abs_diff = np.abs(expected - mm_sum)
     assert(abs_diff < 1e-4)
 
-#def test_3np():
-#    expected = 15149816.57067392
-#    #load hills
-#    h3 = mm.Hills(name="./data/acealanme3d", periodic=[False,False,False])
-#    #prepare FES
-#    metadynminer_cv3_fast = mm.Fes(h3, resolution=64, original=False).fes.T
-#    #sum FES
-#    mm_sum = np.sum(metadynminer_cv3_fast)
-#    #compare
-#    abs_diff = np.abs(expected - mm_sum)
-#    assert(abs_diff < 1e-4)
+def test_3np():
+    expected = 14187718.1015537
+    #load hills
+    h3 = mm.Hills(name="./data/acealanme3d", periodic=[False,False,False])
+    #prepare FES
+    metadynminer_cv3_fast = mm.Fes(h3, resolution=64, original=False).fes.T
+    #sum FES
+    mm_sum = np.sum(metadynminer_cv3_fast)
+    #compare
+    abs_diff = np.abs(expected - mm_sum)
+    assert(abs_diff < 1e-4)
 
 if __name__ == '__main__':
     pytest.main([__file__])

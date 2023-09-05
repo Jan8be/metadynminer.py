@@ -1,5 +1,5 @@
 name = "metadynminer"
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 __author__ = 'Jan Beránek'
 """
 Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. It is based on Metadynminer package for R programming language, but it is not just a port from R to Python, as it is updated and improved in many aspects. It supports HILLS files with one, two or three collective variables. 
@@ -1631,7 +1631,6 @@ class Minima():
         self.minima = []
         if self.cvs == 1:
             for bin1 in range(0,nbins):
-                
                 fes_slice = self.fes[bin1*bin_size:(bin1+1)*bin_size]
                 bin_min = np.min(fes_slice)
                 argmin = np.argmin(fes_slice)
@@ -1641,10 +1640,10 @@ class Minima():
                 min_cv1_b = int(bin_min_arg_cv1+bin1*bin_size)
                 if (bin_min_arg_cv1 > 0 and bin_min_arg_cv1<(bin_size-1)):
                     min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
-                    if self.minima == []:
-                        self.minima=np.array([round(bin_min, 6), int(min_cv1_b), round(min_cv1, 6)])
+                    if len(self.minima) == 0:
+                        self.minima = np.array([round(bin_min, 6), int(min_cv1_b), round(min_cv1, 6)])
                     else:
-                        self.minima=np.vstack((self.minima, np.array([round(bin_min, 6), int(min_cv1_b), round(min_cv1, 6)])))
+                        self.minima = np.vstack((self.minima, np.array([round(bin_min, 6), int(min_cv1_b), round(min_cv1, 6)])))
                 else:
                     around = []
                     min_cv1_b_low = min_cv1_b - 1
@@ -1670,7 +1669,7 @@ class Minima():
                     
                     if bin_min < np.min(around):
                         min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
-                        if self.minima == []:
+                        if len(self.minima) == 0:
                             self.minima=np.array([round(bin_min, 6), int(min_cv1_b), round(min_cv1, 6)])
                         else:
                             self.minima=np.vstack((self.minima, np.array([round(bin_min, 6), int(min_cv1_b), round(min_cv1, 6)])))
@@ -1691,7 +1690,7 @@ class Minima():
                                     and (bin_min_arg[1] > 0 and bin_min_arg[1]<(bin_size-1)):
                         min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
                         min_cv2 = (((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))+cv2min
-                        if self.minima == []:
+                        if len(self.minima) == 0:
                             self.minima=np.array([round(bin_min, 6), int(min_cv1_b),\
                                                   int(min_cv2_b), round(min_cv1, 6), round(min_cv2, 6)])
                         else:
@@ -1748,7 +1747,7 @@ class Minima():
                         if bin_min < np.min(around):
                             min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
                             min_cv2 = (((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))+cv2min
-                            if self.minima == []:
+                            if len(self.minima) == 0:
                                 self.minima=np.array([round(bin_min, 6), int(min_cv1_b), int(min_cv2_b), \
                                                       round(min_cv1, 6), round(min_cv2, 6)])
                             else:
@@ -1775,7 +1774,7 @@ class Minima():
                             min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
                             min_cv2 = (((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))+cv2min
                             min_cv3 = (((min_cv3_b+0.5)/self.res)*(cv3max-cv3min))+cv3min
-                            if self.minima == []:
+                            if len(self.minima) == 0:
                                 self.minima=np.array([round(bin_min, 6), int(min_cv1_b),\
                                                       int(min_cv2_b), int(min_cv3_b), round(min_cv1, 6), \
                                                       round(min_cv2, 6), round(min_cv3, 6)])
@@ -1894,7 +1893,7 @@ class Minima():
                                 min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
                                 min_cv2 = (((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))+cv2min
                                 min_cv3 = (((min_cv3_b+0.5)/self.res)*(cv3max-cv3min))+cv3min
-                                if self.minima == []:
+                                if len(self.minima) == 0:
                                     self.minima=np.array([round(bin_min, 6), int(min_cv1_b),\
                                                       int(min_cv2_b), int(min_cv3_b), round(min_cv1, 6), \
                                                       round(min_cv2, 6), round(min_cv3, 6)])
