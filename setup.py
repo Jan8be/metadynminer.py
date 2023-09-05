@@ -9,9 +9,9 @@ setup(
     author_email='Jan1.Beranek@vscht.cz',
     license='GPL-3.0',
     packages=['metadynminer'],
-    install_requires=['numpy>=1.23.5',
-                      'matplotlib>=3.7.1',
-                      'pandas>=1.5.3',
+    install_requires=['numpy>=1.21.6',
+                      'matplotlib>=3.5.3',
+                      'pandas>=1.3.5',
                       'pyvista>=0.38.5'
                       ],
 
