@@ -40,5 +40,7 @@ jobs:
       - name: Run tests on Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          pytest tests\*.py
-        
+          echo Running tests
+          for /r %i in (tests\*.py) do (
+            pytest "%i"
+          )
