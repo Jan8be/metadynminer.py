@@ -40,5 +40,7 @@ jobs:
       - name: Run tests on Windows
         if: startsWith(matrix.os, 'windows')
         run: |
-          pytest tests\test1df.py
-        
+          echo "Running tests"
+          Get-ChildItem -Path tests -Recurse -Filter *.py | ForEach-Object {
+            pytest $_.FullName
+          }
