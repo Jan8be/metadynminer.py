@@ -9,7 +9,6 @@ It is based on Metadynminer package for R programming language, but it is not ju
 All these functions can be easily customized with many parameters. You can learn more about that later in the documentation. There are also other predefined functions allowing you to for example to enhance your presentation with animations of your 3D FES or remove a CV from existing FES. 
 
 Installation:
-
 ```bash
 pip install metadynminer
 ```
@@ -18,14 +17,12 @@ or
 conda install -c jan8be metadynminer
 ```
 
-
 Sample code:
 
 Load your HILLS file: 
 ```python
 hillsfile = metadynminer.Hills(name="HILLS", periodic=[True,True])
 ```
-
 Compute the free energy surface using the fast Bias Sum Algorithm:
 ```python
 fes = metadynminer.Fes(hillsfile)
@@ -56,4 +53,3 @@ during the simulation. Convergence in the free energy profile suggests, that the
 fep = metadynminer.FEProfile(minima, hillsfile)
 fep.plot()
 ```
-
