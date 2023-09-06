@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<!-- saved from url=(0058)http://localhost:8080/metadynminer/#metadynminer.FEProfile -->
+<!-- saved from url=(0091)file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 <meta name="generator" content="pdoc 0.8.1">
 <title>metadynminer API documentation</title>
-<meta name="description" content="">
-<link href="./metadynminer_API_documentation_files/normalize.min.css" rel="stylesheet">
-<link href="./metadynminer_API_documentation_files/sanitize.min.css" rel="stylesheet">
-<link href="./metadynminer_API_documentation_files/github.min.css" rel="stylesheet">
+<meta name="description" content="Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations …">
+<link href="./metadynminer API documentation_files/normalize.min.css" rel="stylesheet">
+<link href="./metadynminer API documentation_files/sanitize.min.css" rel="stylesheet">
+<link href="./metadynminer API documentation_files/github.min.css" rel="stylesheet">
 <style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
 <style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
@@ -17,50 +17,110 @@
 <main>
 <article id="content">
 <header>
-<nav class="http-server-breadcrumbs">
-<a href="http://localhost:8080/">All packages</a>
-</nav>
 <h1 class="title">Package <code>metadynminer</code></h1>
 </header>
 <section id="section-intro">
+<p>Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. </p>
+<p>It is based on Metadynminer package for R programming language, but it is not just a port from R to Python, as it is updated and improved in many aspects. It supports HILLS files with one, two or three collective variables. </p>
+<p>All built-in functions can be easily customized with many parameters. You can learn more about that later in the documentation. There are also functions allowing you to enhance your presentation with animations of your 3D FES or remove a CV from existing FES. </p>
+<p>Installation:</p>
+<pre><code class="language-bash hljs">pip install metadynminer
+</code></pre>
+<p>or</p>
+<pre><code class="language-bash hljs">conda install -c jan8be metadynminer
+</code></pre>
+<p>Sample code:</p>
+<p>Load your HILLS file: </p>
+<pre><code class="language-python hljs">hillsfile = metadynminer.Hills(name=<span class="hljs-string">"HILLS"</span>, periodic=[<span class="hljs-keyword">True</span>,<span class="hljs-keyword">True</span>])
+</code></pre>
+<p>Compute the free energy surface using the fast Bias Sum Algorithm:</p>
+<pre><code class="language-python hljs">fes = metadynminer.Fes(hillsfile)
+</code></pre>
+<p>You can also use slower (but exact) algorithm to sum the hills and compute the free energy surface
+with the option original=True. This algorithm was checked and it gives the same result
+(to the machine level precision) as the PLUMED sum_hills function (for plumed v2.8.0).</p>
+<pre><code class="language-python hljs">fes2 = metadynminer.Fes(hillsfile, original=<span class="hljs-keyword">True</span>)
+</code></pre>
+<p>Visualize the free energy surface and save the picture to a file:</p>
+<pre><code class="language-python hljs">fes.plot(png_name=<span class="hljs-string">"fes.png"</span>)
+</code></pre>
+<p>Find local minima on the FES, print them and save FES with minima as a picture:</p>
+<pre><code class="language-python hljs">minima = metadynminer.Minima(fes)
+print(minima.minima)
+minima.plot(png_name=<span class="hljs-string">"fes.png"</span>)
+</code></pre>
+<p>You can also plot free energy profile to see, how the differences between each minima were evolving
+during the simulation. Convergence in the free energy profile suggests, that the resulting free energy surface converged to correct values.</p>
+<pre><code class="language-python hljs">fep = metadynminer.FEProfile(minima, hillsfile)
+fep.plot()
+</code></pre>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python hljs">name = <span class="hljs-string">"metadynminer"</span>
-<span class="hljs-string">"""
-Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. It is based on Metadynminer package for R programming language, but it is not just a port from R to Python, as it is updated and improved in many aspects. It supports HILLS files with one, two or three collective variables. 
+<pre><code class="python hljs"><span class="hljs-string">"""
+Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. 
 
-Short sample code:
+It is based on Metadynminer package for R programming language, but it is not just a port from R to Python, as it is updated and improved in many aspects. It supports HILLS files with one, two or three collective variables. 
 
+All built-in functions can be easily customized with many parameters. You can learn more about that later in the documentation. There are also functions allowing you to enhance your presentation with animations of your 3D FES or remove a CV from existing FES. 
+
+Installation:
+
+```bash
+pip install metadynminer
+```
+or
+```bash
+conda install -c jan8be metadynminer
+```
+
+
+Sample code:
+
+Load your HILLS file: 
 ```python
-# load your HILLS file
 hillsfile = metadynminer.Hills(name="HILLS", periodic=[True,True])
+```
 
-# compute the free energy surface using the fast Bias Sum Algorithm
+Compute the free energy surface using the fast Bias Sum Algorithm:
+```python
 fes = metadynminer.Fes(hillsfile)
+```
 
-# you can also use slower (but exact) algorithm to sum the hills and compute the free energy surface 
-# with the option original=True. This algorithm was checked and it gives the same result 
-# (to the machine level precision) as the PLUMED sum_hills function (for plumed v2.8.0)
+You can also use slower (but exact) algorithm to sum the hills and compute the free energy surface 
+with the option original=True. This algorithm was checked and it gives the same result 
+(to the machine level precision) as the PLUMED sum_hills function (for plumed v2.8.0).
+```python
 fes2 = metadynminer.Fes(hillsfile, original=True)
+```
 
-# visualize the free energy surface
-fes.plot()
+Visualize the free energy surface and save the picture to a file:
+```python
+fes.plot(png_name="fes.png")
+```
 
-# find local minima on the FES and print them
+Find local minima on the FES, print them and save FES with minima as a picture:
+```python
 minima = metadynminer.Minima(fes)
 print(minima.minima)
+minima.plot(png_name="fes.png")
+```
 
-# You can also plot free energy profile to see, how the differences between each minima were evolving 
-# during the simulation. 
+You can also plot free energy profile to see, how the differences between each minima were evolving 
+during the simulation. Convergence in the free energy profile suggests, that the resulting free energy surface converged to correct values.
+```python
 fep = metadynminer.FEProfile(minima, hillsfile)
 fep.plot()
 ```
-
-These functions can be easily customized with many parameters. You can learn more about that later in the documentation. 
-There are also other predefined functions allowing you for example to remove a CV from existing FES or enhance your presentation with animated 3D FES. 
 """</span>
+
+name = <span class="hljs-string">"metadynminer"</span>
+__version__ = <span class="hljs-string">"0.2.3"</span>
+__author__ = <span class="hljs-string">'Jan Beránek'</span>
+
+__pdoc__ = {}
+
 <span class="hljs-keyword">try</span>:
     <span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np
 <span class="hljs-keyword">except</span>:
@@ -74,7 +134,7 @@ There are also other predefined functions allowing you for example to remove a C
 <span class="hljs-keyword">try</span>:
     <span class="hljs-keyword">from</span> matplotlib <span class="hljs-keyword">import</span> colormaps <span class="hljs-keyword">as</span> cm
 <span class="hljs-keyword">except</span>:
-    print(<span class="hljs-string">"Error while loading matplotlib cm"</span>)
+    print(<span class="hljs-string">"Error while loading matplotlib colormaps"</span>)
     exit()
 <span class="hljs-keyword">try</span>:
     <span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd
@@ -93,7 +153,7 @@ There are also other predefined functions allowing you for example to remove a C
 
     Hills files are loaded with command:
     ```python
-    hillsfile = metadynminer.Hills()
+    hillsfile = metadynminer.Hills(name="HILLS", periodic=[False,False])
     ```
     
     optional parameters:
@@ -110,9 +170,8 @@ There are also other predefined functions allowing you for example to remove a C
     
     * cv1per, cv2per, cv3per (defaults = [-numpy.pi, numpy.pi]) = List of two numeric values defining the periodicity of given CV. 
                                         Has to be provided for each periodic CV.
-
-
     """</span>
+    
     <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, name=<span class="hljs-string">"HILLS"</span>, encoding=<span class="hljs-string">"utf8"</span>, ignoretime=True, periodic=[False, False], 
                  cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=None)</span>:</span>
         self.read(name, encoding, ignoretime, periodic, 
@@ -144,7 +203,7 @@ There are also other predefined functions allowing you for example to remove a C
                 self.cv1per = cv1per
                 self.cv2per = cv2per
             <span class="hljs-keyword">else</span>:
-                print(<span class="hljs-string">f"Argument 'periodic' has wrong number of parameters(<span class="hljs-subst">{len(periodic)}</span>)"</span>)
+                print(<span class="hljs-string">f"Error: argument 'periodic' has wrong number of parameters(<span class="hljs-subst">{len(periodic)}</span>)"</span>)
         <span class="hljs-keyword">elif</span> number_of_columns_head == <span class="hljs-number">9</span>:
             self.cvs = <span class="hljs-number">3</span>
             self.cv1_name = lines[<span class="hljs-number">0</span>].split()[<span class="hljs-number">3</span>]
@@ -268,6 +327,59 @@ There are also other predefined functions allowing you for example to remove a C
     
     <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_heights</span><span class="hljs-params">(self)</span>:</span>
         <span class="hljs-keyword">return</span>(self.heights)
+    
+    __pdoc__[<span class="hljs-string">"Hills.get_cv1"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv2"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv3"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv1per"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv2per"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv3per"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv1_name"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv2_name"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv3_name"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_periodic"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_hills"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_number_of_cvs"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_sigma1"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_sigma2"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_sigma3"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_heights"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.read"</span>] = <span class="hljs-keyword">False</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot_heights</span><span class="hljs-params">(self, png_name=None, energy_unit=<span class="hljs-string">"kJ/mol"</span>, xlabel=None, ylabel=None, label_size=<span class="hljs-number">12</span>, image_size=[<span class="hljs-number">10</span>,<span class="hljs-number">7</span>])</span>:</span>
+        <span class="hljs-string">"""
+        Function used to visualize heights of the hills that were added during the simulation. 
+        
+        ```python
+        hillsfile.plot_heights(png_name="picture.png")
+        ```
+        
+        Parameters:
+        
+        * png_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+        
+        * energy_unit (default="kJ/mol") = String, used in description of the y axis
+        
+        * xlabel, ylabel = Strings, if provided, they will be used as labels for the graphs
+        
+        * labelsize (default = 12) = size of text in labels
+        
+        * image_size (default = [10,7]) = List of the width and height of the picture
+        
+        """</span>
+        plt.figure(figsize=(image_size[<span class="hljs-number">0</span>],image_size[<span class="hljs-number">1</span>]))
+        plt.plot(range(len(self.heights)), self.heights)
+        <span class="hljs-keyword">if</span> xlabel == <span class="hljs-keyword">None</span>:
+            plt.xlabel(<span class="hljs-string">f'time (ps)'</span>, size=label_size)
+        <span class="hljs-keyword">else</span>:
+            plt.xlabel(xlabel, size=label_size)
+        <span class="hljs-keyword">if</span> ylabel == <span class="hljs-keyword">None</span>:
+            plt.ylabel(<span class="hljs-string">f'free energy (<span class="hljs-subst">{energy_unit}</span>)'</span>, size=label_size)
+        <span class="hljs-keyword">else</span>:
+            plt.ylabel(ylabel, size=label_size)
+            
+        <span class="hljs-keyword">if</span> png_name != <span class="hljs-keyword">None</span>:
+            plt.savefig(png_name)
 
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Fes</span>:</span> 
     <span class="hljs-string">"""
@@ -289,7 +401,13 @@ There are also other predefined functions allowing you for example to remove a C
                                         
     * cv1range, cv2range, cv3range = lists of two numbers, defining lower and upper bound of the respective CV (in the units of the CVs)
     """</span>
-    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, hills=None, resolution=<span class="hljs-number">256</span>, original=False, calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, 
+    
+    __pdoc__[<span class="hljs-string">"Fes.makefes"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Fes.makefes2"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Fes.set_fes"</span>] = <span class="hljs-keyword">False</span>
+    
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, hills=None, resolution=<span class="hljs-number">256</span>, original=False, \
+                 calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, \
                  time_min=<span class="hljs-number">0</span>, time_max=None)</span>:</span>
         self.res = resolution
         self.cv1range = cv1range
@@ -453,7 +571,6 @@ There are also other predefined functions allowing you for example to remove a C
             fes = fes-np.min(fes)
             self.fes = np.array(fes)
             
-            
         <span class="hljs-keyword">elif</span> self.cvs == <span class="hljs-number">2</span>:
             <span class="hljs-keyword">if</span> cv1range == <span class="hljs-keyword">None</span>:
                 <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>]:
@@ -607,7 +724,7 @@ There are also other predefined functions allowing you for example to remove a C
                 self.cv2range = cv2range
             cv2_fes_range = cv2max-cv2min
             
-            <span class="hljs-keyword">if</span> cv1range == <span class="hljs-keyword">None</span>:
+            <span class="hljs-keyword">if</span> cv3range == <span class="hljs-keyword">None</span>:
                 <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">2</span>]:
                     cv3min = self.cv3per[<span class="hljs-number">0</span>]
                     cv3max = self.cv3per[<span class="hljs-number">1</span>]
@@ -1026,7 +1143,7 @@ There are also other predefined functions allowing you for example to remove a C
         Function used to visualize FES, based on Matplotlib and PyVista. 
         
         ```python
-        fes.plot()
+        fes.plot(png_name="fes.png")
         ```
         
         Parameters:
@@ -1157,8 +1274,9 @@ There are also other predefined functions allowing you for example to remove a C
             p.add_mesh(contours, scalars=fescolors, opacity=opacity, cmap=cmap, show_scalar_bar=<span class="hljs-keyword">False</span>, interpolate_before_map=<span class="hljs-keyword">True</span>)
             p.show_grid(xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
             p.show()
+            
         <span class="hljs-keyword">if</span> png_name != <span class="hljs-keyword">None</span>:
-            plt.savefig(name)
+            plt.savefig(png_name)
         
     <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">set_fes</span><span class="hljs-params">(self, fes)</span>:</span>
         self.fes = fes
@@ -1176,8 +1294,7 @@ There are also other predefined functions allowing you for example to remove a C
         fes.surface_plot()
         ```
         
-        There are future plans to implement this function using PyVista. 
-        Hovewer, in current version of PyVista (0.38.5) there is an issue that labels on the 3rd axis for free energy are showing wrong values. 
+        There are future plans to implement this function using the PyVista library.
         """</span>
         <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">2</span>:
             <span class="hljs-keyword">if</span> self.cv1range==<span class="hljs-keyword">None</span>:
@@ -1247,15 +1364,13 @@ There are also other predefined functions allowing you for example to remove a C
         This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities 
         are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. 
         
-        Interactivity was working in jupyter notebook/lab with "%matplotlib widget".
-        
         Parameters:
         
         * CV = integer, the CV to be removed
         
-        * energy_unit (default="kJ/mol") = has to be either "kJ/mol" or "kcal/mol"
+        * energy_unit (default="kJ/mol") = has to be either "kJ/mol" or "kcal/mol". Make sure to suply the correct energy unit, otherwise you will get wrong FES as a result. 
         
-        * temp (default=300) = temperature of the simulation in Kelvins.
+        * temp (default=300.0) = temperature of the simulation in Kelvins.
         """</span>
         CV = int(float(CV))
         print(<span class="hljs-string">f"Removing CV <span class="hljs-subst">{CV}</span>."</span>)
@@ -1437,12 +1552,12 @@ There are also other predefined functions allowing you for example to remove a C
         Function that generates animation of 3D FES showing different isosurfaces.
         
         ```python
-        fes.make_gif()
+        fes.make_gif(gif_name="FES.gif")
         ```
         
         Parameters:
         
-        * gif_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+        * gif_name (default="FES.gif") = String. Name of the gif of FES that will be saved in the current working directory.
         
         * cmap (default = "jet") = Matplotlib colormap used to color the 3D FES
         
@@ -1492,8 +1607,6 @@ There are also other predefined functions allowing you for example to remove a C
             surface = grid.contour(values[:<span class="hljs-number">1</span>])
             surfaces = [grid.contour([v]) <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> values]
             surface = surfaces[<span class="hljs-number">0</span>].copy()
-            <span class="hljs-keyword">if</span> gif_name == <span class="hljs-keyword">None</span>:
-                gif_name = <span class="hljs-string">"FES.gif"</span>
             
             pv.set_plot_theme(<span class="hljs-string">'document'</span>)
             plotter = pv.Plotter(off_screen=<span class="hljs-keyword">True</span>)
@@ -1559,8 +1672,8 @@ There are also other predefined functions allowing you for example to remove a C
     
     * nbins (default = 8) = number of bins to divide the FES
     """</span>
+    
     <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, fes, nbins = <span class="hljs-number">8</span>)</span>:</span>
-        super().__init__(fes.hills, calculate_new_fes=<span class="hljs-keyword">False</span>)
         self.fes = fes.fes
         self.periodic = fes.periodic
         self.cvs = fes.cvs
@@ -1570,14 +1683,17 @@ There are also other predefined functions allowing you for example to remove a C
             self.cv1_name = fes.cv1_name
             self.cv1min = fes.cv1min
             self.cv1max = fes.cv1max
+            self.cv1per = fes.cv1per
         <span class="hljs-keyword">if</span> self.cvs &gt;= <span class="hljs-number">2</span>:
             self.cv2min = fes.cv2min
             self.cv2max = fes.cv2max
             self.cv2_name = fes.cv2_name
+            self.cv2per = fes.cv2per
         <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">3</span>:
             self.cv3min = fes.cv3min
             self.cv3max = fes.cv3max
             self.cv3_name = fes.cv3_name
+            self.cv3per = fes.cv3per
         
         self.findminima(nbins=nbins)
 
@@ -1621,7 +1737,6 @@ There are also other predefined functions allowing you for example to remove a C
         self.minima = []
         <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">1</span>:
             <span class="hljs-keyword">for</span> bin1 <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>,nbins):
-                
                 fes_slice = self.fes[bin1*bin_size:(bin1+<span class="hljs-number">1</span>)*bin_size]
                 bin_min = np.min(fes_slice)
                 argmin = np.argmin(fes_slice)
@@ -1631,10 +1746,10 @@ There are also other predefined functions allowing you for example to remove a C
                 min_cv1_b = int(bin_min_arg_cv1+bin1*bin_size)
                 <span class="hljs-keyword">if</span> (bin_min_arg_cv1 &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> bin_min_arg_cv1&lt;(bin_size<span class="hljs-number">-1</span>)):
                     min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
-                    <span class="hljs-keyword">if</span> self.minima == []:
-                        self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])
+                    <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
+                        self.minima = np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])
                     <span class="hljs-keyword">else</span>:
-                        self.minima=np.vstack((self.minima, np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])))
+                        self.minima = np.vstack((self.minima, np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])))
                 <span class="hljs-keyword">else</span>:
                     around = []
                     min_cv1_b_low = min_cv1_b - <span class="hljs-number">1</span>
@@ -1660,7 +1775,7 @@ There are also other predefined functions allowing you for example to remove a C
                     
                     <span class="hljs-keyword">if</span> bin_min &lt; np.min(around):
                         min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
-                        <span class="hljs-keyword">if</span> self.minima == []:
+                        <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                             self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])
                         <span class="hljs-keyword">else</span>:
                             self.minima=np.vstack((self.minima, np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])))
@@ -1681,7 +1796,7 @@ There are also other predefined functions allowing you for example to remove a C
                                     <span class="hljs-keyword">and</span> (bin_min_arg[<span class="hljs-number">1</span>] &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> bin_min_arg[<span class="hljs-number">1</span>]&lt;(bin_size<span class="hljs-number">-1</span>)):
                         min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
                         min_cv2 = (((min_cv2_b+<span class="hljs-number">0.5</span>)/self.res)*(cv2max-cv2min))+cv2min
-                        <span class="hljs-keyword">if</span> self.minima == []:
+                        <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                             self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b),\
                                                   int(min_cv2_b), round(min_cv1, <span class="hljs-number">6</span>), round(min_cv2, <span class="hljs-number">6</span>)])
                         <span class="hljs-keyword">else</span>:
@@ -1738,7 +1853,7 @@ There are also other predefined functions allowing you for example to remove a C
                         <span class="hljs-keyword">if</span> bin_min &lt; np.min(around):
                             min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
                             min_cv2 = (((min_cv2_b+<span class="hljs-number">0.5</span>)/self.res)*(cv2max-cv2min))+cv2min
-                            <span class="hljs-keyword">if</span> self.minima == []:
+                            <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                                 self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), int(min_cv2_b), \
                                                       round(min_cv1, <span class="hljs-number">6</span>), round(min_cv2, <span class="hljs-number">6</span>)])
                             <span class="hljs-keyword">else</span>:
@@ -1765,7 +1880,7 @@ There are also other predefined functions allowing you for example to remove a C
                             min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
                             min_cv2 = (((min_cv2_b+<span class="hljs-number">0.5</span>)/self.res)*(cv2max-cv2min))+cv2min
                             min_cv3 = (((min_cv3_b+<span class="hljs-number">0.5</span>)/self.res)*(cv3max-cv3min))+cv3min
-                            <span class="hljs-keyword">if</span> self.minima == []:
+                            <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                                 self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b),\
                                                       int(min_cv2_b), int(min_cv3_b), round(min_cv1, <span class="hljs-number">6</span>), \
                                                       round(min_cv2, <span class="hljs-number">6</span>), round(min_cv3, <span class="hljs-number">6</span>)])
@@ -1884,7 +1999,7 @@ There are also other predefined functions allowing you for example to remove a C
                                 min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
                                 min_cv2 = (((min_cv2_b+<span class="hljs-number">0.5</span>)/self.res)*(cv2max-cv2min))+cv2min
                                 min_cv3 = (((min_cv3_b+<span class="hljs-number">0.5</span>)/self.res)*(cv3max-cv3min))+cv3min
-                                <span class="hljs-keyword">if</span> self.minima == []:
+                                <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                                     self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b),\
                                                       int(min_cv2_b), int(min_cv3_b), round(min_cv1, <span class="hljs-number">6</span>), \
                                                       round(min_cv2, <span class="hljs-number">6</span>), round(min_cv3, <span class="hljs-number">6</span>)])
@@ -1912,7 +2027,11 @@ There are also other predefined functions allowing you for example to remove a C
             self.minima = np.append(<span class="hljs-string">"A"</span>, self.minima)
         
         <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">1</span>:
-            self.minima = pd.DataFrame(self.minima, columns = [<span class="hljs-string">"Minimum"</span>, <span class="hljs-string">"free energy"</span>, <span class="hljs-string">"CV1bin"</span>, <span class="hljs-string">"CV1 - "</span>+self.cv1_name])
+            <span class="hljs-keyword">if</span> len(self.minima.shape)&gt;<span class="hljs-number">1</span>:
+                self.minima = pd.DataFrame(np.array(self.minima), columns = [<span class="hljs-string">"Minimum"</span>, <span class="hljs-string">"free energy"</span>, <span class="hljs-string">"CV1bin"</span>, <span class="hljs-string">"CV1 - "</span>+self.cv1_name])
+            <span class="hljs-keyword">elif</span> len(self.minima.shape) == <span class="hljs-number">1</span>:
+                self.minima = pd.DataFrame([self.minima], columns = [<span class="hljs-string">"Minimum"</span>, <span class="hljs-string">"free energy"</span>, <span class="hljs-string">"CV1bin"</span>, <span class="hljs-string">"CV1 - "</span>+self.cv1_name])
+                
         <span class="hljs-keyword">elif</span> self.cvs == <span class="hljs-number">2</span>:
             <span class="hljs-keyword">if</span> len(self.minima.shape)&gt;<span class="hljs-number">1</span>:
                 self.minima = pd.DataFrame(np.array(self.minima), columns = [<span class="hljs-string">"Minimum"</span>, <span class="hljs-string">"free energy"</span>, <span class="hljs-string">"CV1bin"</span>, <span class="hljs-string">"CV2bin"</span>, 
@@ -1937,7 +2056,7 @@ There are also other predefined functions allowing you for example to remove a C
         with the positions of local minima shown as letters on the graph.
         
         ```python
-        minima.plot()
+        minima.plot(png_name="minima.png")
         ```
         
         Parameters:
@@ -2136,7 +2255,30 @@ There are also other predefined functions allowing you for example to remove a C
                  xlabel=None, ylabel=None, zlabel=None, label_size=<span class="hljs-number">12</span>, image_size=[<span class="hljs-number">10</span>,<span class="hljs-number">7</span>], 
                   opacity=<span class="hljs-number">0.2</span>, levels=None, show_points=True, point_size=<span class="hljs-number">4.0</span>, frames=<span class="hljs-number">64</span>)</span>:</span>
         <span class="hljs-string">"""
-        Equvivalent to Fes.make_gif()
+        Function that generates animation of 3D FES showing different isosurfaces.
+        
+        ```python
+        fes.make_gif(gif_name="FES.gif")
+        ```
+        
+        Parameters:
+        
+        * gif_name (default="minima.gif") = String. Name of the gif that will be saved in the working directory.
+        
+        * cmap (default = "jet") = Matplotlib colormap used to color the 3D FES
+        
+        * xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graph
+        
+        * labelsize (default = 12) = size of text in labels
+        
+        * image_size (default = [10,7]) = List of the width and height of the picture
+        
+        * opacity (default = 0.2) = number between 0 and 1, is the opacity of isosurfaces of 3D FES
+        
+        * levels = Here you can specify list of free energy values for isosurfaces on 3D FES. 
+                If not provided, default values from contours parameters will be used instead. 
+        
+        * frames (default = 64) = Number of frames the animation will be made of. 
         """</span>
         <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">3</span>:
             values = np.linspace(np.min(self.fes)+<span class="hljs-number">1</span>, np.max(self.fes), num=frames)
@@ -2149,8 +2291,6 @@ There are also other predefined functions allowing you for example to remove a C
             surface = grid.contour(values[:<span class="hljs-number">1</span>])
             surfaces = [grid.contour([v]) <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> values]
             surface = surfaces[<span class="hljs-number">0</span>].copy()
-            <span class="hljs-keyword">if</span> gif_name == <span class="hljs-keyword">None</span>:
-                gif_name = <span class="hljs-string">"FES.gif"</span>
             
             pv.set_plot_theme(<span class="hljs-string">'document'</span>)
             plotter = pv.Plotter(off_screen=<span class="hljs-keyword">True</span>)
@@ -2200,7 +2340,7 @@ There are also other predefined functions allowing you for example to remove a C
     Free energy profile is a visualization of differences between local 
     minima points during metadynamics simulation. If the values seem 
     to converge to a mean value of the difference, it suggests, 
-    but not fully proof, that the FES did converge to the correct shape.
+    but not fully prooves, that the obtained FES did converge to the correct shape.
     
     Command:
     ```python
@@ -2214,6 +2354,7 @@ There are also other predefined functions allowing you for example to remove a C
     * hillsfile = metadynminer.Hills object
     
     """</span>
+    
     <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, minima, hills)</span>:</span>
         self.cvs = minima.cvs
         self.res = minima.res
@@ -2447,12 +2588,12 @@ There are also other predefined functions allowing you for example to remove a C
         <span class="hljs-keyword">else</span>:
             print(<span class="hljs-string">"Fes object doesn't have supported number of CVs."</span>)
     
-    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot</span><span class="hljs-params">(self, name=<span class="hljs-string">"FEprofile.png"</span>,image_size=[<span class="hljs-number">10</span>,<span class="hljs-number">7</span>], xlabel=None, ylabel=None, label_size=<span class="hljs-number">12</span>, cmap=<span class="hljs-string">"jet"</span>)</span>:</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot</span><span class="hljs-params">(self, png_name=None, image_size=[<span class="hljs-number">10</span>,<span class="hljs-number">7</span>], xlabel=None, ylabel=None, label_size=<span class="hljs-number">12</span>, cmap=<span class="hljs-string">"jet"</span>)</span>:</span>
         <span class="hljs-string">"""
-        Visualization function for FEP. 
+        Visualization function for free energy profiles. 
         
         ```python
-        fep.plot()
+        fep.plot(png_name="FEProfile.png")
         ```
         
         
@@ -2471,6 +2612,7 @@ There are also other predefined functions allowing you for example to remove a C
         
         * cmap (default="jet") = matplotlib colormap used for coloring the line of the minima
         """</span>
+        
         plt.figure(figsize=(image_size[<span class="hljs-number">0</span>],image_size[<span class="hljs-number">1</span>]))
         
         cmap=cm.get_cmap(cmap)
@@ -2489,45 +2631,13 @@ There are also other predefined functions allowing you for example to remove a C
             plt.ylabel(<span class="hljs-string">'free energy difference (kJ/mol)'</span>, size=label_size)
         <span class="hljs-keyword">else</span>:
             plt.ylabel(ylabel, size=label_size)
-        plt.savefig(name)</code></pre>
+        <span class="hljs-keyword">if</span> png_name != <span class="hljs-keyword">None</span>:
+            plt.savefig(png_name)</code></pre>
 </details>
 </section>
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-variables">Global variables</h2>
-<dl>
-<dt id="metadynminer.name"><code class="name">var <span class="ident">name</span></code></dt>
-<dd>
-<div class="desc"><p>Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. It is based on Metadynminer package for R programming language, but it is not just a port from R to Python, as it is updated and improved in many aspects. It supports HILLS files with one, two or three collective variables. </p>
-<p>Short sample code:</p>
-<pre><code class="language-python hljs"><span class="hljs-comment"># load your HILLS file</span>
-hillsfile = metadynminer.Hills(name=<span class="hljs-string">"HILLS"</span>, periodic=[<span class="hljs-keyword">True</span>,<span class="hljs-keyword">True</span>])
-
-<span class="hljs-comment"># compute the free energy surface using the fast Bias Sum Algorithm</span>
-fes = metadynminer.Fes(hillsfile)
-
-<span class="hljs-comment"># you can also use slower (but exact) algorithm to sum the hills and compute the free energy surface </span>
-<span class="hljs-comment"># with the option original=True. This algorithm was checked and it gives the same result </span>
-<span class="hljs-comment"># (to the machine level precision) as the PLUMED sum_hills function (for plumed v2.8.0)</span>
-fes2 = metadynminer.Fes(hillsfile, original=<span class="hljs-keyword">True</span>)
-
-<span class="hljs-comment"># visualize the free energy surface</span>
-fes.plot()
-
-<span class="hljs-comment"># find local minima on the FES and print them</span>
-minima = metadynminer.Minima(fes)
-print(minima.minima)
-
-<span class="hljs-comment"># You can also plot free energy profile to see, how the differences between each minima were evolving </span>
-<span class="hljs-comment"># during the simulation. </span>
-fep = metadynminer.FEProfile(minima, hillsfile)
-fep.plot()
-</code></pre>
-<p>These functions can be easily customized with many parameters. You can learn more about that later in the documentation.
-There are also other predefined functions allowing you for example to remove a CV from existing FES or enhance your presentation with animated 3D FES.</p></div>
-</dd>
-</dl>
 </section>
 <section>
 </section>
@@ -2542,7 +2652,7 @@ There are also other predefined functions allowing you for example to remove a C
 <div class="desc"><p>Free energy profile is a visualization of differences between local
 minima points during metadynamics simulation. If the values seem
 to converge to a mean value of the difference, it suggests,
-but not fully proof, that the FES did converge to the correct shape.</p>
+but not fully prooves, that the obtained FES did converge to the correct shape.</p>
 <p>Command:</p>
 <pre><code class="language-python hljs">fep = metadynminer.FEProfile(minima, hillsfile)
 </code></pre>
@@ -2564,7 +2674,7 @@ but not fully proof, that the FES did converge to the correct shape.</p>
     Free energy profile is a visualization of differences between local 
     minima points during metadynamics simulation. If the values seem 
     to converge to a mean value of the difference, it suggests, 
-    but not fully proof, that the FES did converge to the correct shape.
+    but not fully prooves, that the obtained FES did converge to the correct shape.
     
     Command:
     ```python
@@ -2578,6 +2688,7 @@ but not fully proof, that the FES did converge to the correct shape.</p>
     * hillsfile = metadynminer.Hills object
     
     """</span>
+    
     <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, minima, hills)</span>:</span>
         self.cvs = minima.cvs
         self.res = minima.res
@@ -2811,12 +2922,12 @@ but not fully proof, that the FES did converge to the correct shape.</p>
         <span class="hljs-keyword">else</span>:
             print(<span class="hljs-string">"Fes object doesn't have supported number of CVs."</span>)
     
-    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot</span><span class="hljs-params">(self, name=<span class="hljs-string">"FEprofile.png"</span>,image_size=[<span class="hljs-number">10</span>,<span class="hljs-number">7</span>], xlabel=None, ylabel=None, label_size=<span class="hljs-number">12</span>, cmap=<span class="hljs-string">"jet"</span>)</span>:</span>
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot</span><span class="hljs-params">(self, png_name=None, image_size=[<span class="hljs-number">10</span>,<span class="hljs-number">7</span>], xlabel=None, ylabel=None, label_size=<span class="hljs-number">12</span>, cmap=<span class="hljs-string">"jet"</span>)</span>:</span>
         <span class="hljs-string">"""
-        Visualization function for FEP. 
+        Visualization function for free energy profiles. 
         
         ```python
-        fep.plot()
+        fep.plot(png_name="FEProfile.png")
         ```
         
         
@@ -2835,6 +2946,7 @@ but not fully proof, that the FES did converge to the correct shape.</p>
         
         * cmap (default="jet") = matplotlib colormap used for coloring the line of the minima
         """</span>
+        
         plt.figure(figsize=(image_size[<span class="hljs-number">0</span>],image_size[<span class="hljs-number">1</span>]))
         
         cmap=cm.get_cmap(cmap)
@@ -2853,7 +2965,8 @@ but not fully proof, that the FES did converge to the correct shape.</p>
             plt.ylabel(<span class="hljs-string">'free energy difference (kJ/mol)'</span>, size=label_size)
         <span class="hljs-keyword">else</span>:
             plt.ylabel(ylabel, size=label_size)
-        plt.savefig(name)</code></pre>
+        <span class="hljs-keyword">if</span> png_name != <span class="hljs-keyword">None</span>:
+            plt.savefig(png_name)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -3066,11 +3179,11 @@ but not fully proof, that the FES did converge to the correct shape.</p>
 </details>
 </dd>
 <dt id="metadynminer.FEProfile.plot"><code class="name flex">
-<span>def <span class="ident">plot</span></span>(<span>self, name='FEprofile.png', image_size=[10, 7], xlabel=None, ylabel=None, label_size=12, cmap='jet')</span>
+<span>def <span class="ident">plot</span></span>(<span>self, png_name=None, image_size=[10, 7], xlabel=None, ylabel=None, label_size=12, cmap='jet')</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Visualization function for FEP. </p>
-<pre><code class="language-python hljs">fep.plot()
+<div class="desc"><p>Visualization function for free energy profiles. </p>
+<pre><code class="language-python hljs">fep.plot(png_name=<span class="hljs-string">"FEProfile.png"</span>)
 </code></pre>
 <h2 id="parameters">Parameters</h2>
 <ul>
@@ -3097,12 +3210,12 @@ but not fully proof, that the FES did converge to the correct shape.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot</span><span class="hljs-params">(self, name=<span class="hljs-string">"FEprofile.png"</span>,image_size=[<span class="hljs-number">10</span>,<span class="hljs-number">7</span>], xlabel=None, ylabel=None, label_size=<span class="hljs-number">12</span>, cmap=<span class="hljs-string">"jet"</span>)</span>:</span>
+<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot</span><span class="hljs-params">(self, png_name=None, image_size=[<span class="hljs-number">10</span>,<span class="hljs-number">7</span>], xlabel=None, ylabel=None, label_size=<span class="hljs-number">12</span>, cmap=<span class="hljs-string">"jet"</span>)</span>:</span>
     <span class="hljs-string">"""
-    Visualization function for FEP. 
+    Visualization function for free energy profiles. 
     
     ```python
-    fep.plot()
+    fep.plot(png_name="FEProfile.png")
     ```
     
     
@@ -3121,6 +3234,7 @@ but not fully proof, that the FES did converge to the correct shape.</p>
     
     * cmap (default="jet") = matplotlib colormap used for coloring the line of the minima
     """</span>
+    
     plt.figure(figsize=(image_size[<span class="hljs-number">0</span>],image_size[<span class="hljs-number">1</span>]))
     
     cmap=cm.get_cmap(cmap)
@@ -3139,7 +3253,8 @@ but not fully proof, that the FES did converge to the correct shape.</p>
         plt.ylabel(<span class="hljs-string">'free energy difference (kJ/mol)'</span>, size=label_size)
     <span class="hljs-keyword">else</span>:
         plt.ylabel(ylabel, size=label_size)
-    plt.savefig(name)</code></pre>
+    <span class="hljs-keyword">if</span> png_name != <span class="hljs-keyword">None</span>:
+        plt.savefig(png_name)</code></pre>
 </details>
 </dd>
 </dl>
@@ -3195,7 +3310,13 @@ with PLUMED sum_hills function</p>
                                         
     * cv1range, cv2range, cv3range = lists of two numbers, defining lower and upper bound of the respective CV (in the units of the CVs)
     """</span>
-    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, hills=None, resolution=<span class="hljs-number">256</span>, original=False, calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, 
+    
+    __pdoc__[<span class="hljs-string">"Fes.makefes"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Fes.makefes2"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Fes.set_fes"</span>] = <span class="hljs-keyword">False</span>
+    
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, hills=None, resolution=<span class="hljs-number">256</span>, original=False, \
+                 calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, \
                  time_min=<span class="hljs-number">0</span>, time_max=None)</span>:</span>
         self.res = resolution
         self.cv1range = cv1range
@@ -3359,7 +3480,6 @@ with PLUMED sum_hills function</p>
             fes = fes-np.min(fes)
             self.fes = np.array(fes)
             
-            
         <span class="hljs-keyword">elif</span> self.cvs == <span class="hljs-number">2</span>:
             <span class="hljs-keyword">if</span> cv1range == <span class="hljs-keyword">None</span>:
                 <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>]:
@@ -3513,7 +3633,7 @@ with PLUMED sum_hills function</p>
                 self.cv2range = cv2range
             cv2_fes_range = cv2max-cv2min
             
-            <span class="hljs-keyword">if</span> cv1range == <span class="hljs-keyword">None</span>:
+            <span class="hljs-keyword">if</span> cv3range == <span class="hljs-keyword">None</span>:
                 <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">2</span>]:
                     cv3min = self.cv3per[<span class="hljs-number">0</span>]
                     cv3max = self.cv3per[<span class="hljs-number">1</span>]
@@ -3932,7 +4052,7 @@ with PLUMED sum_hills function</p>
         Function used to visualize FES, based on Matplotlib and PyVista. 
         
         ```python
-        fes.plot()
+        fes.plot(png_name="fes.png")
         ```
         
         Parameters:
@@ -4063,8 +4183,9 @@ with PLUMED sum_hills function</p>
             p.add_mesh(contours, scalars=fescolors, opacity=opacity, cmap=cmap, show_scalar_bar=<span class="hljs-keyword">False</span>, interpolate_before_map=<span class="hljs-keyword">True</span>)
             p.show_grid(xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
             p.show()
+            
         <span class="hljs-keyword">if</span> png_name != <span class="hljs-keyword">None</span>:
-            plt.savefig(name)
+            plt.savefig(png_name)
         
     <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">set_fes</span><span class="hljs-params">(self, fes)</span>:</span>
         self.fes = fes
@@ -4082,8 +4203,7 @@ with PLUMED sum_hills function</p>
         fes.surface_plot()
         ```
         
-        There are future plans to implement this function using PyVista. 
-        Hovewer, in current version of PyVista (0.38.5) there is an issue that labels on the 3rd axis for free energy are showing wrong values. 
+        There are future plans to implement this function using the PyVista library.
         """</span>
         <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">2</span>:
             <span class="hljs-keyword">if</span> self.cv1range==<span class="hljs-keyword">None</span>:
@@ -4153,15 +4273,13 @@ with PLUMED sum_hills function</p>
         This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities 
         are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. 
         
-        Interactivity was working in jupyter notebook/lab with "%matplotlib widget".
-        
         Parameters:
         
         * CV = integer, the CV to be removed
         
-        * energy_unit (default="kJ/mol") = has to be either "kJ/mol" or "kcal/mol"
+        * energy_unit (default="kJ/mol") = has to be either "kJ/mol" or "kcal/mol". Make sure to suply the correct energy unit, otherwise you will get wrong FES as a result. 
         
-        * temp (default=300) = temperature of the simulation in Kelvins.
+        * temp (default=300.0) = temperature of the simulation in Kelvins.
         """</span>
         CV = int(float(CV))
         print(<span class="hljs-string">f"Removing CV <span class="hljs-subst">{CV}</span>."</span>)
@@ -4343,12 +4461,12 @@ with PLUMED sum_hills function</p>
         Function that generates animation of 3D FES showing different isosurfaces.
         
         ```python
-        fes.make_gif()
+        fes.make_gif(gif_name="FES.gif")
         ```
         
         Parameters:
         
-        * gif_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+        * gif_name (default="FES.gif") = String. Name of the gif of FES that will be saved in the current working directory.
         
         * cmap (default = "jet") = Matplotlib colormap used to color the 3D FES
         
@@ -4398,8 +4516,6 @@ with PLUMED sum_hills function</p>
             surface = grid.contour(values[:<span class="hljs-number">1</span>])
             surfaces = [grid.contour([v]) <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> values]
             surface = surfaces[<span class="hljs-number">0</span>].copy()
-            <span class="hljs-keyword">if</span> gif_name == <span class="hljs-keyword">None</span>:
-                gif_name = <span class="hljs-string">"FES.gif"</span>
             
             pv.set_plot_theme(<span class="hljs-string">'document'</span>)
             plotter = pv.Plotter(off_screen=<span class="hljs-keyword">True</span>)
@@ -4443,12 +4559,12 @@ with PLUMED sum_hills function</p>
 </code></dt>
 <dd>
 <div class="desc"><p>Function that generates animation of 3D FES showing different isosurfaces.</p>
-<pre><code class="language-python hljs">fes.make_gif()
+<pre><code class="language-python hljs">fes.make_gif(gif_name=<span class="hljs-string">"FES.gif"</span>)
 </code></pre>
 <p>Parameters:</p>
 <ul>
 <li>
-<p>gif_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.</p>
+<p>gif_name (default="FES.gif") = String. Name of the gif of FES that will be saved in the current working directory.</p>
 </li>
 <li>
 <p>cmap (default = "jet") = Matplotlib colormap used to color the 3D FES</p>
@@ -4484,12 +4600,12 @@ If not provided, default values from contours parameters will be used instead. <
     Function that generates animation of 3D FES showing different isosurfaces.
     
     ```python
-    fes.make_gif()
+    fes.make_gif(gif_name="FES.gif")
     ```
     
     Parameters:
     
-    * gif_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+    * gif_name (default="FES.gif") = String. Name of the gif of FES that will be saved in the current working directory.
     
     * cmap (default = "jet") = Matplotlib colormap used to color the 3D FES
     
@@ -4539,8 +4655,6 @@ If not provided, default values from contours parameters will be used instead. <
         surface = grid.contour(values[:<span class="hljs-number">1</span>])
         surfaces = [grid.contour([v]) <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> values]
         surface = surfaces[<span class="hljs-number">0</span>].copy()
-        <span class="hljs-keyword">if</span> gif_name == <span class="hljs-keyword">None</span>:
-            gif_name = <span class="hljs-string">"FES.gif"</span>
         
         pv.set_plot_theme(<span class="hljs-string">'document'</span>)
         plotter = pv.Plotter(off_screen=<span class="hljs-keyword">True</span>)
@@ -4578,675 +4692,12 @@ If not provided, default values from contours parameters will be used instead. <
         print(<span class="hljs-string">"Error: gif_plot is only available for FES with 3 CVs."</span>)     </code></pre>
 </details>
 </dd>
-<dt id="metadynminer.Fes.makefes"><code class="name flex">
-<span>def <span class="ident">makefes</span></span>(<span>self, resolution, cv1range, cv2range, cv3range, time_min, time_max)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Function used internally for summing hills in Hills object with the fast Bias Sum Algorithm.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">makefes</span><span class="hljs-params">(self, resolution, cv1range, cv2range, cv3range, time_min, time_max)</span>:</span>
-    <span class="hljs-string">"""
-    Function used internally for summing hills in Hills object with the fast Bias Sum Algorithm. 
-    """</span>
-    self.res = resolution
-    <span class="hljs-comment">#if self.res % 2 == 0:</span>
-    <span class="hljs-comment">#    self.res += 1</span>
-            
-    <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">1</span>:
-        <span class="hljs-keyword">if</span> cv1range == <span class="hljs-keyword">None</span>:
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>]:
-                cv1min = self.cv1per[<span class="hljs-number">0</span>]
-                cv1max = self.cv1per[<span class="hljs-number">1</span>]
-            <span class="hljs-keyword">else</span>:
-                cv1min = self.cv1min
-                cv1max = self.cv1max
-                cv1range = self.cv1max-self.cv1min
-                cv1min -= cv1range*<span class="hljs-number">0.15</span>          
-                cv1max += cv1range*<span class="hljs-number">0.15</span>
-        <span class="hljs-keyword">else</span>:
-            cv1min = cv1range[<span class="hljs-number">0</span>]
-            cv1max = cv1range[<span class="hljs-number">1</span>]
-            self.cv1range = cv1range
-        cv1_fes_range = cv1max-cv1min
-            
-        cv1bin = np.ceil((self.cv1-cv1min)*(self.res)/(cv1_fes_range))
-        cv1bin = cv1bin.astype(int)
-        s1res = (self.s1[<span class="hljs-number">0</span>]*self.res)/(cv1max - cv1min)
-        self.cv1bin = cv1bin
-        gauss_res = <span class="hljs-number">8</span>*s1res
-        gauss_res = int(gauss_res)
-        <span class="hljs-keyword">if</span> gauss_res%<span class="hljs-number">2</span> == <span class="hljs-number">0</span>:
-            gauss_res += <span class="hljs-number">1</span>
-        
-        gauss_center = int((gauss_res<span class="hljs-number">-1</span>)/<span class="hljs-number">2</span>)+<span class="hljs-number">1</span>
-        gauss = np.zeros((gauss_res))
-        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(gauss_res):
-            <span class="hljs-comment">#dp2 = ((i+1)-gauss_center)**2/(2*s1res**2)</span>
-            <span class="hljs-comment">#if dp2 &lt; 6.25:</span>
-            <span class="hljs-comment">#    gauss[int(i)] = -np.exp(-dp2) * 1.00193418799744762399 - 0.00193418799744762399</span>
-            gauss[int(i)] = -np.exp(-((i+<span class="hljs-number">1</span>)-gauss_center)**<span class="hljs-number">2</span>/(<span class="hljs-number">2</span>*s1res**<span class="hljs-number">2</span>))
-            
-        fes = np.zeros((self.res))
-        
-        <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> range(len(cv1bin)):
-            <span class="hljs-keyword">if</span> (line) % <span class="hljs-number">500</span> == <span class="hljs-number">0</span>:
-                print(<span class="hljs-string">f"Constructing free energy surface: <span class="hljs-subst">{((line+<span class="hljs-number">1</span>)/len(cv1bin)):<span class="hljs-number">.1</span>%}</span> finished"</span>, end=<span class="hljs-string">"\r"</span>)
-            
-            <span class="hljs-comment">#fes_center = int((self.res-1)/2)</span>
-            gauss_center_to_end = int((gauss_res<span class="hljs-number">-1</span>)/<span class="hljs-number">2</span>)
-            
-            fes_to_edit_cv1 = [cv1bin[line]<span class="hljs-number">-1</span>-gauss_center_to_end,
-                               cv1bin[line]<span class="hljs-number">-1</span>+gauss_center_to_end]
-            fes_crop_cv1 = [max(<span class="hljs-number">0</span>,fes_to_edit_cv1[<span class="hljs-number">0</span>]),min(self.res<span class="hljs-number">-1</span>,fes_to_edit_cv1[<span class="hljs-number">1</span>])]
-            
-            gauss_crop_cv1 = [max(<span class="hljs-number">0</span>,gauss_center_to_end-(cv1bin[line]<span class="hljs-number">-1</span>)),
-                                  gauss_res<span class="hljs-number">-1</span>-max(<span class="hljs-number">0</span>,(cv1bin[line]<span class="hljs-number">-1</span>)+gauss_center_to_end-self.res+<span class="hljs-number">1</span>)]
-            
-            fes[fes_crop_cv1[<span class="hljs-number">0</span>]:fes_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                    += gauss[gauss_crop_cv1[<span class="hljs-number">0</span>]:gauss_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                    * self.heights[line]
-            
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>]:
-                <span class="hljs-keyword">if</span> cv1bin[line] &lt; gauss_center_to_end:
-                    fes_crop_cv1_p = [self.res<span class="hljs-number">-1</span>+(cv1bin[line]-gauss_center_to_end),self.res<span class="hljs-number">-1</span>]
-                    gauss_crop_cv1_p = [<span class="hljs-number">0</span>,gauss_center_to_end-cv1bin[line]]
-                    fes[fes_crop_cv1_p[<span class="hljs-number">0</span>]:fes_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1_p[<span class="hljs-number">0</span>]:gauss_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-                
-                <span class="hljs-keyword">if</span> cv1bin[line] &gt; (self.res-gauss_center_to_end):
-                    fes_crop_cv1_p = [<span class="hljs-number">0</span>,gauss_center_to_end+cv1bin[line]-self.res<span class="hljs-number">-1</span>]
-                    gauss_crop_cv1_p = [gauss_res-(gauss_center_to_end+cv1bin[line]-self.res),gauss_res<span class="hljs-number">-1</span>]
-                    fes[fes_crop_cv1_p[<span class="hljs-number">0</span>]:fes_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1_p[<span class="hljs-number">0</span>]:gauss_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-        print(<span class="hljs-string">"\n"</span>)
-        fes = fes-np.min(fes)
-        self.fes = np.array(fes)
-        
-        
-    <span class="hljs-keyword">elif</span> self.cvs == <span class="hljs-number">2</span>:
-        <span class="hljs-keyword">if</span> cv1range == <span class="hljs-keyword">None</span>:
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>]:
-                cv1min = self.cv1per[<span class="hljs-number">0</span>]
-                cv1max = self.cv1per[<span class="hljs-number">1</span>]
-            <span class="hljs-keyword">else</span>:
-                cv1min = self.cv1min
-                cv1max = self.cv1max
-                cv1range = self.cv1max-self.cv1min
-                cv1min -= cv1range*<span class="hljs-number">0.15</span>          
-                cv1max += cv1range*<span class="hljs-number">0.15</span>
-        <span class="hljs-keyword">else</span>:
-            cv1min = cv1range[<span class="hljs-number">0</span>]
-            cv1max = cv1range[<span class="hljs-number">1</span>]
-            self.cv1range = cv1range
-        cv1_fes_range = cv1max-cv1min
-        
-        <span class="hljs-keyword">if</span> cv2range == <span class="hljs-keyword">None</span>:
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">1</span>]:
-                cv2min = self.cv2per[<span class="hljs-number">0</span>]
-                cv2max = self.cv2per[<span class="hljs-number">1</span>]
-            <span class="hljs-keyword">else</span>:
-                cv2min = self.cv2min
-                cv2max = self.cv2max
-                cv2range = self.cv2max-self.cv2min
-                cv2min -= cv2range*<span class="hljs-number">0.15</span>          
-                cv2max += cv2range*<span class="hljs-number">0.15</span>
-        <span class="hljs-keyword">else</span>:
-            cv2min = cv2range[<span class="hljs-number">0</span>]
-            cv2max = cv2range[<span class="hljs-number">1</span>]
-            self.cv2range = cv2range
-        cv2_fes_range = cv2max-cv2min
-        
-        cv1bin = np.ceil((self.cv1-cv1min)*self.res/(cv1max-cv1min))
-        cv2bin = np.ceil((self.cv2-cv2min)*self.res/(cv2max-cv2min))
-                    
-        cv1bin = cv1bin.astype(int)
-        cv2bin = cv2bin.astype(int)
-        
-        s1res = (self.s1[<span class="hljs-number">0</span>]*self.res)/(cv1max - cv1min)
-        s2res = (self.s2[<span class="hljs-number">0</span>]*self.res)/(cv2max - cv2min)
-        
-        gauss_res = max(<span class="hljs-number">8</span>*s1res, <span class="hljs-number">8</span>*s2res)
-        gauss_res = int(gauss_res)
-        <span class="hljs-keyword">if</span> gauss_res%<span class="hljs-number">2</span> == <span class="hljs-number">0</span>:
-            gauss_res += <span class="hljs-number">1</span>
-        
-        gauss_center = int((gauss_res<span class="hljs-number">-1</span>)/<span class="hljs-number">2</span>)+<span class="hljs-number">1</span>
-        gauss = np.zeros((gauss_res,gauss_res))
-        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(gauss_res):
-            <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> range(gauss_res):
-                <span class="hljs-comment">#dp2 = ((i+1)-gauss_center)**2/(2*s1res**2) + ((j+1)-gauss_center)**2/(2*s2res**2)</span>
-                <span class="hljs-comment">#if dp2 &lt; 6.25:</span>
-                <span class="hljs-comment">#    gauss[int(i), int(j)] = -np.exp(-dp2) * 1.00193418799744762399 - 0.00193418799744762399</span>
-                gauss[int(i), int(j)] = -np.exp(-(((i+<span class="hljs-number">1</span>)-gauss_center)**<span class="hljs-number">2</span>/(<span class="hljs-number">2</span>*s1res**<span class="hljs-number">2</span>) + ((j+<span class="hljs-number">1</span>)-gauss_center)**<span class="hljs-number">2</span>/(<span class="hljs-number">2</span>*s2res**<span class="hljs-number">2</span>)))
-        
-        fes = np.zeros((self.res,self.res))
-        <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> range(len(cv1bin)):
-            <span class="hljs-keyword">if</span> (line) % <span class="hljs-number">500</span> == <span class="hljs-number">0</span>:
-                print(<span class="hljs-string">f"Constructing free energy surface: <span class="hljs-subst">{((line+<span class="hljs-number">1</span>)/len(cv1bin)):<span class="hljs-number">.1</span>%}</span> finished"</span>, end=<span class="hljs-string">"\r"</span>)
-            
-            <span class="hljs-comment">#fes_center = int((self.res-1)/2)</span>
-            gauss_center_to_end = int((gauss_res<span class="hljs-number">-1</span>)/<span class="hljs-number">2</span>)
-            <span class="hljs-comment">#print(f"\ng_res: {gauss_res}, gauss_center_to_end: {gauss_center_to_end}")</span>
-            
-            fes_to_edit_cv1 = [cv1bin[line]<span class="hljs-number">-1</span>-gauss_center_to_end,
-                               cv1bin[line]<span class="hljs-number">-1</span>+gauss_center_to_end]
-            fes_to_edit_cv2 = [cv2bin[line]<span class="hljs-number">-1</span>-gauss_center_to_end,
-                               cv2bin[line]<span class="hljs-number">-1</span>+gauss_center_to_end]
-            fes_crop_cv1 = [max(<span class="hljs-number">0</span>,fes_to_edit_cv1[<span class="hljs-number">0</span>]),min(self.res<span class="hljs-number">-1</span>,fes_to_edit_cv1[<span class="hljs-number">1</span>])]
-            fes_crop_cv2 = [max(<span class="hljs-number">0</span>,fes_to_edit_cv2[<span class="hljs-number">0</span>]),min(self.res<span class="hljs-number">-1</span>,fes_to_edit_cv2[<span class="hljs-number">1</span>])]
-            
-            gauss_crop_cv1 = [max(<span class="hljs-number">0</span>,gauss_center_to_end-(cv1bin[line]<span class="hljs-number">-1</span>)),
-                                  gauss_res<span class="hljs-number">-1</span>-max(<span class="hljs-number">0</span>,(cv1bin[line]<span class="hljs-number">-1</span>)+gauss_center_to_end-self.res+<span class="hljs-number">1</span>)]
-            gauss_crop_cv2 = [max(<span class="hljs-number">0</span>,gauss_center_to_end-(cv2bin[line]<span class="hljs-number">-1</span>)),
-                                  gauss_res<span class="hljs-number">-1</span>-max(<span class="hljs-number">0</span>,(cv2bin[line]<span class="hljs-number">-1</span>)+gauss_center_to_end-self.res+<span class="hljs-number">1</span>)]
-            
-            fes[fes_crop_cv1[<span class="hljs-number">0</span>]:fes_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,fes_crop_cv2[<span class="hljs-number">0</span>]:fes_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                    += gauss[gauss_crop_cv1[<span class="hljs-number">0</span>]:gauss_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,gauss_crop_cv2[<span class="hljs-number">0</span>]:gauss_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                    * self.heights[line]
-            
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>]:
-                <span class="hljs-keyword">if</span> cv1bin[line] &lt; gauss_center_to_end:
-                    fes_crop_cv1_p = [self.res<span class="hljs-number">-1</span>+(cv1bin[line]-gauss_center_to_end),self.res<span class="hljs-number">-1</span>]
-                    gauss_crop_cv1_p = [<span class="hljs-number">0</span>,gauss_center_to_end-cv1bin[line]]
-                    fes[fes_crop_cv1_p[<span class="hljs-number">0</span>]:fes_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,fes_crop_cv2[<span class="hljs-number">0</span>]:fes_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1_p[<span class="hljs-number">0</span>]:gauss_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,gauss_crop_cv2[<span class="hljs-number">0</span>]:gauss_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-                
-                <span class="hljs-keyword">if</span> cv1bin[line] &gt; (self.res-gauss_center_to_end):
-                    fes_crop_cv1_p = [<span class="hljs-number">0</span>,gauss_center_to_end+cv1bin[line]-self.res<span class="hljs-number">-1</span>]
-                    gauss_crop_cv1_p = [gauss_res-(gauss_center_to_end+cv1bin[line]-self.res),gauss_res<span class="hljs-number">-1</span>]
-                    fes[fes_crop_cv1_p[<span class="hljs-number">0</span>]:fes_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,fes_crop_cv2[<span class="hljs-number">0</span>]:fes_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1_p[<span class="hljs-number">0</span>]:gauss_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,gauss_crop_cv2[<span class="hljs-number">0</span>]:gauss_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-            
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">1</span>]:
-                <span class="hljs-keyword">if</span> cv2bin[line] &lt; gauss_center_to_end:
-                    fes_crop_cv2_p = [self.res<span class="hljs-number">-1</span>+(cv2bin[line]-gauss_center_to_end),self.res<span class="hljs-number">-1</span>]
-                    gauss_crop_cv2_p = [<span class="hljs-number">0</span>,gauss_center_to_end-cv2bin[line]]
-                    fes[fes_crop_cv1[<span class="hljs-number">0</span>]:fes_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,fes_crop_cv2_p[<span class="hljs-number">0</span>]:fes_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1[<span class="hljs-number">0</span>]:gauss_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,gauss_crop_cv2_p[<span class="hljs-number">0</span>]:gauss_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-                
-                <span class="hljs-keyword">if</span> cv2bin[line] &gt; (self.res-gauss_center_to_end):
-                    fes_crop_cv2_p = [<span class="hljs-number">0</span>,gauss_center_to_end+cv2bin[line]-self.res<span class="hljs-number">-1</span>]
-                    gauss_crop_cv2_p = [gauss_res-(gauss_center_to_end+cv2bin[line]-self.res),gauss_res<span class="hljs-number">-1</span>]
-                    fes[fes_crop_cv1[<span class="hljs-number">0</span>]:fes_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,fes_crop_cv2_p[<span class="hljs-number">0</span>]:fes_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1[<span class="hljs-number">0</span>]:gauss_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,gauss_crop_cv2_p[<span class="hljs-number">0</span>]:gauss_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-            
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>] <span class="hljs-keyword">and</span> self.periodic[<span class="hljs-number">1</span>]:
-                <span class="hljs-keyword">if</span> ((cv1bin[line] &lt; gauss_center_to_end) <span class="hljs-keyword">or</span> (cv1bin[line] &gt; (self.res-gauss_center_to_end))) \
-                        <span class="hljs-keyword">and</span> ((cv2bin[line] &lt; gauss_center_to_end) <span class="hljs-keyword">or</span> (cv2bin[line] &gt; (self.res-gauss_center_to_end))):
-                    fes[fes_crop_cv1_p[<span class="hljs-number">0</span>]:fes_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,fes_crop_cv2_p[<span class="hljs-number">0</span>]:fes_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1_p[<span class="hljs-number">0</span>]:gauss_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,gauss_crop_cv2_p[<span class="hljs-number">0</span>]:gauss_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-        print(<span class="hljs-string">"\n"</span>)
-        fes = fes-np.min(fes)
-        self.fes = np.array(fes)
-    <span class="hljs-keyword">elif</span> self.cvs == <span class="hljs-number">3</span>:
-        <span class="hljs-keyword">if</span> cv1range == <span class="hljs-keyword">None</span>:
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>]:
-                cv1min = self.cv1per[<span class="hljs-number">0</span>]
-                cv1max = self.cv1per[<span class="hljs-number">1</span>]
-            <span class="hljs-keyword">else</span>:
-                cv1min = self.cv1min
-                cv1max = self.cv1max
-                cv1range = self.cv1max-self.cv1min
-                cv1min -= cv1range*<span class="hljs-number">0.15</span>          
-                cv1max += cv1range*<span class="hljs-number">0.15</span>
-        <span class="hljs-keyword">else</span>:
-            cv1min = cv1range[<span class="hljs-number">0</span>]
-            cv1max = cv1range[<span class="hljs-number">1</span>]
-            self.cv1range = cv1range
-        cv1_fes_range = cv1max-cv1min
-        
-        <span class="hljs-keyword">if</span> cv2range == <span class="hljs-keyword">None</span>:
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">1</span>]:
-                cv2min = self.cv2per[<span class="hljs-number">0</span>]
-                cv2max = self.cv2per[<span class="hljs-number">1</span>]
-            <span class="hljs-keyword">else</span>:
-                cv2min = self.cv2min
-                cv2max = self.cv2max
-                cv2range = self.cv2max-self.cv2min
-                cv2min -= cv2range*<span class="hljs-number">0.15</span>          
-                cv2max += cv2range*<span class="hljs-number">0.15</span>
-        <span class="hljs-keyword">else</span>:
-            cv2min = cv2range[<span class="hljs-number">0</span>]
-            cv2max = cv2range[<span class="hljs-number">1</span>]
-            self.cv2range = cv2range
-        cv2_fes_range = cv2max-cv2min
-        
-        <span class="hljs-keyword">if</span> cv1range == <span class="hljs-keyword">None</span>:
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">2</span>]:
-                cv3min = self.cv3per[<span class="hljs-number">0</span>]
-                cv3max = self.cv3per[<span class="hljs-number">1</span>]
-            <span class="hljs-keyword">else</span>:
-                cv3min = self.cv3min
-                cv3max = self.cv3max
-                cv3range = self.cv3max-self.cv3min
-                cv3min -= cv3range*<span class="hljs-number">0.15</span>          
-                cv3max += cv3range*<span class="hljs-number">0.15</span>
-        <span class="hljs-keyword">else</span>:
-            cv3min = cv3range[<span class="hljs-number">0</span>]
-            cv3max = cv3range[<span class="hljs-number">1</span>]
-            self.cv3range = cv3range
-        cv3_fes_range = cv3max-cv3min
-        
-        cv1bin = np.ceil((self.cv1-cv1min)*self.res/(cv1max-cv1min))
-        cv2bin = np.ceil((self.cv2-cv2min)*self.res/(cv2max-cv2min))
-        cv3bin = np.ceil((self.cv3-cv3min)*self.res/(cv3max-cv3min))
-                    
-        cv1bin = cv1bin.astype(int)
-        cv2bin = cv2bin.astype(int)
-        cv3bin = cv3bin.astype(int)
-        
-        s1res = (self.s1[<span class="hljs-number">0</span>]*self.res)/(cv1max - cv1min)
-        s2res = (self.s2[<span class="hljs-number">0</span>]*self.res)/(cv2max - cv2min)
-        s3res = (self.s3[<span class="hljs-number">0</span>]*self.res)/(cv3max - cv3min)
-        
-        gauss_res = max(<span class="hljs-number">10</span>*s1res, <span class="hljs-number">10</span>*s2res, <span class="hljs-number">10</span>*s3res)
-        gauss_res = int(gauss_res)
-        <span class="hljs-keyword">if</span> gauss_res%<span class="hljs-number">2</span> == <span class="hljs-number">0</span>:
-            gauss_res += <span class="hljs-number">1</span>
-        gauss_center = int((gauss_res<span class="hljs-number">-1</span>)/<span class="hljs-number">2</span>)+<span class="hljs-number">1</span>
-        gauss = np.zeros((gauss_res,gauss_res,gauss_res))
-        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(gauss_res):
-            <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> range(gauss_res):
-                <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> range(gauss_res):
-                    <span class="hljs-comment">#dp2 = ((i+1)-gauss_center)**2/(2*s1res**2) + ((j+1)-gauss_center)**2/(2*s2res**2) + ((k+1)-gauss_center)**2/(2*s3res**2)</span>
-                    <span class="hljs-comment">#if dp2 &lt; 6.25:</span>
-                    <span class="hljs-comment">#    gauss[int(i), int(j), int(k)] = -np.exp(-dp2) * 1.00193418799744762399 - 0.00193418799744762399</span>
-                    gauss[int(i), int(j), int(k)] = -np.exp(-(((i+<span class="hljs-number">1</span>)-gauss_center)**<span class="hljs-number">2</span>/(<span class="hljs-number">2</span>*s1res**<span class="hljs-number">2</span>) + 
-                                                              ((j+<span class="hljs-number">1</span>)-gauss_center)**<span class="hljs-number">2</span>/(<span class="hljs-number">2</span>*s2res**<span class="hljs-number">2</span>) + 
-                                                              ((k+<span class="hljs-number">1</span>)-gauss_center)**<span class="hljs-number">2</span>/(<span class="hljs-number">2</span>*s3res**<span class="hljs-number">2</span>)))
-        
-        fes = np.zeros((self.res, self.res, self.res))
-        
-        <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> range(len(cv1bin)):
-            <span class="hljs-keyword">if</span> (line) % <span class="hljs-number">500</span> == <span class="hljs-number">0</span>:
-                print(<span class="hljs-string">f"Constructing free energy surface: <span class="hljs-subst">{((line+<span class="hljs-number">1</span>)/len(cv1bin)):<span class="hljs-number">.1</span>%}</span> finished"</span>, end=<span class="hljs-string">"\r"</span>)
-            
-            <span class="hljs-comment">#fes_center = int((self.res-1)/2)</span>
-            gauss_center_to_end = int((gauss_res<span class="hljs-number">-1</span>)/<span class="hljs-number">2</span>)
-            
-            fes_to_edit_cv1 = [cv1bin[line]<span class="hljs-number">-1</span>-gauss_center_to_end,
-                               cv1bin[line]<span class="hljs-number">-1</span>+gauss_center_to_end]
-            fes_to_edit_cv2 = [(cv2bin[line]<span class="hljs-number">-1</span>)-gauss_center_to_end,
-                               (cv2bin[line]<span class="hljs-number">-1</span>)+gauss_center_to_end]
-            fes_to_edit_cv3 = [(cv3bin[line]<span class="hljs-number">-1</span>)-gauss_center_to_end,
-                               (cv3bin[line]<span class="hljs-number">-1</span>)+gauss_center_to_end]
-            fes_crop_cv1 = [max(<span class="hljs-number">0</span>,fes_to_edit_cv1[<span class="hljs-number">0</span>]),min(self.res<span class="hljs-number">-1</span>,fes_to_edit_cv1[<span class="hljs-number">1</span>])]
-            fes_crop_cv2 = [max(<span class="hljs-number">0</span>,fes_to_edit_cv2[<span class="hljs-number">0</span>]),min(self.res<span class="hljs-number">-1</span>,fes_to_edit_cv2[<span class="hljs-number">1</span>])]
-            fes_crop_cv3 = [max(<span class="hljs-number">0</span>,fes_to_edit_cv3[<span class="hljs-number">0</span>]),min(self.res<span class="hljs-number">-1</span>,fes_to_edit_cv3[<span class="hljs-number">1</span>])]
-            
-            gauss_crop_cv1 = [max(<span class="hljs-number">0</span>,gauss_center_to_end-(cv1bin[line]<span class="hljs-number">-1</span>)),
-                                  gauss_res<span class="hljs-number">-1</span>-max(<span class="hljs-number">0</span>,(cv1bin[line]<span class="hljs-number">-1</span>)+gauss_center_to_end-self.res+<span class="hljs-number">1</span>)]
-            gauss_crop_cv2 = [max(<span class="hljs-number">0</span>,gauss_center_to_end-(cv2bin[line]<span class="hljs-number">-1</span>)),
-                                  gauss_res<span class="hljs-number">-1</span>-max(<span class="hljs-number">0</span>,(cv2bin[line]<span class="hljs-number">-1</span>)+gauss_center_to_end-self.res+<span class="hljs-number">1</span>)]
-            gauss_crop_cv3 = [max(<span class="hljs-number">0</span>,gauss_center_to_end-(cv3bin[line]<span class="hljs-number">-1</span>)),
-                                  gauss_res<span class="hljs-number">-1</span>-max(<span class="hljs-number">0</span>,(cv3bin[line]<span class="hljs-number">-1</span>)+gauss_center_to_end-self.res+<span class="hljs-number">1</span>)]
-            
-            fes[fes_crop_cv1[<span class="hljs-number">0</span>]:fes_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                fes_crop_cv2[<span class="hljs-number">0</span>]:fes_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                fes_crop_cv3[<span class="hljs-number">0</span>]:fes_crop_cv3[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                    += gauss[gauss_crop_cv1[<span class="hljs-number">0</span>]:gauss_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                             gauss_crop_cv2[<span class="hljs-number">0</span>]:gauss_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                             gauss_crop_cv3[<span class="hljs-number">0</span>]:gauss_crop_cv3[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                    * self.heights[line]
-            
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>]:
-                <span class="hljs-keyword">if</span> cv1bin[line] &lt; gauss_center_to_end:
-                    fes_crop_cv1_p = [self.res<span class="hljs-number">-1</span>+(cv1bin[line]-gauss_center_to_end),self.res<span class="hljs-number">-1</span>]
-                    gauss_crop_cv1_p = [<span class="hljs-number">0</span>,gauss_center_to_end-cv1bin[line]]
-                    fes[fes_crop_cv1_p[<span class="hljs-number">0</span>]:fes_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv2[<span class="hljs-number">0</span>]:fes_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv3[<span class="hljs-number">0</span>]:fes_crop_cv3[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1_p[<span class="hljs-number">0</span>]:gauss_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv2[<span class="hljs-number">0</span>]:gauss_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv3[<span class="hljs-number">0</span>]:gauss_crop_cv3[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-                
-                <span class="hljs-keyword">if</span> cv1bin[line] &gt; (self.res-gauss_center_to_end):
-                    fes_crop_cv1_p = [<span class="hljs-number">0</span>,gauss_center_to_end+cv1bin[line]-self.res<span class="hljs-number">-1</span>]
-                    gauss_crop_cv1_p = [gauss_res-(gauss_center_to_end+cv1bin[line]-self.res),gauss_res<span class="hljs-number">-1</span>]
-                    fes[fes_crop_cv1_p[<span class="hljs-number">0</span>]:fes_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv2[<span class="hljs-number">0</span>]:fes_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv3[<span class="hljs-number">0</span>]:fes_crop_cv3[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1_p[<span class="hljs-number">0</span>]:gauss_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv2[<span class="hljs-number">0</span>]:gauss_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv3[<span class="hljs-number">0</span>]:gauss_crop_cv3[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-            
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">1</span>]:
-                <span class="hljs-keyword">if</span> cv2bin[line] &lt; gauss_center_to_end:
-                    fes_crop_cv2_p = [self.res<span class="hljs-number">-1</span>+(cv2bin[line]-gauss_center_to_end),self.res<span class="hljs-number">-1</span>]
-                    gauss_crop_cv2_p = [<span class="hljs-number">0</span>,gauss_center_to_end-cv2bin[line]]
-                    fes[fes_crop_cv1[<span class="hljs-number">0</span>]:fes_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv2_p[<span class="hljs-number">0</span>]:fes_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv3[<span class="hljs-number">0</span>]:fes_crop_cv3[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1[<span class="hljs-number">0</span>]:gauss_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv2_p[<span class="hljs-number">0</span>]:gauss_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv3[<span class="hljs-number">0</span>]:gauss_crop_cv3[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-                
-                <span class="hljs-keyword">if</span> cv2bin[line] &gt; (self.res-gauss_center_to_end):
-                    fes_crop_cv2_p = [<span class="hljs-number">0</span>,gauss_center_to_end+cv2bin[line]-self.res<span class="hljs-number">-1</span>]
-                    gauss_crop_cv2_p = [gauss_res-(gauss_center_to_end+cv2bin[line]-self.res),gauss_res<span class="hljs-number">-1</span>]
-                    fes[fes_crop_cv1[<span class="hljs-number">0</span>]:fes_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv2_p[<span class="hljs-number">0</span>]:fes_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv3[<span class="hljs-number">0</span>]:fes_crop_cv3[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1[<span class="hljs-number">0</span>]:gauss_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv2_p[<span class="hljs-number">0</span>]:gauss_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv3[<span class="hljs-number">0</span>]:gauss_crop_cv3[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">2</span>]:
-                <span class="hljs-keyword">if</span> cv3bin[line] &lt; gauss_center_to_end:
-                    fes_crop_cv3_p = [self.res<span class="hljs-number">-1</span>+(cv3bin[line]-gauss_center_to_end),self.res<span class="hljs-number">-1</span>]
-                    gauss_crop_cv3_p = [<span class="hljs-number">0</span>,gauss_center_to_end-cv3bin[line]]
-                    fes[fes_crop_cv1[<span class="hljs-number">0</span>]:fes_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv2[<span class="hljs-number">0</span>]:fes_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv3_p[<span class="hljs-number">0</span>]:fes_crop_cv3_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1[<span class="hljs-number">0</span>]:gauss_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv2[<span class="hljs-number">0</span>]:gauss_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv3_p[<span class="hljs-number">0</span>]:gauss_crop_cv3_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-                
-                <span class="hljs-keyword">if</span> cv3bin[line] &gt; (self.res-gauss_center_to_end):
-                    fes_crop_cv3_p = [<span class="hljs-number">0</span>,gauss_center_to_end+cv3bin[line]-self.res<span class="hljs-number">-1</span>]
-                    gauss_crop_cv3_p = [gauss_res-(gauss_center_to_end+cv3bin[line]-self.res),gauss_res<span class="hljs-number">-1</span>]
-                    fes[fes_crop_cv1[<span class="hljs-number">0</span>]:fes_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv2[<span class="hljs-number">0</span>]:fes_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv3_p[<span class="hljs-number">0</span>]:fes_crop_cv3_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1[<span class="hljs-number">0</span>]:gauss_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv2[<span class="hljs-number">0</span>]:gauss_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv3_p[<span class="hljs-number">0</span>]:gauss_crop_cv3_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-            
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>] <span class="hljs-keyword">and</span> self.periodic[<span class="hljs-number">1</span>]:
-                <span class="hljs-keyword">if</span> ((cv1bin[line] &lt; gauss_center_to_end) <span class="hljs-keyword">or</span> (cv1bin[line] &gt; (self.res-gauss_center_to_end))) \
-                        <span class="hljs-keyword">and</span> ((cv2bin[line] &lt; gauss_center_to_end) <span class="hljs-keyword">or</span> (cv2bin[line] &gt; (self.res-gauss_center_to_end))):
-                    fes[fes_crop_cv1_p[<span class="hljs-number">0</span>]:fes_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv2_p[<span class="hljs-number">0</span>]:fes_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv3[<span class="hljs-number">0</span>]:fes_crop_cv3[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1_p[<span class="hljs-number">0</span>]:gauss_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv2_p[<span class="hljs-number">0</span>]:gauss_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv3[<span class="hljs-number">0</span>]:gauss_crop_cv3[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-            
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>] <span class="hljs-keyword">and</span> self.periodic[<span class="hljs-number">2</span>]:
-                <span class="hljs-keyword">if</span> ((cv1bin[line] &lt; gauss_center_to_end) <span class="hljs-keyword">or</span> (cv1bin[line] &gt; (self.res-gauss_center_to_end))) \
-                        <span class="hljs-keyword">and</span> ((cv3bin[line] &lt; gauss_center_to_end) <span class="hljs-keyword">or</span> (cv3bin[line] &gt; (self.res-gauss_center_to_end))):
-                    fes[fes_crop_cv1_p[<span class="hljs-number">0</span>]:fes_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv2[<span class="hljs-number">0</span>]:fes_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv3_p[<span class="hljs-number">0</span>]:fes_crop_cv3_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1_p[<span class="hljs-number">0</span>]:gauss_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv2[<span class="hljs-number">0</span>]:gauss_crop_cv2[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv3_p[<span class="hljs-number">0</span>]:gauss_crop_cv3_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-            
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">1</span>] <span class="hljs-keyword">and</span> self.periodic[<span class="hljs-number">2</span>]:
-                <span class="hljs-keyword">if</span> ((cv2bin[line] &lt; gauss_center_to_end) <span class="hljs-keyword">or</span> (cv2bin[line] &gt; (self.res-gauss_center_to_end))) \
-                        <span class="hljs-keyword">and</span> ((cv3bin[line] &lt; gauss_center_to_end) <span class="hljs-keyword">or</span> (cv3bin[line] &gt; (self.res-gauss_center_to_end))):
-                    fes[fes_crop_cv1[<span class="hljs-number">0</span>]:fes_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv2_p[<span class="hljs-number">0</span>]:fes_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv3_p[<span class="hljs-number">0</span>]:fes_crop_cv3_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1[<span class="hljs-number">0</span>]:gauss_crop_cv1[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv2_p[<span class="hljs-number">0</span>]:gauss_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv3_p[<span class="hljs-number">0</span>]:gauss_crop_cv3_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-            
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>] <span class="hljs-keyword">and</span> self.periodic[<span class="hljs-number">1</span>] <span class="hljs-keyword">and</span> self.periodic[<span class="hljs-number">2</span>]:
-                <span class="hljs-keyword">if</span> ((cv1bin[line] &lt; gauss_center_to_end) <span class="hljs-keyword">or</span> (cv1bin[line] &gt; (self.res-gauss_center_to_end)))\
-                        <span class="hljs-keyword">and</span> ((cv2bin[line] &lt; gauss_center_to_end) <span class="hljs-keyword">or</span> (cv2bin[line] &gt; (self.res-gauss_center_to_end))) \
-                        <span class="hljs-keyword">and</span> ((cv3bin[line] &lt; gauss_center_to_end) <span class="hljs-keyword">or</span> (cv3bin[line] &gt; (self.res-gauss_center_to_end))) :
-                    fes[fes_crop_cv1_p[<span class="hljs-number">0</span>]:fes_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv2_p[<span class="hljs-number">0</span>]:fes_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                        fes_crop_cv3_p[<span class="hljs-number">0</span>]:fes_crop_cv3_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                += gauss[gauss_crop_cv1_p[<span class="hljs-number">0</span>]:gauss_crop_cv1_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv2_p[<span class="hljs-number">0</span>]:gauss_crop_cv2_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>,\
-                                         gauss_crop_cv3_p[<span class="hljs-number">0</span>]:gauss_crop_cv3_p[<span class="hljs-number">1</span>]+<span class="hljs-number">1</span>]\
-                                * self.heights[line]
-        
-        print(<span class="hljs-string">"\n"</span>)
-        fes = fes-np.min(fes)
-        self.fes = np.array(fes)
-    <span class="hljs-keyword">else</span>:
-        print(<span class="hljs-string">"Fes object doesn't have supported number of CVs."</span>)</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Fes.makefes2"><code class="name flex">
-<span>def <span class="ident">makefes2</span></span>(<span>self, resolution, cv1range, cv2range, cv3range, time_min, time_max)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Function internally used to sum Hills in the same way as Plumed sum_hills.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">makefes2</span><span class="hljs-params">(self, resolution, cv1range, cv2range, cv3range, time_min, time_max)</span>:</span>
-    <span class="hljs-string">"""
-    Function internally used to sum Hills in the same way as Plumed sum_hills. 
-    """</span>
-    
-    self.res = resolution
-    
-    <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">1</span>:
-        <span class="hljs-keyword">if</span> cv1range==<span class="hljs-keyword">None</span>:
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>]:
-                cv1min = self.cv1per[<span class="hljs-number">0</span>]
-                cv1max = self.cv1per[<span class="hljs-number">1</span>]
-                cv1_fes_range = np.abs(self.cv1per[<span class="hljs-number">1</span>]-self.cv1per[<span class="hljs-number">0</span>])
-            <span class="hljs-keyword">else</span>:
-                cv1range = self.cv1max-self.cv1min
-                cv1min = self.cv1min
-                cv1max = self.cv1max
-                cv1min -= cv1range*<span class="hljs-number">0.15</span>          
-                cv1max += cv1range*<span class="hljs-number">0.15</span>
-                cv1_fes_range = cv1max - cv1min
-        <span class="hljs-keyword">else</span>:
-            cv1min = cv1range[<span class="hljs-number">0</span>]
-            cv1max = cv1range[<span class="hljs-number">1</span>]
-            self.cv1range = cv1range
-            cv1_fes_range = cv1max-cv1min
-        
-        fes = np.zeros((self.res))
-        
-        progress = <span class="hljs-number">0</span>
-        max_progress = self.res ** self.cvs
-        
-        <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> range(self.res):
-            progress += <span class="hljs-number">1</span>
-            <span class="hljs-keyword">if</span> (progress) % <span class="hljs-number">200</span> == <span class="hljs-number">0</span>:
-                print(<span class="hljs-string">f"Constructing free energy surface: <span class="hljs-subst">{(progress/max_progress):<span class="hljs-number">.2</span>%}</span> finished"</span>, end=<span class="hljs-string">"\r"</span>)
-            
-            dist_cv1 = self.cv1-(cv1min+(x)*cv1_fes_range/(self.res))
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>]:
-                dist_cv1[dist_cv1&lt;<span class="hljs-number">-0.5</span>*cv1_fes_range] += cv1_fes_range
-                dist_cv1[dist_cv1&gt;+<span class="hljs-number">0.5</span>*cv1_fes_range] -= cv1_fes_range
-            
-            dp2 = dist_cv1**<span class="hljs-number">2</span>/(<span class="hljs-number">2</span>*self.s1**<span class="hljs-number">2</span>)
-            tmp = np.zeros(self.cv1.shape)
-            tmp[dp2&lt;<span class="hljs-number">6.25</span>] = self.heights[dp2&lt;<span class="hljs-number">6.25</span>] * (np.exp(-dp2[dp2&lt;<span class="hljs-number">6.25</span>]) * <span class="hljs-number">1.00193418799744762399</span> - <span class="hljs-number">0.00193418799744762399</span>)
-            fes[x] = -tmp.sum()
-                
-        fes = fes - np.min(fes)
-        self.fes = np.array(fes)
-        print(<span class="hljs-string">"\n"</span>)
-        
-    <span class="hljs-keyword">elif</span> self.cvs == <span class="hljs-number">2</span>:
-        <span class="hljs-keyword">if</span> cv1range==<span class="hljs-keyword">None</span>:
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>]:
-                cv1min = self.cv1per[<span class="hljs-number">0</span>]
-                cv1max = self.cv1per[<span class="hljs-number">1</span>]
-                cv1_fes_range = np.abs(self.cv1per[<span class="hljs-number">1</span>]-self.cv1per[<span class="hljs-number">0</span>])
-            <span class="hljs-keyword">else</span>:
-                cv1range = self.cv1max-self.cv1min
-                cv1min = self.cv1min
-                cv1max = self.cv1max
-                cv1min -= cv1range*<span class="hljs-number">0.15</span>          
-                cv1max += cv1range*<span class="hljs-number">0.15</span>
-                cv1_fes_range = cv1max - cv1min
-        <span class="hljs-keyword">else</span>:
-            cv1min = cv1range[<span class="hljs-number">0</span>]
-            cv1max = cv1range[<span class="hljs-number">1</span>]
-            self.cv1range = cv1range
-            cv1_fes_range = cv1max-cv1min
-        
-        <span class="hljs-keyword">if</span> cv2range == <span class="hljs-keyword">None</span>:
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">1</span>]:
-                cv2min = self.cv2per[<span class="hljs-number">0</span>]
-                cv2max = self.cv2per[<span class="hljs-number">1</span>]
-                cv2_fes_range = np.abs(self.cv2per[<span class="hljs-number">1</span>]-self.cv2per[<span class="hljs-number">0</span>])
-            <span class="hljs-keyword">else</span>:
-                cv2range = self.cv2max-self.cv2min
-                cv2min = self.cv2min
-                cv2max = self.cv2max
-                cv2min -= cv2range*<span class="hljs-number">0.15</span>          
-                cv2max += cv2range*<span class="hljs-number">0.15</span>
-                cv2_fes_range = cv2max - cv2min
-        <span class="hljs-keyword">else</span>:
-            cv2min = cv2range[<span class="hljs-number">0</span>]
-            cv2max = cv2range[<span class="hljs-number">1</span>]
-            self.cv2range = cv2range
-            cv2_fes_range = cv2max-cv2min
-        
-        fes = np.zeros((self.res, self.res))
-        
-        progress = <span class="hljs-number">0</span>
-        max_progress = self.res ** self.cvs
-        
-        <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> range(self.res):
-            dist_cv1 = self.cv1-(cv1min+(x)*cv1_fes_range/(self.res))
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>]:
-                dist_cv1[dist_cv1&lt;<span class="hljs-number">-0.5</span>*cv1_fes_range] += cv1_fes_range
-                dist_cv1[dist_cv1&gt;+<span class="hljs-number">0.5</span>*cv1_fes_range] -= cv1_fes_range
-                
-            <span class="hljs-keyword">for</span> y <span class="hljs-keyword">in</span> range(self.res):
-                progress += <span class="hljs-number">1</span>
-                <span class="hljs-keyword">if</span> (progress) % <span class="hljs-number">200</span> == <span class="hljs-number">0</span>:
-                    print(<span class="hljs-string">f"Constructing free energy surface: <span class="hljs-subst">{(progress/max_progress):<span class="hljs-number">.2</span>%}</span> finished"</span>, end=<span class="hljs-string">"\r"</span>)
-                
-                dist_cv2 = self.cv2-(cv2min+(y)*cv2_fes_range/(self.res))
-                <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">1</span>]:
-                    dist_cv2[dist_cv2&lt;<span class="hljs-number">-0.5</span>*cv2_fes_range] += cv2_fes_range
-                    dist_cv2[dist_cv2&gt;+<span class="hljs-number">0.5</span>*cv2_fes_range] -= cv2_fes_range
-                    
-                dp2 = dist_cv1**<span class="hljs-number">2</span>/(<span class="hljs-number">2</span>*self.s1**<span class="hljs-number">2</span>) + dist_cv2**<span class="hljs-number">2</span>/(<span class="hljs-number">2</span>*self.s2**<span class="hljs-number">2</span>)
-                tmp = np.zeros(self.cv1.shape)
-                tmp[dp2&lt;<span class="hljs-number">6.25</span>] = self.heights[dp2&lt;<span class="hljs-number">6.25</span>] * (np.exp(-dp2[dp2&lt;<span class="hljs-number">6.25</span>]) * <span class="hljs-number">1.00193418799744762399</span> - <span class="hljs-number">0.00193418799744762399</span>)
-                fes[x,y] = -tmp.sum()
-                
-        fes = fes - np.min(fes)
-        self.fes = np.array(fes)
-        print(<span class="hljs-string">"\n"</span>)
-        
-    <span class="hljs-keyword">elif</span> self.cvs == <span class="hljs-number">3</span>:
-        <span class="hljs-keyword">if</span> cv1range==<span class="hljs-keyword">None</span>:
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>]:
-                cv1min = self.cv1per[<span class="hljs-number">0</span>]
-                cv1max = self.cv1per[<span class="hljs-number">1</span>]
-                cv1_fes_range = np.abs(self.cv1per[<span class="hljs-number">1</span>]-self.cv1per[<span class="hljs-number">0</span>])
-            <span class="hljs-keyword">else</span>:
-                cv1range = self.cv1max-self.cv1min
-                cv1min = self.cv1min
-                cv1max = self.cv1max
-                cv1min -= cv1range*<span class="hljs-number">0.15</span>          
-                cv1max += cv1range*<span class="hljs-number">0.15</span>
-                cv1_fes_range = cv1max - cv1min
-        <span class="hljs-keyword">else</span>:
-            cv1min = cv1range[<span class="hljs-number">0</span>]
-            cv1max = cv1range[<span class="hljs-number">1</span>]
-            self.cv1range = cv1range
-            cv1_fes_range = cv1max-cv1min
-        
-        <span class="hljs-keyword">if</span> cv2range == <span class="hljs-keyword">None</span>:
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">1</span>]:
-                cv2min = self.cv2per[<span class="hljs-number">0</span>]
-                cv2max = self.cv2per[<span class="hljs-number">1</span>]
-                cv2_fes_range = np.abs(self.cv2per[<span class="hljs-number">1</span>]-self.cv2per[<span class="hljs-number">0</span>])
-            <span class="hljs-keyword">else</span>:
-                cv2range = self.cv2max-self.cv2min
-                cv2min = self.cv2min
-                cv2max = self.cv2max
-                cv2min -= cv2range*<span class="hljs-number">0.15</span>          
-                cv2max += cv2range*<span class="hljs-number">0.15</span>
-                cv2_fes_range = cv2max - cv2min
-        <span class="hljs-keyword">else</span>:
-            cv2min = cv2range[<span class="hljs-number">0</span>]
-            cv2max = cv2range[<span class="hljs-number">1</span>]
-            self.cv2range = cv2range
-            cv2_fes_range = cv2max-cv2min
-        
-        <span class="hljs-keyword">if</span> cv3range == <span class="hljs-keyword">None</span>:
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">2</span>]:
-                cv3min = self.cv3per[<span class="hljs-number">0</span>]
-                cv3max = self.cv3per[<span class="hljs-number">1</span>]
-                cv3_fes_range = np.abs(self.cv3per[<span class="hljs-number">1</span>]-self.cv3per[<span class="hljs-number">0</span>])
-            <span class="hljs-keyword">else</span>:
-                cv3range = self.cv3max-self.cv3min
-                cv3min = self.cv3min
-                cv3max = self.cv3max
-                cv3min -= cv3range*<span class="hljs-number">0.15</span>          
-                cv3max += cv3range*<span class="hljs-number">0.15</span>
-                cv3_fes_range = cv3max - cv3min
-        <span class="hljs-keyword">else</span>:
-            cv3min = cv3range[<span class="hljs-number">0</span>]
-            cv3max = cv3range[<span class="hljs-number">1</span>]
-            self.cv3range = cv3range
-            cv3_fes_range = cv3max-cv3min
-        
-        fes = np.zeros((self.res, self.res, self.res))
-        
-        progress = <span class="hljs-number">0</span>
-        max_progress = self.res ** self.cvs
-        
-        <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> range(self.res):
-            dist_cv1 = self.cv1-(cv1min+(x)*cv1_fes_range/(self.res))
-            <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">0</span>]:
-                dist_cv1[dist_cv1&lt;<span class="hljs-number">-0.5</span>*cv1_fes_range] += cv1_fes_range
-                dist_cv1[dist_cv1&gt;+<span class="hljs-number">0.5</span>*cv1_fes_range] -= cv1_fes_range
-                
-            <span class="hljs-keyword">for</span> y <span class="hljs-keyword">in</span> range(self.res):
-                dist_cv2 = self.cv2-(cv2min+(y)*cv2_fes_range/(self.res))
-                <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">1</span>]:
-                    dist_cv2[dist_cv2&lt;<span class="hljs-number">-0.5</span>*cv2_fes_range] += cv2_fes_range
-                    dist_cv2[dist_cv2&gt;+<span class="hljs-number">0.5</span>*cv2_fes_range] -= cv2_fes_range
-                    
-                <span class="hljs-keyword">for</span> z <span class="hljs-keyword">in</span> range(self.res):
-                    progress += <span class="hljs-number">1</span>
-                    <span class="hljs-keyword">if</span> (progress) % <span class="hljs-number">200</span> == <span class="hljs-number">0</span>:
-                        print(<span class="hljs-string">f"Constructing free energy surface: <span class="hljs-subst">{(progress/max_progress):<span class="hljs-number">.2</span>%}</span> finished"</span>, end=<span class="hljs-string">"\r"</span>)
-                    
-                    dist_cv3 = self.cv3-(cv3min+(z)*cv3_fes_range/(self.res))
-                    <span class="hljs-keyword">if</span> self.periodic[<span class="hljs-number">2</span>]:
-                        dist_cv3[dist_cv3&lt;<span class="hljs-number">-0.5</span>*cv3_fes_range] += cv3_fes_range
-                        dist_cv3[dist_cv3&gt;+<span class="hljs-number">0.5</span>*cv3_fes_range] -= cv3_fes_range
-                    
-                    dp2 = dist_cv1**<span class="hljs-number">2</span>/(<span class="hljs-number">2</span>*self.s1**<span class="hljs-number">2</span>) + dist_cv2**<span class="hljs-number">2</span>/(<span class="hljs-number">2</span>*self.s2**<span class="hljs-number">2</span>) + dist_cv3**<span class="hljs-number">2</span>/(<span class="hljs-number">2</span>*self.s3**<span class="hljs-number">2</span>)
-                    tmp = np.zeros(self.cv1.shape)
-                    tmp[dp2&lt;<span class="hljs-number">6.25</span>] = self.heights[dp2&lt;<span class="hljs-number">6.25</span>] * (np.exp(-dp2[dp2&lt;<span class="hljs-number">6.25</span>]) * <span class="hljs-number">1.00193418799744762399</span> - <span class="hljs-number">0.00193418799744762399</span>)
-                    fes[x,y,z] = -tmp.sum()
-                    
-                    
-                
-        fes = fes - np.min(fes)
-        self.fes = np.array(fes)
-        print(<span class="hljs-string">"\n"</span>)
-    <span class="hljs-keyword">else</span>:
-        print(<span class="hljs-string">f"Error: unsupported number of CVs: <span class="hljs-subst">{self.cvs}</span>."</span>)</code></pre>
-</details>
-</dd>
 <dt id="metadynminer.Fes.plot"><code class="name flex">
 <span>def <span class="ident">plot</span></span>(<span>self, png_name=None, contours=True, contours_spacing=0.0, aspect=1.0, cmap='jet', energy_unit='kJ/mol', xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10, 7], vmin=0, vmax=None, opacity=0.2, levels=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Function used to visualize FES, based on Matplotlib and PyVista. </p>
-<pre><code class="language-python hljs">fes.plot()
+<pre><code class="language-python hljs">fes.plot(png_name=<span class="hljs-string">"fes.png"</span>)
 </code></pre>
 <p>Parameters:</p>
 <ul>
@@ -5303,7 +4754,7 @@ If not provided, default values from contours parameters will be used instead.</
     Function used to visualize FES, based on Matplotlib and PyVista. 
     
     ```python
-    fes.plot()
+    fes.plot(png_name="fes.png")
     ```
     
     Parameters:
@@ -5434,8 +4885,9 @@ If not provided, default values from contours parameters will be used instead.</
         p.add_mesh(contours, scalars=fescolors, opacity=opacity, cmap=cmap, show_scalar_bar=<span class="hljs-keyword">False</span>, interpolate_before_map=<span class="hljs-keyword">True</span>)
         p.show_grid(xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
         p.show()
+        
     <span class="hljs-keyword">if</span> png_name != <span class="hljs-keyword">None</span>:
-        plt.savefig(name)</code></pre>
+        plt.savefig(png_name)</code></pre>
 </details>
 </dd>
 <dt id="metadynminer.Fes.removeCV"><code class="name flex">
@@ -5444,17 +4896,16 @@ If not provided, default values from contours parameters will be used instead.</
 <dd>
 <div class="desc"><p>This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities
 are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. </p>
-<p>Interactivity was working in jupyter notebook/lab with "%matplotlib widget".</p>
 <p>Parameters:</p>
 <ul>
 <li>
 <p>CV = integer, the CV to be removed</p>
 </li>
 <li>
-<p>energy_unit (default="kJ/mol") = has to be either "kJ/mol" or "kcal/mol"</p>
+<p>energy_unit (default="kJ/mol") = has to be either "kJ/mol" or "kcal/mol". Make sure to suply the correct energy unit, otherwise you will get wrong FES as a result. </p>
 </li>
 <li>
-<p>temp (default=300) = temperature of the simulation in Kelvins.</p>
+<p>temp (default=300.0) = temperature of the simulation in Kelvins.</p>
 </li>
 </ul></div>
 <details class="source">
@@ -5466,15 +4917,13 @@ are summed along the CV to be removed, and resulting probability distribution wi
     This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities 
     are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. 
     
-    Interactivity was working in jupyter notebook/lab with "%matplotlib widget".
-    
     Parameters:
     
     * CV = integer, the CV to be removed
     
-    * energy_unit (default="kJ/mol") = has to be either "kJ/mol" or "kcal/mol"
+    * energy_unit (default="kJ/mol") = has to be either "kJ/mol" or "kcal/mol". Make sure to suply the correct energy unit, otherwise you will get wrong FES as a result. 
     
-    * temp (default=300) = temperature of the simulation in Kelvins.
+    * temp (default=300.0) = temperature of the simulation in Kelvins.
     """</span>
     CV = int(float(CV))
     print(<span class="hljs-string">f"Removing CV <span class="hljs-subst">{CV}</span>."</span>)
@@ -5650,19 +5099,6 @@ are summed along the CV to be removed, and resulting probability distribution wi
             <span class="hljs-keyword">return</span> <span class="hljs-keyword">None</span></code></pre>
 </details>
 </dd>
-<dt id="metadynminer.Fes.set_fes"><code class="name flex">
-<span>def <span class="ident">set_fes</span></span>(<span>self, fes)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">set_fes</span><span class="hljs-params">(self, fes)</span>:</span>
-    self.fes = fes</code></pre>
-</details>
-</dd>
 <dt id="metadynminer.Fes.surface_plot"><code class="name flex">
 <span>def <span class="ident">surface_plot</span></span>(<span>self, cmap='jet', energy_unit='kJ/mol', xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[12, 7], rstride=1, cstride=1, vmin=0, vmax=None)</span>
 </code></dt>
@@ -5672,8 +5108,7 @@ are summed along the CV to be removed, and resulting probability distribution wi
 <pre><code class="language-python hljs">%matplotlib widget
 fes.surface_plot()
 </code></pre>
-<p>There are future plans to implement this function using PyVista.
-Hovewer, in current version of PyVista (0.38.5) there is an issue that labels on the 3rd axis for free energy are showing wrong values.</p></div>
+<p>There are future plans to implement this function using the PyVista library.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -5691,8 +5126,7 @@ Hovewer, in current version of PyVista (0.38.5) there is an issue that labels on
     fes.surface_plot()
     ```
     
-    There are future plans to implement this function using PyVista. 
-    Hovewer, in current version of PyVista (0.38.5) there is an issue that labels on the 3rd axis for free energy are showing wrong values. 
+    There are future plans to implement this function using the PyVista library.
     """</span>
     <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">2</span>:
         <span class="hljs-keyword">if</span> self.cv1range==<span class="hljs-keyword">None</span>:
@@ -5767,7 +5201,7 @@ Hovewer, in current version of PyVista (0.38.5) there is an issue that labels on
 <dd>
 <div class="desc"><p>Object of Hills class are created for loading HILLS files, and obtaining the necessary information from them. </p>
 <p>Hills files are loaded with command:</p>
-<pre><code class="language-python hljs">hillsfile = metadynminer.Hills()
+<pre><code class="language-python hljs">hillsfile = metadynminer.Hills(name=<span class="hljs-string">"HILLS"</span>, periodic=[<span class="hljs-keyword">False</span>,<span class="hljs-keyword">False</span>])
 </code></pre>
 <p>optional parameters:</p>
 <ul>
@@ -5800,7 +5234,7 @@ Has to be provided for each periodic CV.</p>
 
     Hills files are loaded with command:
     ```python
-    hillsfile = metadynminer.Hills()
+    hillsfile = metadynminer.Hills(name="HILLS", periodic=[False,False])
     ```
     
     optional parameters:
@@ -5817,9 +5251,8 @@ Has to be provided for each periodic CV.</p>
     
     * cv1per, cv2per, cv3per (defaults = [-numpy.pi, numpy.pi]) = List of two numeric values defining the periodicity of given CV. 
                                         Has to be provided for each periodic CV.
-
-
     """</span>
+    
     <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, name=<span class="hljs-string">"HILLS"</span>, encoding=<span class="hljs-string">"utf8"</span>, ignoretime=True, periodic=[False, False], 
                  cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=None)</span>:</span>
         self.read(name, encoding, ignoretime, periodic, 
@@ -5851,7 +5284,7 @@ Has to be provided for each periodic CV.</p>
                 self.cv1per = cv1per
                 self.cv2per = cv2per
             <span class="hljs-keyword">else</span>:
-                print(<span class="hljs-string">f"Argument 'periodic' has wrong number of parameters(<span class="hljs-subst">{len(periodic)}</span>)"</span>)
+                print(<span class="hljs-string">f"Error: argument 'periodic' has wrong number of parameters(<span class="hljs-subst">{len(periodic)}</span>)"</span>)
         <span class="hljs-keyword">elif</span> number_of_columns_head == <span class="hljs-number">9</span>:
             self.cvs = <span class="hljs-number">3</span>
             self.cv1_name = lines[<span class="hljs-number">0</span>].split()[<span class="hljs-number">3</span>]
@@ -5974,335 +5407,126 @@ Has to be provided for each periodic CV.</p>
         <span class="hljs-keyword">return</span> self.sigma3
     
     <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_heights</span><span class="hljs-params">(self)</span>:</span>
-        <span class="hljs-keyword">return</span>(self.heights)</code></pre>
+        <span class="hljs-keyword">return</span>(self.heights)
+    
+    __pdoc__[<span class="hljs-string">"Hills.get_cv1"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv2"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv3"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv1per"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv2per"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv3per"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv1_name"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv2_name"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_cv3_name"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_periodic"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_hills"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_number_of_cvs"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_sigma1"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_sigma2"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_sigma3"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.get_heights"</span>] = <span class="hljs-keyword">False</span>
+    __pdoc__[<span class="hljs-string">"Hills.read"</span>] = <span class="hljs-keyword">False</span>
+
+    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot_heights</span><span class="hljs-params">(self, png_name=None, energy_unit=<span class="hljs-string">"kJ/mol"</span>, xlabel=None, ylabel=None, label_size=<span class="hljs-number">12</span>, image_size=[<span class="hljs-number">10</span>,<span class="hljs-number">7</span>])</span>:</span>
+        <span class="hljs-string">"""
+        Function used to visualize heights of the hills that were added during the simulation. 
+        
+        ```python
+        hillsfile.plot_heights(png_name="picture.png")
+        ```
+        
+        Parameters:
+        
+        * png_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+        
+        * energy_unit (default="kJ/mol") = String, used in description of the y axis
+        
+        * xlabel, ylabel = Strings, if provided, they will be used as labels for the graphs
+        
+        * labelsize (default = 12) = size of text in labels
+        
+        * image_size (default = [10,7]) = List of the width and height of the picture
+        
+        """</span>
+        plt.figure(figsize=(image_size[<span class="hljs-number">0</span>],image_size[<span class="hljs-number">1</span>]))
+        plt.plot(range(len(self.heights)), self.heights)
+        <span class="hljs-keyword">if</span> xlabel == <span class="hljs-keyword">None</span>:
+            plt.xlabel(<span class="hljs-string">f'time (ps)'</span>, size=label_size)
+        <span class="hljs-keyword">else</span>:
+            plt.xlabel(xlabel, size=label_size)
+        <span class="hljs-keyword">if</span> ylabel == <span class="hljs-keyword">None</span>:
+            plt.ylabel(<span class="hljs-string">f'free energy (<span class="hljs-subst">{energy_unit}</span>)'</span>, size=label_size)
+        <span class="hljs-keyword">else</span>:
+            plt.ylabel(ylabel, size=label_size)
+            
+        <span class="hljs-keyword">if</span> png_name != <span class="hljs-keyword">None</span>:
+            plt.savefig(png_name)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="metadynminer.Hills.get_cv1"><code class="name flex">
-<span>def <span class="ident">get_cv1</span></span>(<span>self)</span>
+<dt id="metadynminer.Hills.plot_heights"><code class="name flex">
+<span>def <span class="ident">plot_heights</span></span>(<span>self, png_name=None, energy_unit='kJ/mol', xlabel=None, ylabel=None, label_size=12, image_size=[10, 7])</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Function used to visualize heights of the hills that were added during the simulation. </p>
+<pre><code class="language-python hljs">hillsfile.plot_heights(png_name=<span class="hljs-string">"picture.png"</span>)
+</code></pre>
+<p>Parameters:</p>
+<ul>
+<li>
+<p>png_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.</p>
+</li>
+<li>
+<p>energy_unit (default="kJ/mol") = String, used in description of the y axis</p>
+</li>
+<li>
+<p>xlabel, ylabel = Strings, if provided, they will be used as labels for the graphs</p>
+</li>
+<li>
+<p>labelsize (default = 12) = size of text in labels</p>
+</li>
+<li>
+<p>image_size (default = [10,7]) = List of the width and height of the picture</p>
+</li>
+</ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_cv1</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.cv1</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_cv1_name"><code class="name flex">
-<span>def <span class="ident">get_cv1_name</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_cv1_name</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.cv1_name</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_cv1per"><code class="name flex">
-<span>def <span class="ident">get_cv1per</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_cv1per</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.cv1per</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_cv2"><code class="name flex">
-<span>def <span class="ident">get_cv2</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_cv2</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.cv2</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_cv2_name"><code class="name flex">
-<span>def <span class="ident">get_cv2_name</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_cv2_name</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.cv2_name</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_cv2per"><code class="name flex">
-<span>def <span class="ident">get_cv2per</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_cv2per</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.cv2per</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_cv3"><code class="name flex">
-<span>def <span class="ident">get_cv3</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_cv3</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.cv3</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_cv3_name"><code class="name flex">
-<span>def <span class="ident">get_cv3_name</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_cv3_name</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.cv3_name</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_cv3per"><code class="name flex">
-<span>def <span class="ident">get_cv3per</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_cv3per</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.cv3per</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_heights"><code class="name flex">
-<span>def <span class="ident">get_heights</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_heights</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span>(self.heights)</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_hills"><code class="name flex">
-<span>def <span class="ident">get_hills</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_hills</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.hills</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_number_of_cvs"><code class="name flex">
-<span>def <span class="ident">get_number_of_cvs</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_number_of_cvs</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.cvs</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_periodic"><code class="name flex">
-<span>def <span class="ident">get_periodic</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_periodic</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.periodic</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_sigma1"><code class="name flex">
-<span>def <span class="ident">get_sigma1</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_sigma1</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.sigma1</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_sigma2"><code class="name flex">
-<span>def <span class="ident">get_sigma2</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_sigma2</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.sigma2</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.get_sigma3"><code class="name flex">
-<span>def <span class="ident">get_sigma3</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_sigma3</span><span class="hljs-params">(self)</span>:</span>
-    <span class="hljs-keyword">return</span> self.sigma3</code></pre>
-</details>
-</dd>
-<dt id="metadynminer.Hills.read"><code class="name flex">
-<span>def <span class="ident">read</span></span>(<span>self, name='HILLS', encoding='utf8', ignoretime=True, periodic=None, cv1per=[-3.141592653589793, 3.141592653589793], cv2per=[-3.141592653589793, 3.141592653589793], cv3per=[-3.141592653589793, 3.141592653589793], timestep=None)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">read</span><span class="hljs-params">(self, name=<span class="hljs-string">"HILLS"</span>, encoding=<span class="hljs-string">"utf8"</span>, ignoretime=True, periodic=None, 
-             cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=None)</span>:</span>
-    <span class="hljs-keyword">with</span> open(name, <span class="hljs-string">'r'</span>, encoding=encoding) <span class="hljs-keyword">as</span> hillsfile:
-        lines = hillsfile.readlines()
-    columns = lines[<span class="hljs-number">0</span>].split() 
-    number_of_columns_head = len(columns) - <span class="hljs-number">2</span>
+<pre><code class="python hljs"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">plot_heights</span><span class="hljs-params">(self, png_name=None, energy_unit=<span class="hljs-string">"kJ/mol"</span>, xlabel=None, ylabel=None, label_size=<span class="hljs-number">12</span>, image_size=[<span class="hljs-number">10</span>,<span class="hljs-number">7</span>])</span>:</span>
+    <span class="hljs-string">"""
+    Function used to visualize heights of the hills that were added during the simulation. 
     
-    <span class="hljs-keyword">if</span> number_of_columns_head == <span class="hljs-number">5</span>:
-        self.cvs = <span class="hljs-number">1</span>
-        self.cv1_name = lines[<span class="hljs-number">0</span>].split()[<span class="hljs-number">3</span>]
-        <span class="hljs-keyword">if</span> periodic == <span class="hljs-keyword">None</span>:
-            periodic = list(<span class="hljs-keyword">False</span>)
-        
-        self.periodic = list(periodic[<span class="hljs-number">0</span>:<span class="hljs-number">1</span>])
-        self.cv1per = cv1per
-
-    <span class="hljs-keyword">elif</span> number_of_columns_head == <span class="hljs-number">7</span>:
-        self.cvs = <span class="hljs-number">2</span>
-        self.cv1_name = lines[<span class="hljs-number">0</span>].split()[<span class="hljs-number">3</span>]
-        self.cv2_name = lines[<span class="hljs-number">0</span>].split()[<span class="hljs-number">4</span>]
-        <span class="hljs-keyword">if</span> len(periodic) == <span class="hljs-number">2</span>:
-            self.periodic = periodic[<span class="hljs-number">0</span>:<span class="hljs-number">2</span>]
-            self.cv1per = cv1per
-            self.cv2per = cv2per
-        <span class="hljs-keyword">else</span>:
-            print(<span class="hljs-string">f"Argument 'periodic' has wrong number of parameters(<span class="hljs-subst">{len(periodic)}</span>)"</span>)
-    <span class="hljs-keyword">elif</span> number_of_columns_head == <span class="hljs-number">9</span>:
-        self.cvs = <span class="hljs-number">3</span>
-        self.cv1_name = lines[<span class="hljs-number">0</span>].split()[<span class="hljs-number">3</span>]
-        self.cv2_name = lines[<span class="hljs-number">0</span>].split()[<span class="hljs-number">4</span>]
-        self.cv3_name = lines[<span class="hljs-number">0</span>].split()[<span class="hljs-number">5</span>]
-        
-        <span class="hljs-keyword">if</span> len(periodic) == <span class="hljs-number">3</span>:
-            self.periodic = periodic[<span class="hljs-number">0</span>:<span class="hljs-number">3</span>]
-            self.cv1per = cv1per
-            self.cv2per = cv2per
-            self.cv3per = cv3per
-        <span class="hljs-keyword">else</span>:
-            print(<span class="hljs-string">f"Argument 'periodic' has wrong number of parameters(<span class="hljs-subst">{len(periodic)}</span>)"</span>)
+    ```python
+    hillsfile.plot_heights(png_name="picture.png")
+    ```
+    
+    Parameters:
+    
+    * png_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+    
+    * energy_unit (default="kJ/mol") = String, used in description of the y axis
+    
+    * xlabel, ylabel = Strings, if provided, they will be used as labels for the graphs
+    
+    * labelsize (default = 12) = size of text in labels
+    
+    * image_size (default = [10,7]) = List of the width and height of the picture
+    
+    """</span>
+    plt.figure(figsize=(image_size[<span class="hljs-number">0</span>],image_size[<span class="hljs-number">1</span>]))
+    plt.plot(range(len(self.heights)), self.heights)
+    <span class="hljs-keyword">if</span> xlabel == <span class="hljs-keyword">None</span>:
+        plt.xlabel(<span class="hljs-string">f'time (ps)'</span>, size=label_size)
     <span class="hljs-keyword">else</span>:
-        print(<span class="hljs-string">"Unexpected number of columns in provided HILLS file."</span>)
-    
-    
-    <span class="hljs-keyword">if</span> ignoretime:
-        <span class="hljs-keyword">if</span> timestep != <span class="hljs-keyword">None</span>:
-            dt = timestep
-        <span class="hljs-keyword">else</span>:
-            <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> range(len(lines)):
-                <span class="hljs-keyword">if</span> lines[line][<span class="hljs-number">0</span>] != <span class="hljs-string">"#"</span>:
-                    dt = round(float(lines[line].split()[<span class="hljs-number">0</span>]),<span class="hljs-number">14</span>)
-                    <span class="hljs-keyword">break</span>
-    t = <span class="hljs-number">0</span>
-    <span class="hljs-keyword">for</span> line <span class="hljs-keyword">in</span> range(len(lines)):
-        <span class="hljs-keyword">if</span> lines[line][<span class="hljs-number">0</span>] != <span class="hljs-string">"#"</span>:
-            t += <span class="hljs-number">1</span> 
-            <span class="hljs-keyword">if</span> t == <span class="hljs-number">1</span>:
-                <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">1</span>:
-                    self.sigma1 = float(lines[line].split()[<span class="hljs-number">2</span>])
-                    self.biasf = float(lines[line].split()[<span class="hljs-number">4</span>])
-                <span class="hljs-keyword">elif</span> self.cvs == <span class="hljs-number">2</span>:
-                    self.sigma1 = float(lines[line].split()[<span class="hljs-number">3</span>])
-                    self.sigma2 = float(lines[line].split()[<span class="hljs-number">4</span>])
-                    self.biasf = float(lines[line].split()[<span class="hljs-number">6</span>])
-                <span class="hljs-keyword">elif</span> self.cvs == <span class="hljs-number">3</span>:
-                    self.sigma1 = float(lines[line].split()[<span class="hljs-number">4</span>])
-                    self.sigma2 = float(lines[line].split()[<span class="hljs-number">5</span>])
-                    self.sigma3 = float(lines[line].split()[<span class="hljs-number">6</span>])
-                    self.biasf = float(lines[line].split()[<span class="hljs-number">8</span>])
-                self.hills = [lines[line].split()]
-            <span class="hljs-keyword">else</span>:
-                <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">1</span> <span class="hljs-keyword">and</span> len(lines[line].split()) == <span class="hljs-number">5</span>:
-                    self.hills.append(lines[line].split())
-                    <span class="hljs-keyword">if</span> ignoretime:
-                        self.hills[t<span class="hljs-number">-1</span>][<span class="hljs-number">0</span>] = t*dt
-                <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">2</span> <span class="hljs-keyword">and</span> len(lines[line].split()) == <span class="hljs-number">7</span>:
-                    self.hills.append(lines[line].split())
-                    <span class="hljs-keyword">if</span> ignoretime:
-                        self.hills[t<span class="hljs-number">-1</span>][<span class="hljs-number">0</span>] = t*dt
-                <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">3</span> <span class="hljs-keyword">and</span> len(lines[line].split()) == <span class="hljs-number">9</span>:
-                    self.hills.append(lines[line].split())
-                    <span class="hljs-keyword">if</span> ignoretime:
-                        self.hills[t<span class="hljs-number">-1</span>][<span class="hljs-number">0</span>] = t*dt
-                
-    
-    self.hills = np.array(self.hills, dtype=np.double)
-            
-    <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">1</span>:
-        self.cv1 = self.hills[:,<span class="hljs-number">1</span>]
-        self.sigma1 = self.hills[:,<span class="hljs-number">2</span>]
-        self.heights = self.hills[:,<span class="hljs-number">3</span>]
-        self.biasf = self.hills[:,<span class="hljs-number">4</span>]
-    <span class="hljs-keyword">elif</span> self.cvs == <span class="hljs-number">2</span>:
-        self.cv1 = self.hills[:,<span class="hljs-number">1</span>]
-        self.cv2 = self.hills[:,<span class="hljs-number">2</span>]
-        self.sigma1 = self.hills[:,<span class="hljs-number">3</span>]
-        self.sigma2 = self.hills[:,<span class="hljs-number">4</span>]
-        self.heights = self.hills[:,<span class="hljs-number">5</span>]
-        self.biasf = self.hills[:,<span class="hljs-number">6</span>]
-    <span class="hljs-keyword">elif</span> self.cvs == <span class="hljs-number">3</span>:
-        self.cv1 = self.hills[:,<span class="hljs-number">1</span>]
-        self.cv2 = self.hills[:,<span class="hljs-number">2</span>]
-        self.cv3 = self.hills[:,<span class="hljs-number">3</span>]
-        self.sigma1 = self.hills[:,<span class="hljs-number">4</span>]
-        self.sigma2 = self.hills[:,<span class="hljs-number">5</span>]
-        self.sigma3 = self.hills[:,<span class="hljs-number">6</span>]
-        self.heights = self.hills[:,<span class="hljs-number">7</span>]
-        self.biasf = self.hills[:,<span class="hljs-number">8</span>]
-    <span class="hljs-keyword">return</span> self</code></pre>
+        plt.xlabel(xlabel, size=label_size)
+    <span class="hljs-keyword">if</span> ylabel == <span class="hljs-keyword">None</span>:
+        plt.ylabel(<span class="hljs-string">f'free energy (<span class="hljs-subst">{energy_unit}</span>)'</span>, size=label_size)
+    <span class="hljs-keyword">else</span>:
+        plt.ylabel(ylabel, size=label_size)
+        
+    <span class="hljs-keyword">if</span> png_name != <span class="hljs-keyword">None</span>:
+        plt.savefig(png_name)</code></pre>
 </details>
 </dd>
 </dl>
@@ -6364,8 +5588,8 @@ if this point is really a local minimum by comparing to the surrounding points o
     
     * nbins (default = 8) = number of bins to divide the FES
     """</span>
+    
     <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">__init__</span><span class="hljs-params">(self, fes, nbins = <span class="hljs-number">8</span>)</span>:</span>
-        super().__init__(fes.hills, calculate_new_fes=<span class="hljs-keyword">False</span>)
         self.fes = fes.fes
         self.periodic = fes.periodic
         self.cvs = fes.cvs
@@ -6375,14 +5599,17 @@ if this point is really a local minimum by comparing to the surrounding points o
             self.cv1_name = fes.cv1_name
             self.cv1min = fes.cv1min
             self.cv1max = fes.cv1max
+            self.cv1per = fes.cv1per
         <span class="hljs-keyword">if</span> self.cvs &gt;= <span class="hljs-number">2</span>:
             self.cv2min = fes.cv2min
             self.cv2max = fes.cv2max
             self.cv2_name = fes.cv2_name
+            self.cv2per = fes.cv2per
         <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">3</span>:
             self.cv3min = fes.cv3min
             self.cv3max = fes.cv3max
             self.cv3_name = fes.cv3_name
+            self.cv3per = fes.cv3per
         
         self.findminima(nbins=nbins)
 
@@ -6426,7 +5653,6 @@ if this point is really a local minimum by comparing to the surrounding points o
         self.minima = []
         <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">1</span>:
             <span class="hljs-keyword">for</span> bin1 <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>,nbins):
-                
                 fes_slice = self.fes[bin1*bin_size:(bin1+<span class="hljs-number">1</span>)*bin_size]
                 bin_min = np.min(fes_slice)
                 argmin = np.argmin(fes_slice)
@@ -6436,10 +5662,10 @@ if this point is really a local minimum by comparing to the surrounding points o
                 min_cv1_b = int(bin_min_arg_cv1+bin1*bin_size)
                 <span class="hljs-keyword">if</span> (bin_min_arg_cv1 &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> bin_min_arg_cv1&lt;(bin_size<span class="hljs-number">-1</span>)):
                     min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
-                    <span class="hljs-keyword">if</span> self.minima == []:
-                        self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])
+                    <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
+                        self.minima = np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])
                     <span class="hljs-keyword">else</span>:
-                        self.minima=np.vstack((self.minima, np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])))
+                        self.minima = np.vstack((self.minima, np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])))
                 <span class="hljs-keyword">else</span>:
                     around = []
                     min_cv1_b_low = min_cv1_b - <span class="hljs-number">1</span>
@@ -6465,7 +5691,7 @@ if this point is really a local minimum by comparing to the surrounding points o
                     
                     <span class="hljs-keyword">if</span> bin_min &lt; np.min(around):
                         min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
-                        <span class="hljs-keyword">if</span> self.minima == []:
+                        <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                             self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])
                         <span class="hljs-keyword">else</span>:
                             self.minima=np.vstack((self.minima, np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])))
@@ -6486,7 +5712,7 @@ if this point is really a local minimum by comparing to the surrounding points o
                                     <span class="hljs-keyword">and</span> (bin_min_arg[<span class="hljs-number">1</span>] &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> bin_min_arg[<span class="hljs-number">1</span>]&lt;(bin_size<span class="hljs-number">-1</span>)):
                         min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
                         min_cv2 = (((min_cv2_b+<span class="hljs-number">0.5</span>)/self.res)*(cv2max-cv2min))+cv2min
-                        <span class="hljs-keyword">if</span> self.minima == []:
+                        <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                             self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b),\
                                                   int(min_cv2_b), round(min_cv1, <span class="hljs-number">6</span>), round(min_cv2, <span class="hljs-number">6</span>)])
                         <span class="hljs-keyword">else</span>:
@@ -6543,7 +5769,7 @@ if this point is really a local minimum by comparing to the surrounding points o
                         <span class="hljs-keyword">if</span> bin_min &lt; np.min(around):
                             min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
                             min_cv2 = (((min_cv2_b+<span class="hljs-number">0.5</span>)/self.res)*(cv2max-cv2min))+cv2min
-                            <span class="hljs-keyword">if</span> self.minima == []:
+                            <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                                 self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), int(min_cv2_b), \
                                                       round(min_cv1, <span class="hljs-number">6</span>), round(min_cv2, <span class="hljs-number">6</span>)])
                             <span class="hljs-keyword">else</span>:
@@ -6570,7 +5796,7 @@ if this point is really a local minimum by comparing to the surrounding points o
                             min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
                             min_cv2 = (((min_cv2_b+<span class="hljs-number">0.5</span>)/self.res)*(cv2max-cv2min))+cv2min
                             min_cv3 = (((min_cv3_b+<span class="hljs-number">0.5</span>)/self.res)*(cv3max-cv3min))+cv3min
-                            <span class="hljs-keyword">if</span> self.minima == []:
+                            <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                                 self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b),\
                                                       int(min_cv2_b), int(min_cv3_b), round(min_cv1, <span class="hljs-number">6</span>), \
                                                       round(min_cv2, <span class="hljs-number">6</span>), round(min_cv3, <span class="hljs-number">6</span>)])
@@ -6689,7 +5915,7 @@ if this point is really a local minimum by comparing to the surrounding points o
                                 min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
                                 min_cv2 = (((min_cv2_b+<span class="hljs-number">0.5</span>)/self.res)*(cv2max-cv2min))+cv2min
                                 min_cv3 = (((min_cv3_b+<span class="hljs-number">0.5</span>)/self.res)*(cv3max-cv3min))+cv3min
-                                <span class="hljs-keyword">if</span> self.minima == []:
+                                <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                                     self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b),\
                                                       int(min_cv2_b), int(min_cv3_b), round(min_cv1, <span class="hljs-number">6</span>), \
                                                       round(min_cv2, <span class="hljs-number">6</span>), round(min_cv3, <span class="hljs-number">6</span>)])
@@ -6717,7 +5943,11 @@ if this point is really a local minimum by comparing to the surrounding points o
             self.minima = np.append(<span class="hljs-string">"A"</span>, self.minima)
         
         <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">1</span>:
-            self.minima = pd.DataFrame(self.minima, columns = [<span class="hljs-string">"Minimum"</span>, <span class="hljs-string">"free energy"</span>, <span class="hljs-string">"CV1bin"</span>, <span class="hljs-string">"CV1 - "</span>+self.cv1_name])
+            <span class="hljs-keyword">if</span> len(self.minima.shape)&gt;<span class="hljs-number">1</span>:
+                self.minima = pd.DataFrame(np.array(self.minima), columns = [<span class="hljs-string">"Minimum"</span>, <span class="hljs-string">"free energy"</span>, <span class="hljs-string">"CV1bin"</span>, <span class="hljs-string">"CV1 - "</span>+self.cv1_name])
+            <span class="hljs-keyword">elif</span> len(self.minima.shape) == <span class="hljs-number">1</span>:
+                self.minima = pd.DataFrame([self.minima], columns = [<span class="hljs-string">"Minimum"</span>, <span class="hljs-string">"free energy"</span>, <span class="hljs-string">"CV1bin"</span>, <span class="hljs-string">"CV1 - "</span>+self.cv1_name])
+                
         <span class="hljs-keyword">elif</span> self.cvs == <span class="hljs-number">2</span>:
             <span class="hljs-keyword">if</span> len(self.minima.shape)&gt;<span class="hljs-number">1</span>:
                 self.minima = pd.DataFrame(np.array(self.minima), columns = [<span class="hljs-string">"Minimum"</span>, <span class="hljs-string">"free energy"</span>, <span class="hljs-string">"CV1bin"</span>, <span class="hljs-string">"CV2bin"</span>, 
@@ -6742,7 +5972,7 @@ if this point is really a local minimum by comparing to the surrounding points o
         with the positions of local minima shown as letters on the graph.
         
         ```python
-        minima.plot()
+        minima.plot(png_name="minima.png")
         ```
         
         Parameters:
@@ -6941,7 +6171,30 @@ if this point is really a local minimum by comparing to the surrounding points o
                  xlabel=None, ylabel=None, zlabel=None, label_size=<span class="hljs-number">12</span>, image_size=[<span class="hljs-number">10</span>,<span class="hljs-number">7</span>], 
                   opacity=<span class="hljs-number">0.2</span>, levels=None, show_points=True, point_size=<span class="hljs-number">4.0</span>, frames=<span class="hljs-number">64</span>)</span>:</span>
         <span class="hljs-string">"""
-        Equvivalent to Fes.make_gif()
+        Function that generates animation of 3D FES showing different isosurfaces.
+        
+        ```python
+        fes.make_gif(gif_name="FES.gif")
+        ```
+        
+        Parameters:
+        
+        * gif_name (default="minima.gif") = String. Name of the gif that will be saved in the working directory.
+        
+        * cmap (default = "jet") = Matplotlib colormap used to color the 3D FES
+        
+        * xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graph
+        
+        * labelsize (default = 12) = size of text in labels
+        
+        * image_size (default = [10,7]) = List of the width and height of the picture
+        
+        * opacity (default = 0.2) = number between 0 and 1, is the opacity of isosurfaces of 3D FES
+        
+        * levels = Here you can specify list of free energy values for isosurfaces on 3D FES. 
+                If not provided, default values from contours parameters will be used instead. 
+        
+        * frames (default = 64) = Number of frames the animation will be made of. 
         """</span>
         <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">3</span>:
             values = np.linspace(np.min(self.fes)+<span class="hljs-number">1</span>, np.max(self.fes), num=frames)
@@ -6954,8 +6207,6 @@ if this point is really a local minimum by comparing to the surrounding points o
             surface = grid.contour(values[:<span class="hljs-number">1</span>])
             surfaces = [grid.contour([v]) <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> values]
             surface = surfaces[<span class="hljs-number">0</span>].copy()
-            <span class="hljs-keyword">if</span> gif_name == <span class="hljs-keyword">None</span>:
-                gif_name = <span class="hljs-string">"FES.gif"</span>
             
             pv.set_plot_theme(<span class="hljs-string">'document'</span>)
             plotter = pv.Plotter(off_screen=<span class="hljs-keyword">True</span>)
@@ -7051,7 +6302,6 @@ if this point is really a local minimum by comparing to the surrounding points o
         self.minima = []
         <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">1</span>:
             <span class="hljs-keyword">for</span> bin1 <span class="hljs-keyword">in</span> range(<span class="hljs-number">0</span>,nbins):
-                
                 fes_slice = self.fes[bin1*bin_size:(bin1+<span class="hljs-number">1</span>)*bin_size]
                 bin_min = np.min(fes_slice)
                 argmin = np.argmin(fes_slice)
@@ -7061,10 +6311,10 @@ if this point is really a local minimum by comparing to the surrounding points o
                 min_cv1_b = int(bin_min_arg_cv1+bin1*bin_size)
                 <span class="hljs-keyword">if</span> (bin_min_arg_cv1 &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> bin_min_arg_cv1&lt;(bin_size<span class="hljs-number">-1</span>)):
                     min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
-                    <span class="hljs-keyword">if</span> self.minima == []:
-                        self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])
+                    <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
+                        self.minima = np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])
                     <span class="hljs-keyword">else</span>:
-                        self.minima=np.vstack((self.minima, np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])))
+                        self.minima = np.vstack((self.minima, np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])))
                 <span class="hljs-keyword">else</span>:
                     around = []
                     min_cv1_b_low = min_cv1_b - <span class="hljs-number">1</span>
@@ -7090,7 +6340,7 @@ if this point is really a local minimum by comparing to the surrounding points o
                     
                     <span class="hljs-keyword">if</span> bin_min &lt; np.min(around):
                         min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
-                        <span class="hljs-keyword">if</span> self.minima == []:
+                        <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                             self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])
                         <span class="hljs-keyword">else</span>:
                             self.minima=np.vstack((self.minima, np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), round(min_cv1, <span class="hljs-number">6</span>)])))
@@ -7111,7 +6361,7 @@ if this point is really a local minimum by comparing to the surrounding points o
                                     <span class="hljs-keyword">and</span> (bin_min_arg[<span class="hljs-number">1</span>] &gt; <span class="hljs-number">0</span> <span class="hljs-keyword">and</span> bin_min_arg[<span class="hljs-number">1</span>]&lt;(bin_size<span class="hljs-number">-1</span>)):
                         min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
                         min_cv2 = (((min_cv2_b+<span class="hljs-number">0.5</span>)/self.res)*(cv2max-cv2min))+cv2min
-                        <span class="hljs-keyword">if</span> self.minima == []:
+                        <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                             self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b),\
                                                   int(min_cv2_b), round(min_cv1, <span class="hljs-number">6</span>), round(min_cv2, <span class="hljs-number">6</span>)])
                         <span class="hljs-keyword">else</span>:
@@ -7168,7 +6418,7 @@ if this point is really a local minimum by comparing to the surrounding points o
                         <span class="hljs-keyword">if</span> bin_min &lt; np.min(around):
                             min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
                             min_cv2 = (((min_cv2_b+<span class="hljs-number">0.5</span>)/self.res)*(cv2max-cv2min))+cv2min
-                            <span class="hljs-keyword">if</span> self.minima == []:
+                            <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                                 self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b), int(min_cv2_b), \
                                                       round(min_cv1, <span class="hljs-number">6</span>), round(min_cv2, <span class="hljs-number">6</span>)])
                             <span class="hljs-keyword">else</span>:
@@ -7195,7 +6445,7 @@ if this point is really a local minimum by comparing to the surrounding points o
                             min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
                             min_cv2 = (((min_cv2_b+<span class="hljs-number">0.5</span>)/self.res)*(cv2max-cv2min))+cv2min
                             min_cv3 = (((min_cv3_b+<span class="hljs-number">0.5</span>)/self.res)*(cv3max-cv3min))+cv3min
-                            <span class="hljs-keyword">if</span> self.minima == []:
+                            <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                                 self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b),\
                                                       int(min_cv2_b), int(min_cv3_b), round(min_cv1, <span class="hljs-number">6</span>), \
                                                       round(min_cv2, <span class="hljs-number">6</span>), round(min_cv3, <span class="hljs-number">6</span>)])
@@ -7314,7 +6564,7 @@ if this point is really a local minimum by comparing to the surrounding points o
                                 min_cv1 = (((min_cv1_b+<span class="hljs-number">0.5</span>)/self.res)*(cv1max-cv1min))+cv1min
                                 min_cv2 = (((min_cv2_b+<span class="hljs-number">0.5</span>)/self.res)*(cv2max-cv2min))+cv2min
                                 min_cv3 = (((min_cv3_b+<span class="hljs-number">0.5</span>)/self.res)*(cv3max-cv3min))+cv3min
-                                <span class="hljs-keyword">if</span> self.minima == []:
+                                <span class="hljs-keyword">if</span> len(self.minima) == <span class="hljs-number">0</span>:
                                     self.minima=np.array([round(bin_min, <span class="hljs-number">6</span>), int(min_cv1_b),\
                                                       int(min_cv2_b), int(min_cv3_b), round(min_cv1, <span class="hljs-number">6</span>), \
                                                       round(min_cv2, <span class="hljs-number">6</span>), round(min_cv3, <span class="hljs-number">6</span>)])
@@ -7342,7 +6592,11 @@ if this point is really a local minimum by comparing to the surrounding points o
             self.minima = np.append(<span class="hljs-string">"A"</span>, self.minima)
         
         <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">1</span>:
-            self.minima = pd.DataFrame(self.minima, columns = [<span class="hljs-string">"Minimum"</span>, <span class="hljs-string">"free energy"</span>, <span class="hljs-string">"CV1bin"</span>, <span class="hljs-string">"CV1 - "</span>+self.cv1_name])
+            <span class="hljs-keyword">if</span> len(self.minima.shape)&gt;<span class="hljs-number">1</span>:
+                self.minima = pd.DataFrame(np.array(self.minima), columns = [<span class="hljs-string">"Minimum"</span>, <span class="hljs-string">"free energy"</span>, <span class="hljs-string">"CV1bin"</span>, <span class="hljs-string">"CV1 - "</span>+self.cv1_name])
+            <span class="hljs-keyword">elif</span> len(self.minima.shape) == <span class="hljs-number">1</span>:
+                self.minima = pd.DataFrame([self.minima], columns = [<span class="hljs-string">"Minimum"</span>, <span class="hljs-string">"free energy"</span>, <span class="hljs-string">"CV1bin"</span>, <span class="hljs-string">"CV1 - "</span>+self.cv1_name])
+                
         <span class="hljs-keyword">elif</span> self.cvs == <span class="hljs-number">2</span>:
             <span class="hljs-keyword">if</span> len(self.minima.shape)&gt;<span class="hljs-number">1</span>:
                 self.minima = pd.DataFrame(np.array(self.minima), columns = [<span class="hljs-string">"Minimum"</span>, <span class="hljs-string">"free energy"</span>, <span class="hljs-string">"CV1bin"</span>, <span class="hljs-string">"CV2bin"</span>, 
@@ -7363,7 +6617,37 @@ if this point is really a local minimum by comparing to the surrounding points o
 <span>def <span class="ident">make_gif</span></span>(<span>self, gif_name=None, cmap='jet', xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10, 7], opacity=0.2, levels=None, show_points=True, point_size=4.0, frames=64)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Equvivalent to Fes.make_gif()</p></div>
+<div class="desc"><p>Function that generates animation of 3D FES showing different isosurfaces.</p>
+<pre><code class="language-python hljs">fes.make_gif(gif_name=<span class="hljs-string">"FES.gif"</span>)
+</code></pre>
+<p>Parameters:</p>
+<ul>
+<li>
+<p>gif_name (default="minima.gif") = String. Name of the gif that will be saved in the working directory.</p>
+</li>
+<li>
+<p>cmap (default = "jet") = Matplotlib colormap used to color the 3D FES</p>
+</li>
+<li>
+<p>xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graph</p>
+</li>
+<li>
+<p>labelsize (default = 12) = size of text in labels</p>
+</li>
+<li>
+<p>image_size (default = [10,7]) = List of the width and height of the picture</p>
+</li>
+<li>
+<p>opacity (default = 0.2) = number between 0 and 1, is the opacity of isosurfaces of 3D FES</p>
+</li>
+<li>
+<p>levels = Here you can specify list of free energy values for isosurfaces on 3D FES.
+If not provided, default values from contours parameters will be used instead. </p>
+</li>
+<li>
+<p>frames (default = 64) = Number of frames the animation will be made of.</p>
+</li>
+</ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -7372,7 +6656,30 @@ if this point is really a local minimum by comparing to the surrounding points o
              xlabel=None, ylabel=None, zlabel=None, label_size=<span class="hljs-number">12</span>, image_size=[<span class="hljs-number">10</span>,<span class="hljs-number">7</span>], 
               opacity=<span class="hljs-number">0.2</span>, levels=None, show_points=True, point_size=<span class="hljs-number">4.0</span>, frames=<span class="hljs-number">64</span>)</span>:</span>
     <span class="hljs-string">"""
-    Equvivalent to Fes.make_gif()
+    Function that generates animation of 3D FES showing different isosurfaces.
+    
+    ```python
+    fes.make_gif(gif_name="FES.gif")
+    ```
+    
+    Parameters:
+    
+    * gif_name (default="minima.gif") = String. Name of the gif that will be saved in the working directory.
+    
+    * cmap (default = "jet") = Matplotlib colormap used to color the 3D FES
+    
+    * xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graph
+    
+    * labelsize (default = 12) = size of text in labels
+    
+    * image_size (default = [10,7]) = List of the width and height of the picture
+    
+    * opacity (default = 0.2) = number between 0 and 1, is the opacity of isosurfaces of 3D FES
+    
+    * levels = Here you can specify list of free energy values for isosurfaces on 3D FES. 
+            If not provided, default values from contours parameters will be used instead. 
+    
+    * frames (default = 64) = Number of frames the animation will be made of. 
     """</span>
     <span class="hljs-keyword">if</span> self.cvs == <span class="hljs-number">3</span>:
         values = np.linspace(np.min(self.fes)+<span class="hljs-number">1</span>, np.max(self.fes), num=frames)
@@ -7385,8 +6692,6 @@ if this point is really a local minimum by comparing to the surrounding points o
         surface = grid.contour(values[:<span class="hljs-number">1</span>])
         surfaces = [grid.contour([v]) <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> values]
         surface = surfaces[<span class="hljs-number">0</span>].copy()
-        <span class="hljs-keyword">if</span> gif_name == <span class="hljs-keyword">None</span>:
-            gif_name = <span class="hljs-string">"FES.gif"</span>
         
         pv.set_plot_theme(<span class="hljs-string">'document'</span>)
         plotter = pv.Plotter(off_screen=<span class="hljs-keyword">True</span>)
@@ -7438,7 +6743,7 @@ if this point is really a local minimum by comparing to the surrounding points o
 <dd>
 <div class="desc"><p>The same function as for visualizing Fes objects, but this time
 with the positions of local minima shown as letters on the graph.</p>
-<pre><code class="language-python hljs">minima.plot()
+<pre><code class="language-python hljs">minima.plot(png_name=<span class="hljs-string">"minima.png"</span>)
 </code></pre>
 <p>Parameters:</p>
 <ul>
@@ -7507,7 +6812,7 @@ If not provided, default values from contours parameters will be used instead. <
     with the positions of local minima shown as letters on the graph.
     
     ```python
-    minima.plot()
+    minima.plot(png_name="minima.png")
     ```
     
     Parameters:
@@ -7714,60 +7019,36 @@ If not provided, default values from contours parameters will be used instead. <
 <ul></ul>
 </div>
 <ul id="index">
-<li><h3><a href="http://localhost:8080/metadynminer/#header-variables">Global variables</a></h3>
-<ul class="">
-<li><code><a title="metadynminer.name" href="http://localhost:8080/metadynminer/index.html#metadynminer.name">name</a></code></li>
-</ul>
-</li>
-<li><h3><a href="http://localhost:8080/metadynminer/#header-classes">Classes</a></h3>
+<li><h3><a href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="metadynminer.FEProfile" href="http://localhost:8080/metadynminer/index.html#metadynminer.FEProfile">FEProfile</a></code></h4>
+<h4><code><a title="metadynminer.FEProfile" href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#metadynminer.FEProfile">FEProfile</a></code></h4>
 <ul class="">
-<li><code><a title="metadynminer.FEProfile.makefeprofile" href="http://localhost:8080/metadynminer/index.html#metadynminer.FEProfile.makefeprofile">makefeprofile</a></code></li>
-<li><code><a title="metadynminer.FEProfile.plot" href="http://localhost:8080/metadynminer/index.html#metadynminer.FEProfile.plot">plot</a></code></li>
+<li><code><a title="metadynminer.FEProfile.makefeprofile" href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#metadynminer.FEProfile.makefeprofile">makefeprofile</a></code></li>
+<li><code><a title="metadynminer.FEProfile.plot" href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#metadynminer.FEProfile.plot">plot</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="metadynminer.Fes" href="http://localhost:8080/metadynminer/index.html#metadynminer.Fes">Fes</a></code></h4>
-<ul class="two-column">
-<li><code><a title="metadynminer.Fes.make_gif" href="http://localhost:8080/metadynminer/index.html#metadynminer.Fes.make_gif">make_gif</a></code></li>
-<li><code><a title="metadynminer.Fes.makefes" href="http://localhost:8080/metadynminer/index.html#metadynminer.Fes.makefes">makefes</a></code></li>
-<li><code><a title="metadynminer.Fes.makefes2" href="http://localhost:8080/metadynminer/index.html#metadynminer.Fes.makefes2">makefes2</a></code></li>
-<li><code><a title="metadynminer.Fes.plot" href="http://localhost:8080/metadynminer/index.html#metadynminer.Fes.plot">plot</a></code></li>
-<li><code><a title="metadynminer.Fes.removeCV" href="http://localhost:8080/metadynminer/index.html#metadynminer.Fes.removeCV">removeCV</a></code></li>
-<li><code><a title="metadynminer.Fes.set_fes" href="http://localhost:8080/metadynminer/index.html#metadynminer.Fes.set_fes">set_fes</a></code></li>
-<li><code><a title="metadynminer.Fes.surface_plot" href="http://localhost:8080/metadynminer/index.html#metadynminer.Fes.surface_plot">surface_plot</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="metadynminer.Hills" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills">Hills</a></code></h4>
-<ul class="two-column">
-<li><code><a title="metadynminer.Hills.get_cv1" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_cv1">get_cv1</a></code></li>
-<li><code><a title="metadynminer.Hills.get_cv1_name" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_cv1_name">get_cv1_name</a></code></li>
-<li><code><a title="metadynminer.Hills.get_cv1per" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_cv1per">get_cv1per</a></code></li>
-<li><code><a title="metadynminer.Hills.get_cv2" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_cv2">get_cv2</a></code></li>
-<li><code><a title="metadynminer.Hills.get_cv2_name" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_cv2_name">get_cv2_name</a></code></li>
-<li><code><a title="metadynminer.Hills.get_cv2per" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_cv2per">get_cv2per</a></code></li>
-<li><code><a title="metadynminer.Hills.get_cv3" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_cv3">get_cv3</a></code></li>
-<li><code><a title="metadynminer.Hills.get_cv3_name" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_cv3_name">get_cv3_name</a></code></li>
-<li><code><a title="metadynminer.Hills.get_cv3per" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_cv3per">get_cv3per</a></code></li>
-<li><code><a title="metadynminer.Hills.get_heights" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_heights">get_heights</a></code></li>
-<li><code><a title="metadynminer.Hills.get_hills" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_hills">get_hills</a></code></li>
-<li><code><a title="metadynminer.Hills.get_number_of_cvs" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_number_of_cvs">get_number_of_cvs</a></code></li>
-<li><code><a title="metadynminer.Hills.get_periodic" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_periodic">get_periodic</a></code></li>
-<li><code><a title="metadynminer.Hills.get_sigma1" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_sigma1">get_sigma1</a></code></li>
-<li><code><a title="metadynminer.Hills.get_sigma2" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_sigma2">get_sigma2</a></code></li>
-<li><code><a title="metadynminer.Hills.get_sigma3" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.get_sigma3">get_sigma3</a></code></li>
-<li><code><a title="metadynminer.Hills.read" href="http://localhost:8080/metadynminer/index.html#metadynminer.Hills.read">read</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="metadynminer.Minima" href="http://localhost:8080/metadynminer/index.html#metadynminer.Minima">Minima</a></code></h4>
+<h4><code><a title="metadynminer.Fes" href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#metadynminer.Fes">Fes</a></code></h4>
 <ul class="">
-<li><code><a title="metadynminer.Minima.findminima" href="http://localhost:8080/metadynminer/index.html#metadynminer.Minima.findminima">findminima</a></code></li>
-<li><code><a title="metadynminer.Minima.make_gif" href="http://localhost:8080/metadynminer/index.html#metadynminer.Minima.make_gif">make_gif</a></code></li>
-<li><code><a title="metadynminer.Minima.plot" href="http://localhost:8080/metadynminer/index.html#metadynminer.Minima.plot">plot</a></code></li>
+<li><code><a title="metadynminer.Fes.make_gif" href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#metadynminer.Fes.make_gif">make_gif</a></code></li>
+<li><code><a title="metadynminer.Fes.plot" href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#metadynminer.Fes.plot">plot</a></code></li>
+<li><code><a title="metadynminer.Fes.removeCV" href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#metadynminer.Fes.removeCV">removeCV</a></code></li>
+<li><code><a title="metadynminer.Fes.surface_plot" href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#metadynminer.Fes.surface_plot">surface_plot</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="metadynminer.Hills" href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#metadynminer.Hills">Hills</a></code></h4>
+<ul class="">
+<li><code><a title="metadynminer.Hills.plot_heights" href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#metadynminer.Hills.plot_heights">plot_heights</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="metadynminer.Minima" href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#metadynminer.Minima">Minima</a></code></h4>
+<ul class="">
+<li><code><a title="metadynminer.Minima.findminima" href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#metadynminer.Minima.findminima">findminima</a></code></li>
+<li><code><a title="metadynminer.Minima.make_gif" href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#metadynminer.Minima.make_gif">make_gif</a></code></li>
+<li><code><a title="metadynminer.Minima.plot" href="file:///home/beranekj/pytadynminer/metadynminer/metadynminer.py/doc/metadynminer/index.html#metadynminer.Minima.plot">plot</a></code></li>
 </ul>
 </li>
 </ul>
@@ -7778,15 +7059,7 @@ If not provided, default values from contours parameters will be used instead. <
 <footer id="footer">
 <p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
 </footer>
-<script src="./metadynminer_API_documentation_files/highlight.min.js"></script>
+<script src="./metadynminer API documentation_files/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad()</script>
-<script>
-setInterval(() =>
-fetch(window.location.href, {
-method: "HEAD",
-cache: "no-store",
-headers: {"If-None-Match": "1682587205.165701"},
-}).then(response => response.ok && window.location.reload()), 700);
-</script>
 
 </body></html>

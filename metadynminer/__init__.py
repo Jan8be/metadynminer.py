@@ -1,39 +1,66 @@
-name = "metadynminer"
-__version__ = "0.2.2"
-__author__ = 'Jan Beránek'
 """
-Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. It is based on Metadynminer package for R programming language, but it is not just a port from R to Python, as it is updated and improved in many aspects. It supports HILLS files with one, two or three collective variables. 
+Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. 
 
-Short sample code:
+It is based on Metadynminer package for R programming language, but it is not just a port from R to Python, as it is updated and improved in many aspects. It supports HILLS files with one, two or three collective variables. 
 
+All built-in functions can be easily customized with many parameters. You can learn more about that later in the documentation. There are also functions allowing you to enhance your presentation with animations of your 3D FES or remove a CV from existing FES. 
+
+Installation:
+
+```bash
+pip install metadynminer
+```
+or
+```bash
+conda install -c jan8be metadynminer
+```
+
+
+Sample code:
+
+Load your HILLS file: 
 ```python
-# load your HILLS file
 hillsfile = metadynminer.Hills(name="HILLS", periodic=[True,True])
+```
 
-# compute the free energy surface using the fast Bias Sum Algorithm
+Compute the free energy surface using the fast Bias Sum Algorithm:
+```python
 fes = metadynminer.Fes(hillsfile)
+```
 
-# you can also use slower (but exact) algorithm to sum the hills and compute the free energy surface 
-# with the option original=True. This algorithm was checked and it gives the same result 
-# (to the machine level precision) as the PLUMED sum_hills function (for plumed v2.8.0)
+You can also use slower (but exact) algorithm to sum the hills and compute the free energy surface 
+with the option original=True. This algorithm was checked and it gives the same result 
+(to the machine level precision) as the PLUMED sum_hills function (for plumed v2.8.0).
+```python
 fes2 = metadynminer.Fes(hillsfile, original=True)
+```
 
-# visualize the free energy surface
-fes.plot()
+Visualize the free energy surface and save the picture to a file:
+```python
+fes.plot(png_name="fes.png")
+```
 
-# find local minima on the FES and print them
+Find local minima on the FES, print them and save FES with minima as a picture:
+```python
 minima = metadynminer.Minima(fes)
 print(minima.minima)
+minima.plot(png_name="fes.png")
+```
 
-# You can also plot free energy profile to see, how the differences between each minima were evolving 
-# during the simulation. 
+You can also plot free energy profile to see, how the differences between each minima were evolving 
+during the simulation. Convergence in the free energy profile suggests, that the resulting free energy surface converged to correct values.
+```python
 fep = metadynminer.FEProfile(minima, hillsfile)
 fep.plot()
 ```
-
-These functions can be easily customized with many parameters. You can learn more about that later in the documentation. 
-There are also other predefined functions allowing you for example to remove a CV from existing FES or enhance your presentation with animated 3D FES. 
 """
+
+name = "metadynminer"
+__version__ = "0.2.3"
+__author__ = 'Jan Beránek'
+
+__pdoc__ = {}
+
 try:
     import numpy as np
 except:
@@ -66,7 +93,7 @@ class Hills:
 
     Hills files are loaded with command:
     ```python
-    hillsfile = metadynminer.Hills()
+    hillsfile = metadynminer.Hills(name="HILLS", periodic=[False,False])
     ```
     
     optional parameters:
@@ -83,9 +110,8 @@ class Hills:
     
     * cv1per, cv2per, cv3per (defaults = [-numpy.pi, numpy.pi]) = List of two numeric values defining the periodicity of given CV. 
                                         Has to be provided for each periodic CV.
-
-
     """
+    
     def __init__(self, name="HILLS", encoding="utf8", ignoretime=True, periodic=[False, False], 
                  cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=None):
         self.read(name, encoding, ignoretime, periodic, 
@@ -241,13 +267,31 @@ class Hills:
     
     def get_heights(self):
         return(self.heights)
+    
+    __pdoc__["Hills.get_cv1"] = False
+    __pdoc__["Hills.get_cv2"] = False
+    __pdoc__["Hills.get_cv3"] = False
+    __pdoc__["Hills.get_cv1per"] = False
+    __pdoc__["Hills.get_cv2per"] = False
+    __pdoc__["Hills.get_cv3per"] = False
+    __pdoc__["Hills.get_cv1_name"] = False
+    __pdoc__["Hills.get_cv2_name"] = False
+    __pdoc__["Hills.get_cv3_name"] = False
+    __pdoc__["Hills.get_periodic"] = False
+    __pdoc__["Hills.get_hills"] = False
+    __pdoc__["Hills.get_number_of_cvs"] = False
+    __pdoc__["Hills.get_sigma1"] = False
+    __pdoc__["Hills.get_sigma2"] = False
+    __pdoc__["Hills.get_sigma3"] = False
+    __pdoc__["Hills.get_heights"] = False
+    __pdoc__["Hills.read"] = False
 
     def plot_heights(self, png_name=None, energy_unit="kJ/mol", xlabel=None, ylabel=None, label_size=12, image_size=[10,7]):
         """
-        Function used to visualize heights of the hills, based on Matplotlib. 
+        Function used to visualize heights of the hills that were added during the simulation. 
         
         ```python
-        hills.plot_heights()
+        hillsfile.plot_heights(png_name="picture.png")
         ```
         
         Parameters:
@@ -297,6 +341,11 @@ class Fes:
                                         
     * cv1range, cv2range, cv3range = lists of two numbers, defining lower and upper bound of the respective CV (in the units of the CVs)
     """
+    
+    __pdoc__["Fes.makefes"] = False
+    __pdoc__["Fes.makefes2"] = False
+    __pdoc__["Fes.set_fes"] = False
+    
     def __init__(self, hills=None, resolution=256, original=False, \
                  calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, \
                  time_min=0, time_max=None):
@@ -461,7 +510,6 @@ class Fes:
             print("\n")
             fes = fes-np.min(fes)
             self.fes = np.array(fes)
-            
             
         elif self.cvs == 2:
             if cv1range == None:
@@ -1035,7 +1083,7 @@ class Fes:
         Function used to visualize FES, based on Matplotlib and PyVista. 
         
         ```python
-        fes.plot()
+        fes.plot(png_name="fes.png")
         ```
         
         Parameters:
@@ -1186,8 +1234,7 @@ class Fes:
         fes.surface_plot()
         ```
         
-        There are future plans to implement this function using PyVista. 
-        Hovewer, in current version of PyVista (0.38.5) there is an issue that labels on the 3rd axis for free energy are showing wrong values. 
+        There are future plans to implement this function using the PyVista library.
         """
         if self.cvs == 2:
             if self.cv1range==None:
@@ -1257,15 +1304,13 @@ class Fes:
         This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities 
         are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. 
         
-        Interactivity was working in jupyter notebook/lab with "%matplotlib widget".
-        
         Parameters:
         
         * CV = integer, the CV to be removed
         
-        * energy_unit (default="kJ/mol") = has to be either "kJ/mol" or "kcal/mol"
+        * energy_unit (default="kJ/mol") = has to be either "kJ/mol" or "kcal/mol". Make sure to suply the correct energy unit, otherwise you will get wrong FES as a result. 
         
-        * temp (default=300) = temperature of the simulation in Kelvins.
+        * temp (default=300.0) = temperature of the simulation in Kelvins.
         """
         CV = int(float(CV))
         print(f"Removing CV {CV}.")
@@ -1440,14 +1485,14 @@ class Fes:
                 print("Error: unknown energy unit")
                 return None
     
-    def make_gif(self, gif_name="FES.gif", cmap = "jet", 
+    def make_gif(self, gif_name=None, cmap = "jet", 
                  xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
                   opacity=0.2, levels=None, frames=64):
         """
         Function that generates animation of 3D FES showing different isosurfaces.
         
         ```python
-        fes.make_gif()
+        fes.make_gif(gif_name="FES.gif")
         ```
         
         Parameters:
@@ -1567,6 +1612,7 @@ class Minima():
     
     * nbins (default = 8) = number of bins to divide the FES
     """
+    
     def __init__(self, fes, nbins = 8):
         self.fes = fes.fes
         self.periodic = fes.periodic
@@ -1950,7 +1996,7 @@ class Minima():
         with the positions of local minima shown as letters on the graph.
         
         ```python
-        minima.plot()
+        minima.plot(png_name="minima.png")
         ```
         
         Parameters:
@@ -2145,11 +2191,34 @@ class Minima():
         if png_name != None:
             plt.savefig(png_name)
 
-    def make_gif(self, gif_name="FES.gif", cmap = "jet", 
+    def make_gif(self, gif_name=None, cmap = "jet", 
                  xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
                   opacity=0.2, levels=None, show_points=True, point_size=4.0, frames=64):
         """
-        Equvivalent to Fes.make_gif()
+        Function that generates animation of 3D FES showing different isosurfaces.
+        
+        ```python
+        fes.make_gif(gif_name="FES.gif")
+        ```
+        
+        Parameters:
+        
+        * gif_name (default="minima.gif") = String. Name of the gif that will be saved in the working directory.
+        
+        * cmap (default = "jet") = Matplotlib colormap used to color the 3D FES
+        
+        * xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graph
+        
+        * labelsize (default = 12) = size of text in labels
+        
+        * image_size (default = [10,7]) = List of the width and height of the picture
+        
+        * opacity (default = 0.2) = number between 0 and 1, is the opacity of isosurfaces of 3D FES
+        
+        * levels = Here you can specify list of free energy values for isosurfaces on 3D FES. 
+                If not provided, default values from contours parameters will be used instead. 
+        
+        * frames (default = 64) = Number of frames the animation will be made of. 
         """
         if self.cvs == 3:
             values = np.linspace(np.min(self.fes)+1, np.max(self.fes), num=frames)
@@ -2211,7 +2280,7 @@ class FEProfile:
     Free energy profile is a visualization of differences between local 
     minima points during metadynamics simulation. If the values seem 
     to converge to a mean value of the difference, it suggests, 
-    but not fully proof, that the FES did converge to the correct shape.
+    but not fully prooves, that the obtained FES did converge to the correct shape.
     
     Command:
     ```python
@@ -2225,6 +2294,7 @@ class FEProfile:
     * hillsfile = metadynminer.Hills object
     
     """
+    
     def __init__(self, minima, hills):
         self.cvs = minima.cvs
         self.res = minima.res
@@ -2458,12 +2528,12 @@ class FEProfile:
         else:
             print("Fes object doesn't have supported number of CVs.")
     
-    def plot(self, name="FEprofile.png",image_size=[10,7], xlabel=None, ylabel=None, label_size=12, cmap="jet"):
+    def plot(self, png_name=None, image_size=[10,7], xlabel=None, ylabel=None, label_size=12, cmap="jet"):
         """
-        Visualization function for FEP. 
+        Visualization function for free energy profiles. 
         
         ```python
-        fep.plot()
+        fep.plot(png_name="FEProfile.png")
         ```
         
         
@@ -2482,6 +2552,7 @@ class FEProfile:
         
         * cmap (default="jet") = matplotlib colormap used for coloring the line of the minima
         """
+        
         plt.figure(figsize=(image_size[0],image_size[1]))
         
         cmap=cm.get_cmap(cmap)
@@ -2500,4 +2571,5 @@ class FEProfile:
             plt.ylabel('free energy difference (kJ/mol)', size=label_size)
         else:
             plt.ylabel(ylabel, size=label_size)
-        plt.savefig(name)
+        if png_name != None:
+            plt.savefig(png_name)
