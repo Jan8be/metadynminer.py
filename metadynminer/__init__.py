@@ -56,7 +56,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.2.5"
+__version__ = "0.3.0"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -160,15 +160,21 @@ class Hills:
         else:
             print("Unexpected number of columns in provided HILLS file.")
         
-        
-        if ignoretime:
+        self.ignoretime = ignoretime
+        if not ignoretime:
             if timestep != None:
                 dt = timestep
             else:
                 for line in range(len(lines)):
                     if lines[line][0] != "#":
-                        dt = round(float(lines[line].split()[0]),14)
+                        dt = round(float(lines[line+1].split()[0]),14) - round(float(lines[line].split()[0]),14)
                         break
+        else:
+            if timestep != None:
+                dt = timestep
+            else:
+                dt = 1.0
+        self.dt = dt
         t = 0
         for line in range(len(lines)):
             if lines[line][0] != "#":
@@ -187,6 +193,8 @@ class Hills:
                         self.sigma3 = float(lines[line].split()[6])
                         self.biasf = float(lines[line].split()[8])
                     self.hills = [lines[line].split()]
+                    if ignoretime:
+                        self.hills[t-1][0] = t*dt
                 else:
                     if self.cvs == 1 and len(lines[line].split()) == 5:
                         self.hills.append(lines[line].split())
@@ -200,7 +208,6 @@ class Hills:
                         self.hills.append(lines[line].split())
                         if ignoretime:
                             self.hills[t-1][0] = t*dt
-                    
         
         self.hills = np.array(self.hills, dtype=np.double)
                 
@@ -340,6 +347,7 @@ class Fes:
                                         with PLUMED sum_hills function
                                         
     * cv1range, cv2range, cv3range = lists of two numbers, defining lower and upper bound of the respective CV (in the units of the CVs)
+    * time_min, time_max = Limit points for closed interval of times from the HILLS file from which the FES will be constructed. Useful for making animations of flooding of the FES during simulation. The values here should have the same units as those in the HILLS file, especially if ignoretime = False. 
     """
     
     __pdoc__["Fes.makefes"] = False
@@ -348,7 +356,7 @@ class Fes:
     
     def __init__(self, hills=None, resolution=256, original=False, \
                  calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, \
-                 time_min=0, time_max=None):
+                 time_min=None, time_max=None):
         self.res = resolution
         self.cv1range = cv1range
         self.cv2range = cv2range
@@ -359,6 +367,8 @@ class Fes:
             self.heights = hills.get_heights()
             self.periodic = hills.get_periodic()
             self.biasf = hills.biasf
+            self.ignoretime = hills.ignoretime
+            self.dt = hills.dt
             
             if cv1range!=None and len(cv1range) != 2:
                 print("Error: You have to specify CV1 range as a list of two values. ")
@@ -381,8 +391,9 @@ class Fes:
                     if ((np.max(self.s1)/np.min(self.s1))>1.00000001):
                         print("""Error: Bias sum algorithm only works for hills files 
                         in which all hills have the same width. 
-                        For this file, you need the slower but exact, algorithm, to do that, 
+                        For this file, you need the slower but exact, algorithm, to use it, 
                         set the argument 'original' to True.""")
+                        return None
 
             if self.cvs >= 2:
                 self.cv2 = hills.get_cv2()
@@ -400,6 +411,7 @@ class Fes:
                         in which all hills have the same width. 
                         For this file, you need the slower but exact, algorithm, to do that, 
                         set the argument 'original' to True.""")
+                        return None
 
             if self.cvs == 3:
                 self.cv3 = hills.get_cv3()
@@ -417,28 +429,52 @@ class Fes:
                         in which all hills have the same width of given CV. 
                         For this file, you need the slower but exact, algorithm, to do that, 
                         set the argument 'original' to True.""")
+                        return None
+            if time_min == time_max == 0:
+                print("Error: Values of start and end time are zero.")
+                return None
+            if time_min != None:
+                if time_min < 0:
+                    print("Warning: Start time is lower than zero, it will be set to zero instead. ")
+                    time_min = 0
+                if time_min < int(hills.hills[0,0]):
+                    print("Warning: Start time {time_min} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. ")
+                    time_min = int(hills.hills[0,0])
+            else:
+                time_min = int(hills.hills[0,0])
             if time_max != None:     
-                if time_max <= time_min:
-                    print("Error: End time is lower than start time")
-                if time_max > len(self.cv1):
-                    time_max = len(self.cv1)
-                    print(f"Error: End time {time_max} is higher than number of lines in HILLS file {len(self.cv1)}, which will be used instead. ")
+                if time_max < time_min:
+                    print("Warning: End time is lower than start time. Values are flipped. ")
+                    time_value = time_max
+                    time_max = time_min
+                    time_min = time_value
+                if time_max > int(hills.hills[-1,0]):
+                    print(f"Warning: End time {time_max} is higher than number of lines in HILLS file {int(hills.hills[-1,0])}, which will be used instead. ")
+                    time_max = int(hills.hills[-1,0])
+            else:
+                time_max = int(hills.hills[-1,0])
+            #print(f"Berofe fes: min {time_min}, max {time_max}")
             
+            if not self.ignoretime:
+                time_max = int(round(((time_max - hills.hills[0,0])/self.dt),0)) + 1
+                time_min = int(round(((time_min - hills.hills[0,0])/self.dt),0)) + 1
+                #print(f"Berofe fes: min {time_min}, max {time_max}")
+
             if calculate_new_fes:
                 if not original:
                     self.makefes(resolution, cv1range, cv2range, cv3range, time_min, time_max)
                 else:
                     self.makefes2(resolution, cv1range, cv2range, cv3range, time_min, time_max)
-                        
         
     def makefes(self, resolution, cv1range, cv2range, cv3range, time_min, time_max):
         """
         Function used internally for summing hills in Hills object with the fast Bias Sum Algorithm. 
         """
-        self.res = resolution
+        #self.res = resolution
         #if self.res % 2 == 0:
         #    self.res += 1
-                
+        #print(f"min: {time_min}, max: {time_max}")
+        
         if self.cvs == 1:
             if cv1range == None:
                 if self.periodic[0]:
@@ -458,7 +494,7 @@ class Fes:
                 
             cv1bin = np.ceil((self.cv1-cv1min)*(self.res)/(cv1_fes_range))
             cv1bin = cv1bin.astype(int)
-            s1res = (self.s1[0]*self.res)/(cv1max - cv1min)
+            s1res = (self.s1[0]*self.res)/(cv1_fes_range)
             self.cv1bin = cv1bin
             gauss_res = 8*s1res
             gauss_res = int(gauss_res)
@@ -475,11 +511,10 @@ class Fes:
                 
             fes = np.zeros((self.res))
             
-            for line in range(len(cv1bin)):
-                if (line) % 500 == 0:
-                    print(f"Constructing free energy surface: {((line+1)/len(cv1bin)):.1%} finished", end="\r")
+            for line in range(time_min-1, time_max):
+                if ((line) % 500 == 0) or (line == time_max-1):
+                    print(f"Constructing free energy surface: {((line+1-time_min+1)/(time_max-time_min+1)):.1%} finished", end="\r")
                 
-                #fes_center = int((self.res-1)/2)
                 gauss_center_to_end = int((gauss_res-1)/2)
                 
                 fes_to_edit_cv1 = [cv1bin[line]-1-gauss_center_to_end,
@@ -568,9 +603,9 @@ class Fes:
                     gauss[int(i), int(j)] = -np.exp(-(((i+1)-gauss_center)**2/(2*s1res**2) + ((j+1)-gauss_center)**2/(2*s2res**2)))
             
             fes = np.zeros((self.res,self.res))
-            for line in range(len(cv1bin)):
-                if (line) % 500 == 0:
-                    print(f"Constructing free energy surface: {((line+1)/len(cv1bin)):.1%} finished", end="\r")
+            for line in range(time_min-1, time_max):
+                if ((line) % 500 == 0) or (line == time_max-1):
+                    print(f"Constructing free energy surface: {((line+1-time_min+1)/(time_max-time_min+1)):.1%} finished", end="\r")
                 
                 #fes_center = int((self.res-1)/2)
                 gauss_center_to_end = int((gauss_res-1)/2)
@@ -710,9 +745,9 @@ class Fes:
             
             fes = np.zeros((self.res, self.res, self.res))
             
-            for line in range(len(cv1bin)):
-                if (line) % 500 == 0:
-                    print(f"Constructing free energy surface: {((line+1)/len(cv1bin)):.1%} finished", end="\r")
+            for line in range(time_min-1, time_max):
+                if ((line) % 500 == 0) or (line == time_max-1):
+                    print(f"Constructing free energy surface: {((line+1-time_min+1)/(time_max-time_min+1)):.1%} finished", end="\r")
                 
                 #fes_center = int((self.res-1)/2)
                 gauss_center_to_end = int((gauss_res-1)/2)
@@ -889,22 +924,23 @@ class Fes:
             
             fes = np.zeros((self.res))
             
-            progress = 0
+            progress = 1
             max_progress = self.res ** self.cvs
             
             for x in range(self.res):
                 progress += 1
-                if (progress) % 200 == 0:
+                if (progress) % 200 == 0 or progress == max_progress:
                     print(f"Constructing free energy surface: {(progress/max_progress):.2%} finished", end="\r")
                 
-                dist_cv1 = self.cv1-(cv1min+(x)*cv1_fes_range/(self.res))
+                dist_cv1 = self.cv1[time_min-1:time_max]-(cv1min+(x)*cv1_fes_range/(self.res))
                 if self.periodic[0]:
                     dist_cv1[dist_cv1<-0.5*cv1_fes_range] += cv1_fes_range
                     dist_cv1[dist_cv1>+0.5*cv1_fes_range] -= cv1_fes_range
                 
-                dp2 = dist_cv1**2/(2*self.s1**2)
-                tmp = np.zeros(self.cv1.shape)
-                tmp[dp2<6.25] = self.heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
+                dp2 = dist_cv1**2/(2*self.s1[time_min-1:time_max]**2)
+                tmp = np.zeros(time_max-time_min+1)
+                heights = self.heights[time_min-1:time_max]
+                tmp[dp2<6.25] = heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
                 fes[x] = -tmp.sum()
                     
             fes = fes - np.min(fes)
@@ -954,7 +990,7 @@ class Fes:
             max_progress = self.res ** self.cvs
             
             for x in range(self.res):
-                dist_cv1 = self.cv1-(cv1min+(x)*cv1_fes_range/(self.res))
+                dist_cv1 = self.cv1[time_min-1:time_max]-(cv1min+(x)*cv1_fes_range/(self.res))
                 if self.periodic[0]:
                     dist_cv1[dist_cv1<-0.5*cv1_fes_range] += cv1_fes_range
                     dist_cv1[dist_cv1>+0.5*cv1_fes_range] -= cv1_fes_range
@@ -964,14 +1000,15 @@ class Fes:
                     if (progress) % 200 == 0:
                         print(f"Constructing free energy surface: {(progress/max_progress):.2%} finished", end="\r")
                     
-                    dist_cv2 = self.cv2-(cv2min+(y)*cv2_fes_range/(self.res))
+                    dist_cv2 = self.cv2[time_min-1:time_max]-(cv2min+(y)*cv2_fes_range/(self.res))
                     if self.periodic[1]:
                         dist_cv2[dist_cv2<-0.5*cv2_fes_range] += cv2_fes_range
                         dist_cv2[dist_cv2>+0.5*cv2_fes_range] -= cv2_fes_range
                         
-                    dp2 = dist_cv1**2/(2*self.s1**2) + dist_cv2**2/(2*self.s2**2)
-                    tmp = np.zeros(self.cv1.shape)
-                    tmp[dp2<6.25] = self.heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
+                    dp2 = dist_cv1**2/(2*self.s1[time_min-1:time_max]**2) + dist_cv2**2/(2*self.s2[time_min-1:time_max]**2)
+                    tmp = np.zeros(time_max-time_min+1)
+                    heights = self.heights[time_min-1:time_max]
+                    tmp[dp2<6.25] = heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
                     fes[x,y] = -tmp.sum()
                     
             fes = fes - np.min(fes)
@@ -1039,13 +1076,13 @@ class Fes:
             max_progress = self.res ** self.cvs
             
             for x in range(self.res):
-                dist_cv1 = self.cv1-(cv1min+(x)*cv1_fes_range/(self.res))
+                dist_cv1 = self.cv1[time_min-1:time_max]-(cv1min+(x)*cv1_fes_range/(self.res))
                 if self.periodic[0]:
                     dist_cv1[dist_cv1<-0.5*cv1_fes_range] += cv1_fes_range
                     dist_cv1[dist_cv1>+0.5*cv1_fes_range] -= cv1_fes_range
                     
                 for y in range(self.res):
-                    dist_cv2 = self.cv2-(cv2min+(y)*cv2_fes_range/(self.res))
+                    dist_cv2 = self.cv2[time_min-1:time_max]-(cv2min+(y)*cv2_fes_range/(self.res))
                     if self.periodic[1]:
                         dist_cv2[dist_cv2<-0.5*cv2_fes_range] += cv2_fes_range
                         dist_cv2[dist_cv2>+0.5*cv2_fes_range] -= cv2_fes_range
@@ -1055,26 +1092,24 @@ class Fes:
                         if (progress) % 200 == 0:
                             print(f"Constructing free energy surface: {(progress/max_progress):.2%} finished", end="\r")
                         
-                        dist_cv3 = self.cv3-(cv3min+(z)*cv3_fes_range/(self.res))
+                        dist_cv3 = self.cv3[time_min-1:time_max]-(cv3min+(z)*cv3_fes_range/(self.res))
                         if self.periodic[2]:
                             dist_cv3[dist_cv3<-0.5*cv3_fes_range] += cv3_fes_range
                             dist_cv3[dist_cv3>+0.5*cv3_fes_range] -= cv3_fes_range
                         
-                        dp2 = dist_cv1**2/(2*self.s1**2) + dist_cv2**2/(2*self.s2**2) + dist_cv3**2/(2*self.s3**2)
-                        tmp = np.zeros(self.cv1.shape)
-                        tmp[dp2<6.25] = self.heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
+                        dp2 = dist_cv1**2/(2*self.s1[time_min-1:time_max]**2) + \
+                              dist_cv2**2/(2*self.s2[time_min-1:time_max]**2) + \
+                              dist_cv3**2/(2*self.s3[time_min-1:time_max]**2)
+                        tmp = np.zeros(time_max-time_min+1)
+                        heights = self.heights[time_min-1:time_max]
+                        tmp[dp2<6.25] = heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
                         fes[x,y,z] = -tmp.sum()
                         
-                        
-                    
             fes = fes - np.min(fes)
             self.fes = np.array(fes)
             print("\n")
         else:
             print(f"Error: unsupported number of CVs: {self.cvs}.")
-        
-    
-    
     
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "jet", 
                  energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
@@ -2540,7 +2575,7 @@ class FEProfile:
         Parameters:
         
         
-        * name (default="FEProfile.png") = name for .png file to save the plot to
+        * name (default=None) = name for .png file to save the plot to
         
         * image_size (default=[10,7]) = list of two dimensions of the picture
         

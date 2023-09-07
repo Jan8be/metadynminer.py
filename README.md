@@ -51,5 +51,6 @@ You can also plot free energy profile to see, how the differences between each m
 during the simulation. Convergence in the free energy profile suggests, that the resulting free energy surface converged to correct values.
 ```python
 fep = metadynminer.FEProfile(minima, hillsfile)
-fep.plot()
+fep.plot(png_name="FEProfile.png")
 ```
+
