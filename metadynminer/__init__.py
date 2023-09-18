@@ -56,7 +56,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -427,7 +427,7 @@ class Fes:
                     if ((np.max(self.s3)/np.min(self.s3))>1.00000001):
                         print("""Error: Bias sum algorithm only works for hills files 
                         in which all hills have the same width of given CV. 
-                        For this file, you need the slower but exact, algorithm, to do that, 
+                        For this file, you need the exact algorithm, to do that, 
                         set the argument 'original' to True.""")
                         return None
             if time_min == time_max == 0:
@@ -929,7 +929,7 @@ class Fes:
             
             for x in range(self.res):
                 progress += 1
-                if (progress) % 200 == 0 or progress == max_progress:
+                if ((progress) % 200 == 0) or (progress == max_progress):
                     print(f"Constructing free energy surface: {(progress/max_progress):.2%} finished", end="\r")
                 
                 dist_cv1 = self.cv1[time_min-1:time_max]-(cv1min+(x)*cv1_fes_range/(self.res))
@@ -997,7 +997,7 @@ class Fes:
                     
                 for y in range(self.res):
                     progress += 1
-                    if (progress) % 200 == 0:
+                    if (progress) % 200 == 0 or (progress == max_progress):
                         print(f"Constructing free energy surface: {(progress/max_progress):.2%} finished", end="\r")
                     
                     dist_cv2 = self.cv2[time_min-1:time_max]-(cv2min+(y)*cv2_fes_range/(self.res))
@@ -1089,7 +1089,7 @@ class Fes:
                         
                     for z in range(self.res):
                         progress += 1
-                        if (progress) % 200 == 0:
+                        if (progress) % 200 == 0 or (progress == max_progress):
                             print(f"Constructing free energy surface: {(progress/max_progress):.2%} finished", end="\r")
                         
                         dist_cv3 = self.cv3[time_min-1:time_max]-(cv3min+(z)*cv3_fes_range/(self.res))
@@ -1617,9 +1617,7 @@ class Fes:
             plotter.close()
         else:
             print("Error: gif_plot is only available for FES with 3 CVs.")     
-
-            
-            
+ 
 class Minima():
     """
     Object of Minima class is created to find local free energy minima on FES. 
@@ -1688,27 +1686,38 @@ class Minima():
         bin_size = int(self.res/nbins)
 
         if self.cvs >= 1:
-            if not self.periodic[0]:
-                cv1min = self.cv1min - (self.cv1max-self.cv1min)*0.15
-                cv1max = self.cv1max + (self.cv1max-self.cv1min)*0.15
+            if self.periodic[0]:
+                cv1min = self.cv1per[0]
+                cv1max = self.cv1per[1]
             else:
                 cv1min = self.cv1min
-                cv1max = self.cv1max 
-        if self.cvs >=2:
-            if not self.periodic[1]:
-                cv2min = self.cv2min - (self.cv2max-self.cv2min)*0.15
-                cv2max = self.cv2max + (self.cv2max-self.cv2min)*0.15
+                cv1max = self.cv1max
+                cv1min -= cv1range*0.15          
+                cv1max += cv1range*0.15
+            cv1range = self.cv1max-self.cv1min
+
+        if self.cvs >= 2:
+            if self.periodic[1]:
+                cv2min = self.cv2per[0]
+                cv2max = self.cv2per[1]
             else:
                 cv2min = self.cv2min
-                cv2max = self.cv2max 
+                cv2max = self.cv2max
+                cv2min -= cv2range*0.15          
+                cv2max += cv2range*0.15
+            cv2range = self.cv2max-self.cv2min
+                
         if self.cvs == 3:
-            if not self.periodic[2]:
-                cv3min = self.cv3min - (self.cv3max-self.cv3min)*0.15
-                cv3max = self.cv3max + (self.cv3max-self.cv3min)*0.15
+            if self.periodic[2]:
+                cv3min = self.cv2per[0]
+                cv3max = self.cv2per[1]
             else:
                 cv3min = self.cv3min
                 cv3max = self.cv3max
-
+                cv3min -= cv3range*0.15          
+                cv3max += cv3range*0.15
+            cv3range = self.cv3max-self.cv3min
+        
         self.minima = []
         if self.cvs == 1:
             for bin1 in range(0,nbins):
@@ -1720,7 +1729,7 @@ class Minima():
                 # indexes of that minima in the original fes (indexes +1)
                 min_cv1_b = int(bin_min_arg_cv1+bin1*bin_size)
                 if (bin_min_arg_cv1 > 0 and bin_min_arg_cv1<(bin_size-1)):
-                    min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
+                    min_cv1 = (((min_cv1_b)/self.res)*(cv1max-cv1min))+cv1min#min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
                     if len(self.minima) == 0:
                         self.minima = np.array([round(bin_min, 6), int(min_cv1_b), round(min_cv1, 6)])
                     else:
@@ -1749,7 +1758,7 @@ class Minima():
                         around.append(self.fes[min_cv1_b_high])
                     
                     if bin_min < np.min(around):
-                        min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
+                        min_cv1 = (((min_cv1_b)/self.res)*(cv1max-cv1min))+cv1min#min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
                         if len(self.minima) == 0:
                             self.minima=np.array([round(bin_min, 6), int(min_cv1_b), round(min_cv1, 6)])
                         else:
@@ -1769,8 +1778,8 @@ class Minima():
                     min_cv2_b = int(bin_min_arg[1]+bin2*bin_size)
                     if (bin_min_arg[0] > 0 and bin_min_arg[0]<(bin_size-1)) \
                                     and (bin_min_arg[1] > 0 and bin_min_arg[1]<(bin_size-1)):
-                        min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
-                        min_cv2 = (((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))+cv2min
+                        min_cv1 = (((min_cv1_b)/self.res)*(cv1max-cv1min))+cv1min#min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
+                        min_cv2 = (((min_cv2_b)/self.res)*(cv2max-cv2min))+cv2min#min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
                         if len(self.minima) == 0:
                             self.minima=np.array([round(bin_min, 6), int(min_cv1_b),\
                                                   int(min_cv2_b), round(min_cv1, 6), round(min_cv2, 6)])
@@ -1826,8 +1835,8 @@ class Minima():
                             if not(np.isnan(min_cv2_b_high)):
                                 around.append(self.fes[min_cv1_b_high, min_cv2_b_high])
                         if bin_min < np.min(around):
-                            min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
-                            min_cv2 = (((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))+cv2min
+                            min_cv1 = (((min_cv1_b)/self.res)*(cv1max-cv1min))+cv1min#min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
+                            min_cv2 = (((min_cv2_b)/self.res)*(cv2max-cv2min))+cv2min#min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
                             if len(self.minima) == 0:
                                 self.minima=np.array([round(bin_min, 6), int(min_cv1_b), int(min_cv2_b), \
                                                       round(min_cv1, 6), round(min_cv2, 6)])
@@ -1852,9 +1861,9 @@ class Minima():
                         if (bin_min_arg[0] > 0 and bin_min_arg[0]<(bin_size-1)) \
                                         and (bin_min_arg[1] > 0 and bin_min_arg[1]<(bin_size-1))\
                                         and (bin_min_arg[2] > 0 and bin_min_arg[2]<(bin_size-1)):
-                            min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
-                            min_cv2 = (((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))+cv2min
-                            min_cv3 = (((min_cv3_b+0.5)/self.res)*(cv3max-cv3min))+cv3min
+                            min_cv1 = (((min_cv1_b)/self.res)*(cv1max-cv1min))+cv1min #min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
+                            min_cv2 = (((min_cv2_b)/self.res)*(cv2max-cv2min))+cv2min #min_cv2 = (((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))+cv2min
+                            min_cv3 = (((min_cv3_b)/self.res)*(cv3max-cv3min))+cv3min #min_cv3 = (((min_cv3_b+0.5)/self.res)*(cv3max-cv3min))+cv3min
                             if len(self.minima) == 0:
                                 self.minima=np.array([round(bin_min, 6), int(min_cv1_b),\
                                                       int(min_cv2_b), int(min_cv3_b), round(min_cv1, 6), \
@@ -1971,9 +1980,9 @@ class Minima():
                                         around.append(self.fes[min_cv1_b_high,min_cv2_b_high,min_cv3_b_high])
                             
                             if bin_min < np.min(around):
-                                min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
-                                min_cv2 = (((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))+cv2min
-                                min_cv3 = (((min_cv3_b+0.5)/self.res)*(cv3max-cv3min))+cv3min
+                                min_cv1 = (((min_cv1_b)/self.res)*(cv1max-cv1min))+cv1min #min_cv1 = (((min_cv1_b+0.5)/self.res)*(cv1max-cv1min))+cv1min
+                                min_cv2 = (((min_cv2_b)/self.res)*(cv2max-cv2min))+cv2min #min_cv2 = (((min_cv2_b+0.5)/self.res)*(cv2max-cv2min))+cv2min
+                                min_cv3 = (((min_cv3_b)/self.res)*(cv3max-cv3min))+cv3min #min_cv3 = (((min_cv3_b+0.5)/self.res)*(cv3max-cv3min))+cv3min
                                 if len(self.minima) == 0:
                                     self.minima=np.array([round(bin_min, 6), int(min_cv1_b),\
                                                       int(min_cv2_b), int(min_cv3_b), round(min_cv1, 6), \
@@ -2118,16 +2127,15 @@ class Minima():
             if not color_set:
                 color = "black"
             
-            ferange = np.max(self.fes) - np.min(self.fes)
-            
+            fesrange = np.max(self.fes) - np.min(self.fes)
             
             if self.minima.shape[0] == 1:
-                plt.text(float(self.minima.iloc[0,3]), float(self.minima.iloc[0,1])+ferange*0.05, self.minima.iloc[0,0],
+                plt.text(float(self.minima.iloc[0,3]), float(self.minima.iloc[0,1])+fesrange*0.05, self.minima.iloc[0,0],
                              fontsize=label_size, horizontalalignment='center',
                              verticalalignment='bottom', c=color)
             elif self.minima.shape[0] > 1:
                 for m in range(len(self.minima.iloc[:,0])):
-                    plt.text(float(self.minima.iloc[m,3]), float(self.minima.iloc[m,1])+ferange*0.05, self.minima.iloc[m,0],
+                    plt.text(float(self.minima.iloc[m,3]), float(self.minima.iloc[m,1])+fesrange*0.05, self.minima.iloc[m,0],
                              fontsize=label_size, horizontalalignment='center',
                              verticalalignment='bottom', c=color)
             
@@ -2149,6 +2157,13 @@ class Minima():
             cbar = plt.colorbar()
             cbar.set_label(energy_unit, size=label_size)
 
+            if contours:
+                cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
+                         levels = np.arange(0, (vmax + 0.01), contours_spacing), 
+                         extent=[cv1min, cv1max, cv2max, cv2min], 
+                         colors = "k")
+                plt.clabel(cont, levels = np.arange(0, (vmax + 0.01), contours_spacing))
+            
             if self.minima.shape[0] == 1:
                 background = cmap((float(self.minima.iloc[1])-vmin)/(vmax-vmin))
                 luma = background[0]*0.2126+background[1]*0.7152+background[3]*0.0722
@@ -2156,9 +2171,7 @@ class Minima():
                     color = "black"
                 elif luma <= 0.6 and not color_set:
                     color="white"
-                plt.text(float(self.minima.iloc[0,4]), float(self.minima.iloc[0,5]), self.minima.iloc[0,0],
-                             fontsize=label_size, horizontalalignment='center',
-                             verticalalignment='center', c=color)
+                plt.text(float(self.minima.iloc[0,4])+0.5*(cv1max-cv1min)/self.res, float(self.minima.iloc[0,5])+0.5*(cv2max-cv2min)/self.res, self.minima.iloc[0,0], fontsize=label_size, horizontalalignment='center',verticalalignment='center', c=color)
             elif self.minima.shape[0] > 1:
                 for m in range(len(self.minima.iloc[:,0])):
                     background = cmap((float(self.minima.iloc[m,1])-vmin)/(vmax-vmin))
@@ -2167,16 +2180,9 @@ class Minima():
                         color = "black"
                     elif luma <= 0.6 and not color_set:
                         color="white"
-                    plt.text(float(self.minima.iloc[m,4]), float(self.minima.iloc[m,5]), self.minima.iloc[m,0],
-                             fontsize=label_size, horizontalalignment='center',
-                             verticalalignment='center', c=color)
+                    plt.text(float(self.minima.iloc[m,4])+0.5*(cv1max-cv1min)/self.res, float(self.minima.iloc[m,5])+0.5*(cv2max-cv2min)/self.res, self.minima.iloc[m,0], fontsize=label_size, horizontalalignment='center', verticalalignment='center', c=color)
 
-            if contours:
-                cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
-                         levels = np.arange(0, (vmax + 0.01), contours_spacing), 
-                         extent=[cv1min, cv1max, cv2max, cv2min], 
-                         colors = "k")
-                plt.clabel(cont, levels = np.arange(0, (vmax + 0.01), contours_spacing))
+            
             if xlabel == None:
                 plt.xlabel(f'CV1 - {self.cv1_name}', size=label_size)
             else:
@@ -2309,7 +2315,7 @@ class Minima():
             plotter.close()
         else:
             print("Error: gif_plot is only available for FES with 3 CVs.")
-        
+
 class FEProfile:
     """
     Free energy profile is a visualization of differences between local 
@@ -2363,8 +2369,7 @@ class FEProfile:
             self.makefeprofile(hills)
         else: 
             print("There is only one local minimum on the free energy surface.")
-        
-        
+    
     def makefeprofile(self, hills):
         """
         Internal method to calculate free energy profile.
@@ -2377,9 +2382,9 @@ class FEProfile:
         else:
             profilelenght = 256
             scantimes = np.array(((hillslenght/(profilelenght))*np.array((range(1,profilelenght+1)))))
-            scantimes -= 1
+            scantimes[0:-1] -= 1
+            #scantimes[-1] += 1
             scantimes = scantimes.astype(int)
-        
         number_of_minima = self.minima.shape[0]
         
         self.feprofile = np.zeros((self.minima.Minimum.shape[0]+1))
@@ -2400,20 +2405,23 @@ class FEProfile:
             fes = np.zeros((self.res))
             
             lasttime = 0
-            line = 0
             for time in scantimes:
-                for x in self.minima.iloc[:,3]:
-                    dist_cv1 = self.cv1[lasttime:time]-float(x)
+                if time == scantimes[-1]:
+                    time += 1
+                for m in range(number_of_minima):#self.minima.iloc[:,3]
+                    dist_cv1 = self.cv1[lasttime:time]-float(self.minima.iloc[m,3])
                     if self.periodic[0]:
                         dist_cv1[dist_cv1<-0.5*cv1_fes_range] += cv1_fes_range
                         dist_cv1[dist_cv1>+0.5*cv1_fes_range] -= cv1_fes_range
 
                     dp2 = dist_cv1**2/(2*self.s1[lasttime:time]**2)
-                    tmp = np.zeros(self.cv1[lasttime:time].shape)
-                    tmp[dp2<2.5] = self.heights[lasttime:time][dp2<2.5] * (np.exp(-dp2[dp2<2.5]) * 1.00193418799744762399 - 0.00193418799744762399)
-                    fes[int((float(x)-cv1min)*self.res/cv1_fes_range)] -= tmp.sum()
-
-                profileline = [time]
+                    tmp = np.zeros(dp2.shape)
+                    heights = self.heights[lasttime:time]
+                    tmp[dp2<6.25] = heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
+                    #fes[int(float(self.minima.iloc[x,2]))] -= tmp.sum()
+                    fes[int(float(self.minima.iloc[m,2]))] -= tmp.sum()
+                #fes = fes - np.min(fes)
+                profileline = [time-1]
                 for m in range(number_of_minima):
                     profileline.append(fes[int(float(self.minima.iloc[m,2]))]-\
                                        fes[int(float(self.minima.iloc[0,2]))])
@@ -2451,32 +2459,34 @@ class FEProfile:
             lasttime = 0
             line = 0
             for time in scantimes:
-                for x in self.minima.iloc[:,4]:
-                    dist_cv1 = self.cv1[lasttime:time]-float(x)
+                if time == scantimes[-1]:
+                    time += 1
+                for m in range(number_of_minima):
+                    dist_cv1 = self.cv1[lasttime:time]-float(self.minima.iloc[m,4])
                     if self.periodic[0]:
                         dist_cv1[dist_cv1<-0.5*cv1_fes_range] += cv1_fes_range
                         dist_cv1[dist_cv1>+0.5*cv1_fes_range] -= cv1_fes_range
                     
-                    for y in self.minima.iloc[:,5]:
-                        dist_cv2 = self.cv2[lasttime:time]-float(y)
-                        if self.periodic[1]:
-                            dist_cv2[dist_cv2<-0.5*cv2_fes_range] += cv2_fes_range
-                            dist_cv2[dist_cv2>+0.5*cv2_fes_range] -= cv2_fes_range
-                    
-                        dp2 = dist_cv1**2/(2*self.s1[lasttime:time]**2) + dist_cv2**2/(2*self.s2[lasttime:time]**2)
-                        tmp = np.zeros(self.cv1[lasttime:time].shape)
-                        tmp[dp2<6.25] = self.heights[lasttime:time][dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
-                        fes[int((float(x)-cv1min)*self.res/cv1_fes_range),int((float(y)-cv2min)*self.res/cv2_fes_range)] -= tmp.sum()
+                    dist_cv2 = self.cv2[lasttime:time]-float(self.minima.iloc[m,5])
+                    if self.periodic[1]:
+                        dist_cv2[dist_cv2<-0.5*cv2_fes_range] += cv2_fes_range
+                        dist_cv2[dist_cv2>+0.5*cv2_fes_range] -= cv2_fes_range
+                
+                    dp2 = dist_cv1**2/(2*self.s1[lasttime:time]**2) + dist_cv2**2/(2*self.s2[lasttime:time]**2)
+                    tmp = np.zeros(self.cv1[lasttime:time].shape)
+                    heights = self.heights[lasttime:time]
+                    tmp[dp2<6.25] = heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
+                    fes[int(float(self.minima.iloc[m,2])),int(float(self.minima.iloc[m,3]))] -= tmp.sum()
                 
                 # save profile
-                profileline = [time]
+                profileline = [time-1]
                 for m in range(number_of_minima):
                     profileline.append(fes[int(float(self.minima.iloc[m,2])),int(float(self.minima.iloc[m,3]))]-\
                                        fes[int(float(self.minima.iloc[0,2])),int(float(self.minima.iloc[0,3]))])
                 self.feprofile = np.vstack([self.feprofile, profileline])
 
                 lasttime = time
-            
+        
         elif self.cvs == 3:
             if self.periodic[0]:
                 cv1min = self.cv1per[0]
@@ -2502,7 +2512,7 @@ class FEProfile:
                 cv2max += cv2range*0.15
                 cv2_fes_range = cv2max - cv2min
                 
-            if self.periodic[3]:
+            if self.periodic[2]:
                 cv3min = self.cv3per[0]
                 cv3max = self.cv3per[1]
                 cv3_fes_range = np.abs(self.cv3per[1]-self.cv3per[0])
@@ -2519,36 +2529,36 @@ class FEProfile:
             lasttime = 0
             line = 0
             for time in scantimes:
-                for x in self.minima.iloc[:,5]:
-                    dist_cv1 = self.cv1[lasttime:time]-float(x)
+                if time == scantimes[-1]:
+                    time += 1
+                for m in range(number_of_minima):
+                    dist_cv1 = self.cv1[lasttime:time]-float(self.minima.iloc[m,5])
                     if self.periodic[0]:
                         dist_cv1[dist_cv1<-0.5*cv1_fes_range] += cv1_fes_range
                         dist_cv1[dist_cv1>+0.5*cv1_fes_range] -= cv1_fes_range
                     
-                    for y in self.minima.iloc[:,6]:
-                        dist_cv2 = self.cv2[lasttime:time]-float(y)
-                        if self.periodic[1]:
-                            dist_cv2[dist_cv2<-0.5*cv2_fes_range] += cv2_fes_range
-                            dist_cv2[dist_cv2>+0.5*cv2_fes_range] -= cv2_fes_range
-                        
-                        for z in self.minima.iloc[:,7]:
-                            dist_cv3 = self.cv3[lasttime:time]-float(z)
-                            if self.periodic[2]:
-                                dist_cv3[dist_cv3<-0.5*cv3_fes_range] += cv3_fes_range
-                                dist_cv3[dist_cv3>+0.5*cv3_fes_range] -= cv3_fes_range
+                    dist_cv2 = self.cv2[lasttime:time]-float(self.minima.iloc[m,6])
+                    if self.periodic[1]:
+                        dist_cv2[dist_cv2<-0.5*cv2_fes_range] += cv2_fes_range
+                        dist_cv2[dist_cv2>+0.5*cv2_fes_range] -= cv2_fes_range
                     
-                            dp2 = (dist_cv1**2/(2*self.s1[lasttime:time]**2) + 
-                                   dist_cv2**2/(2*self.s2[lasttime:time]**2) + 
-                                   dist_cv3**2/(2*self.s3[lasttime:time]**2))
-                            tmp = np.zeros(self.cv1[lasttime:time].shape)
-                            tmp[dp2<15.625] = (self.heights[lasttime:time][dp2<15.625] * 
-                                               (np.exp(-dp2[dp2<15.625]) * 1.00193418799744762399 - 0.00193418799744762399))
-                            fes[int((float(x)-cv1min)*self.res/cv1_fes_range),
-                                int((float(y)-cv2min)*self.res/cv2_fes_range),
-                                int((float(z)-cv3min)*self.res/cv3_fes_range)] -= tmp.sum()
+                    dist_cv3 = self.cv3[lasttime:time]-float(self.minima.iloc[m,7])
+                    if self.periodic[2]:
+                        dist_cv3[dist_cv3<-0.5*cv3_fes_range] += cv3_fes_range
+                        dist_cv3[dist_cv3>+0.5*cv3_fes_range] -= cv3_fes_range
+            
+                    dp2 = (dist_cv1**2/(2*self.s1[lasttime:time]**2) + 
+                           dist_cv2**2/(2*self.s2[lasttime:time]**2) + 
+                           dist_cv3**2/(2*self.s3[lasttime:time]**2))
+                    tmp = np.zeros(dp2.shape)
+                    heights = self.heights[lasttime:time]
+                    tmp[dp2<6.25] = (heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399))
+                    fes[int(float(self.minima.iloc[m,2])),
+                        int(float(self.minima.iloc[m,3])),
+                        int(float(self.minima.iloc[m,2]))] -= tmp.sum()
                 
                 # save profile
-                profileline = [time]
+                profileline = [time-1]
                 for m in range(number_of_minima):
                     profileline.append(fes[int(float(self.minima.iloc[m,2])),
                                            int(float(self.minima.iloc[m,3])),
