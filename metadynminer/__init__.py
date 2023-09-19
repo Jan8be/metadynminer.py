@@ -2372,7 +2372,7 @@ class FEProfile:
     
     def makefeprofile(self, hills):
         """
-        Internal method to calculate free energy profile.
+        Internal method to calculate free energy profile. 
         """
         hillslenght = len(hills.get_cv1())
         
