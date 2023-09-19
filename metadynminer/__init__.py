@@ -1692,8 +1692,8 @@ class Minima():
             else:
                 cv1min = self.cv1min
                 cv1max = self.cv1max
-                cv1min -= cv1range*0.15          
-                cv1max += cv1range*0.15
+                cv1min -= (self.cv1max-self.cv1min)*0.15          
+                cv1max += (self.cv1max-self.cv1min)*0.15
             cv1range = self.cv1max-self.cv1min
 
         if self.cvs >= 2:
@@ -1703,8 +1703,8 @@ class Minima():
             else:
                 cv2min = self.cv2min
                 cv2max = self.cv2max
-                cv2min -= cv2range*0.15          
-                cv2max += cv2range*0.15
+                cv2min -= (self.cv2max-self.cv2min)*0.15          
+                cv2max += (self.cv2max-self.cv2min)*0.15
             cv2range = self.cv2max-self.cv2min
                 
         if self.cvs == 3:
@@ -1714,8 +1714,8 @@ class Minima():
             else:
                 cv3min = self.cv3min
                 cv3max = self.cv3max
-                cv3min -= cv3range*0.15          
-                cv3max += cv3range*0.15
+                cv3min -= (self.cv3max-self.cv3min)*0.15          
+                cv3max += (self.cv3max-self.cv3min)*0.15
             cv3range = self.cv3max-self.cv3min
         
         self.minima = []
