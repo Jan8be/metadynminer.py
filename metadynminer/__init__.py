@@ -2527,7 +2527,6 @@ class FEProfile:
             fes = np.zeros((self.res, self.res, self.res))
             
             lasttime = 0
-            line = 0
             for time in scantimes:
                 if time == scantimes[-1]:
                     time += 1
@@ -2555,7 +2554,7 @@ class FEProfile:
                     tmp[dp2<6.25] = (heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399))
                     fes[int(float(self.minima.iloc[m,2])),
                         int(float(self.minima.iloc[m,3])),
-                        int(float(self.minima.iloc[m,2]))] -= tmp.sum()
+                        int(float(self.minima.iloc[m,4]))] -= tmp.sum()
                 
                 # save profile
                 profileline = [time-1]
