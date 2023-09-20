@@ -56,7 +56,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -1338,6 +1338,10 @@ class Fes:
         """
         This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities 
         are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. 
+
+        ```python
+        fes1 = fes.removeCV(CV=1)
+        ```
         
         Parameters:
         
@@ -1359,7 +1363,7 @@ class Fes:
             if energy_unit == "kJ/mol":
                 probabilities = np.exp(-1000*self.fes/8.314/temp)
                 if CV == 1:
-                    new_prob = np.sum(probabilities, axis=1)
+                    new_prob = np.sum(probabilities, axis=0)
                     new_fes = Fes(hills=None)
                     new_fes.fes = -8.314*temp*np.log(new_prob)/1000
                     new_fes.fes = new_fes.fes - np.min(new_fes.fes)
@@ -1371,7 +1375,7 @@ class Fes:
                     new_fes.cv1_name = self.cv2_name
                     new_fes.cv1per = self.cv2per
                 if CV == 2:
-                    new_prob = np.sum(probabilities, axis=0)
+                    new_prob = np.sum(probabilities, axis=1)
                     new_fes = Fes(hills=None)
                     new_fes.fes = -8.314*temp*np.log(new_prob)/1000
                     new_fes.fes = new_fes.fes - np.min(new_fes.fes)
