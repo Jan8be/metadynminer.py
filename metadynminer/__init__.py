@@ -56,7 +56,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.3.3"
+__version__ = "0.4.0"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -322,6 +322,116 @@ class Hills:
             plt.xlabel(xlabel, size=label_size)
         if ylabel == None:
             plt.ylabel(f'free energy ({energy_unit})', size=label_size)
+        else:
+            plt.ylabel(ylabel, size=label_size)
+            
+        if png_name != None:
+            plt.savefig(png_name)
+
+    def plot_CV(self, png_name=None, CV=None, xlabel=None, ylabel=None, label_size=12, image_size=[10,7], time_min=None, time_max=None, points = True, point_size=1):
+        """
+        Function used to visualize CV values from the simulation. 
+        
+        ```python
+        hillsfile.plot_heights(png_name="picture.png")
+        ```
+        
+        Parameters:
+        
+        * png_name = String. If this parameter is supplied, the picture of FES will be saved under this name to the current working directory.
+        
+        * CV = Integer, number of the CV to plot (between 1-3)
+        
+        * xlabel, ylabel = Strings, if provided, they will be used as labels for the graphs
+        
+        * labelsize (default = 12) = size of text in labels
+        
+        * image_size (default = [10,7]) = List of the width and height of the picture
+
+        * time_min, time_max = The time range for plotting (should be in the same units that are used in HILLS file)
+
+        * points (default=True) = Boolean value; if True, plot type will be scatter plot, which is better for periodic CVs; if False, it will be line plot, which is sometimes more suitable for non-periodic CVs. 
+
+        * point_size (default = 1) = The size of dots in the plot
+        
+        """
+        if CV==None:
+            print("Error: CV was not chosen")
+            return None
+        if CV>self.cvs:
+            print(f"Error: CV {CV} is not available")
+            return None
+        if CV==1.0:
+            CV=1
+        if CV==2.0:
+            CV=2
+        if CV==3.0:
+            CV=3
+        if CV!=1 and CV!=2 and CV!=3:
+            print(f"Error: supplied value of CV {CV} is not correct value")
+            return None
+
+        if time_min == time_max == 0:
+                print("Error: Values of start and end time are zero.")
+                return None
+        if time_min != None:
+            if time_min < 0:
+                print("Warning: Start time is lower than zero, it will be set to zero instead. ")
+                time_min = 0
+            if time_min < int(self.hills[0,0]):
+                print("Warning: Start time {time_min} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. ")
+                time_min = int(self.hills[0,0])
+        else:
+            time_min = int(self.hills[0,0])
+        if time_max != None:     
+            if time_max < time_min:
+                print("Warning: End time is lower than start time. Values are flipped. ")
+                time_value = time_max
+                time_max = time_min
+                time_min = time_value
+            if time_max > int(self.hills[-1,0]):
+                print(f"Warning: End time {time_max} is higher than number of lines in HILLS file {int(self.hills[-1,0])}, which will be used instead. ")
+                time_max = int(self.hills[-1,0])
+        else:
+            time_max = int(self.hills[-1,0])
+        #print(f"Berofe fes: min {time_min}, max {time_max}")
+        
+        if not self.ignoretime:
+            time_max = int(round(((time_max - self.hills[0,0])/self.dt),0)) + 1
+            time_min = int(round(((time_min - self.hills[0,0])/self.dt),0)) + 1
+
+        if time_min==None:
+            time_min=1
+        if time_max==None:
+            time_max = int(self.hills[-1,0])
+                
+        plt.figure(figsize=(image_size[0],image_size[1]))
+        if points:
+            if CV==1:
+                plt.scatter(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv1[time_min-1:time_max], s=point_size)
+            if CV==2:
+                plt.scatter(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv2[time_min-1:time_max], s=point_size)
+            if CV==3:
+                plt.scatter(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv3[time_min-1:time_max], s=point_size)
+        else:
+            if CV==1:
+                plt.plot(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv1[time_min-1:time_max], lw=point_size)
+            if CV==2:
+                plt.plot(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv2[time_min-1:time_max], lw=point_size)
+            if CV==3:
+                plt.plot(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv3[time_min-1:time_max], lw=point_size)
+            
+        if xlabel == None:
+            plt.xlabel(f'time (ps)', size=label_size)
+        else:
+            plt.xlabel(xlabel, size=label_size)
+        if ylabel == None:
+            if CV==1:
+                plt.ylabel(f'CV {CV} - {self.cv1_name}', size=label_size)
+            if CV==2:
+                plt.ylabel(f'CV {CV} - {self.cv2_name}', size=label_size)
+            if CV==3:
+                plt.ylabel(f'CV {CV} - {self.cv3_name}', size=label_size)
         else:
             plt.ylabel(ylabel, size=label_size)
             
