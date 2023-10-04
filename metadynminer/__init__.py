@@ -56,7 +56,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.4.1"
+__version__ = "0.4.2"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -2279,7 +2279,7 @@ class Minima():
                 plt.clabel(cont, levels = np.arange(0, (vmax + 0.01), contours_spacing))
             
             if self.minima.shape[0] == 1:
-                background = cmap((float(self.minima.iloc[1])-vmin)/(vmax-vmin))
+                background = cmap((float(self.minima.iloc[0,1])-vmin)/(vmax-vmin))
                 luma = background[0]*0.2126+background[1]*0.7152+background[3]*0.0722
                 if luma > 0.6 and not color_set:
                     color = "black"
