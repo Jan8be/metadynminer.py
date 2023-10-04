@@ -1,8 +1,8 @@
 # metadynminer.py
 
 [![Build](https://github.com/Jan8be/metadynminer.py/actions/workflows/ci.yml/badge.svg)](https://github.com/Jan8be/metadynminer.py/actions/workflows/ci.yml)
-[![PyPI downloads](https://static.pepy.tech/badge/metadynminer)]
-[![conda downloads](https://anaconda.org/jan8be/metadynminer/badges/downloads.svg)]
+![PyPI downloads](https://static.pepy.tech/badge/metadynminer)
+![conda downloads](https://anaconda.org/jan8be/metadynminer/badges/downloads.svg)
 
 
 Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. 
