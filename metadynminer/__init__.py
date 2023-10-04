@@ -56,7 +56,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.4.2"
+__version__ = "0.5.0"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -2686,7 +2686,7 @@ class FEProfile:
         else:
             print("Fes object doesn't have supported number of CVs.")
     
-    def plot(self, png_name=None, image_size=[10,7], xlabel=None, ylabel=None, label_size=12, cmap="jet"):
+    def plot(self, png_name=None, image_size=[10,7], xlabel=None, ylabel=None, label_size=12, cmap="jet", legend=True):
         """
         Visualization function for free energy profiles. 
         
@@ -2709,6 +2709,8 @@ class FEProfile:
         * label_size (default=12) = size of labels
         
         * cmap (default="jet") = matplotlib colormap used for coloring the line of the minima
+
+        * legend (default=True) = whether there should be a matplotlib's legend in the graph
         """
         
         plt.figure(figsize=(image_size[0],image_size[1]))
@@ -2729,5 +2731,7 @@ class FEProfile:
             plt.ylabel('free energy difference (kJ/mol)', size=label_size)
         else:
             plt.ylabel(ylabel, size=label_size)
+        if legend:
+            plt.legend(self.minima.iloc[:,0], loc="lower right")
         if png_name != None:
             plt.savefig(png_name)
