@@ -17,7 +17,7 @@ requirements:
     - matplotlib >=3.5.3
     - pyvista >=0.38.5
     - numpy >=1.21.6
-    - imageio >=2.31.5
+    - imageio >=2.31.1
 
 about:
   home: https://github.com/Jan8be/metadynminer.py

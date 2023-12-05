@@ -19,7 +19,7 @@ setup(
                       'matplotlib>=3.5.3',
                       'pandas>=1.3.5',
                       'pyvista>=0.38.5',
-                      'imageio>=2.31.5'
+                      'imageio>=2.31.1'
                       ],
 
     classifiers=[

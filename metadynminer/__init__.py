@@ -1774,8 +1774,10 @@ class Fes:
             except ValueError:
                 print("Warning: The first frame of animation would be blank with the current ettings, but PyVista 3D plotter can not plot empty meshes. Try to increase the timestep between frames or decrease the spacing between isosurfaces.")
         print("\n")
+
+        duration = 1000/fps
         if enable_loop:
-            with imageio.get_writer(gif_name, format="GIF", fps = fps, loop=0) as writer:
+            with imageio.get_writer(gif_name, format="GIF", duration=duration, loop=0) as writer:
                 for image_file in image_files:
                     try:
                         image = imageio.imread(image_file)
@@ -2501,6 +2503,8 @@ class Minima():
             min_ar = self.minima.iloc[:,5:8].values
             min_ar = min_ar.astype(np.float32)
             min_pv = pv.PolyData(min_ar)
+            
+            
             grid = pv.UniformGrid(
                 dimensions=(self.res, self.res, self.res),
                 spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
