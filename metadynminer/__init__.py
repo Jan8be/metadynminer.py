@@ -1371,7 +1371,7 @@ class Fes:
             if zlabel == None:
                 zlabel = "CV3 - " + self.cv3_name
             
-            grid = pv.ImageData(
+            grid = pv.UniformGrid(
                 dimensions=(self.res, self.res, self.res),
                 spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
                 origin=(cv1min, cv2min, cv3min)
@@ -2501,7 +2501,7 @@ class Minima():
             min_ar = self.minima.iloc[:,5:8].values
             min_ar = min_ar.astype(np.float32)
             min_pv = pv.PolyData(min_ar)
-            grid = pv.ImageData(
+            grid = pv.UniformGrid(
                 dimensions=(self.res, self.res, self.res),
                 spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
                 origin=(cv1min, cv2min, cv3min)
