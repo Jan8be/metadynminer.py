@@ -56,7 +56,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.5.0"
+__version__ = "0.6.0"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -85,6 +85,21 @@ try:
     import pyvista as pv
 except:
     print("Error while loading pyvista")
+    exit()
+try:
+    import imageio
+except:
+    print("Error while loading imageio")
+    exit()
+try:
+    import os
+except:
+    print("Error while loading os")
+    exit()
+try:
+    import copy
+except:
+    print("Error while loading copy")
     exit()
 
 class Hills:
@@ -115,7 +130,7 @@ class Hills:
     def __init__(self, name="HILLS", encoding="utf8", ignoretime=True, periodic=[False, False], 
                  cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=None):
         self.read(name, encoding, ignoretime, periodic, 
-                 cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=timestep)
+                 cv1per=cv1per,cv2per=cv2per,cv3per=cv3per, timestep=timestep)
         self.hillsfilename = name
     
     def read(self, name="HILLS", encoding="utf8", ignoretime=True, periodic=None, 
@@ -468,6 +483,7 @@ class Fes:
                  calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, \
                  time_min=None, time_max=None):
         self.res = resolution
+        self.original = original
         self.cv1range = cv1range
         self.cv2range = cv2range
         self.cv3range = cv3range
@@ -545,10 +561,9 @@ class Fes:
                 return None
             if time_min != None:
                 if time_min < 0:
-                    print("Warning: Start time is lower than zero, it will be set to zero instead. ")
-                    time_min = 0
+                    print("Warning: Start time is lower than zero. ")
                 if time_min < int(hills.hills[0,0]):
-                    print("Warning: Start time {time_min} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. ")
+                    print(f"Warning: Start time {time_min} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. ")
                     time_min = int(hills.hills[0,0])
             else:
                 time_min = int(hills.hills[0,0])
@@ -576,7 +591,7 @@ class Fes:
                 else:
                     self.makefes2(resolution, cv1range, cv2range, cv3range, time_min, time_max)
         
-    def makefes(self, resolution, cv1range, cv2range, cv3range, time_min, time_max):
+    def makefes(self, resolution, cv1range, cv2range, cv3range, time_min, time_max, print_output=True):
         """
         Function used internally for summing hills in Hills object with the fast Bias Sum Algorithm. 
         """
@@ -622,7 +637,7 @@ class Fes:
             fes = np.zeros((self.res))
             
             for line in range(time_min-1, time_max):
-                if ((line) % 500 == 0) or (line == time_max-1):
+                if print_output and (((line) % 500 == 0) or (line == time_max-1)):
                     print(f"Constructing free energy surface: {((line+1-time_min+1)/(time_max-time_min+1)):.1%} finished", end="\r")
                 
                 gauss_center_to_end = int((gauss_res-1)/2)
@@ -652,7 +667,8 @@ class Fes:
                         fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1]\
                                     += gauss[gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1]\
                                     * self.heights[line]
-            print("\n")
+            if print_output:
+                print("\n")
             fes = fes-np.min(fes)
             self.fes = np.array(fes)
             
@@ -714,7 +730,7 @@ class Fes:
             
             fes = np.zeros((self.res,self.res))
             for line in range(time_min-1, time_max):
-                if ((line) % 500 == 0) or (line == time_max-1):
+                if print_output and (((line) % 500 == 0) or (line == time_max-1)):
                     print(f"Constructing free energy surface: {((line+1-time_min+1)/(time_max-time_min+1)):.1%} finished", end="\r")
                 
                 #fes_center = int((self.res-1)/2)
@@ -773,7 +789,8 @@ class Fes:
                         fes[fes_crop_cv1_p[0]:fes_crop_cv1_p[1]+1,fes_crop_cv2_p[0]:fes_crop_cv2_p[1]+1]\
                                     += gauss[gauss_crop_cv1_p[0]:gauss_crop_cv1_p[1]+1,gauss_crop_cv2_p[0]:gauss_crop_cv2_p[1]+1]\
                                     * self.heights[line]
-            print("\n")
+            if print_output:
+                print("\n")
             fes = fes-np.min(fes)
             self.fes = np.array(fes)
         elif self.cvs == 3:
@@ -856,7 +873,7 @@ class Fes:
             fes = np.zeros((self.res, self.res, self.res))
             
             for line in range(time_min-1, time_max):
-                if ((line) % 500 == 0) or (line == time_max-1):
+                if print_output and (((line) % 500 == 0) or (line == time_max-1)):
                     print(f"Constructing free energy surface: {((line+1-time_min+1)/(time_max-time_min+1)):.1%} finished", end="\r")
                 
                 #fes_center = int((self.res-1)/2)
@@ -1000,13 +1017,14 @@ class Fes:
                                              gauss_crop_cv3_p[0]:gauss_crop_cv3_p[1]+1]\
                                     * self.heights[line]
             
-            print("\n")
+            if print_output:
+                print("\n")
             fes = fes-np.min(fes)
             self.fes = np.array(fes)
         else:
             print("Fes object doesn't have supported number of CVs.")
     
-    def makefes2(self, resolution, cv1range, cv2range, cv3range, time_min, time_max):
+    def makefes2(self, resolution, cv1range, cv2range, cv3range, time_min, time_max, print_output=True):
         """
         Function internally used to sum Hills in the same way as Plumed sum_hills. 
         """
@@ -1039,7 +1057,7 @@ class Fes:
             
             for x in range(self.res):
                 progress += 1
-                if ((progress) % 200 == 0) or (progress == max_progress):
+                if print_output and (((progress) % 200 == 0) or (progress == max_progress)):
                     print(f"Constructing free energy surface: {(progress/max_progress):.2%} finished", end="\r")
                 
                 dist_cv1 = self.cv1[time_min-1:time_max]-(cv1min+(x)*cv1_fes_range/(self.res))
@@ -1055,7 +1073,8 @@ class Fes:
                     
             fes = fes - np.min(fes)
             self.fes = np.array(fes)
-            print("\n")
+            if print_output:
+                print("\n")
             
         elif self.cvs == 2:
             if cv1range==None:
@@ -1107,7 +1126,7 @@ class Fes:
                     
                 for y in range(self.res):
                     progress += 1
-                    if (progress) % 200 == 0 or (progress == max_progress):
+                    if print_output and ((progress) % 200 == 0 or (progress == max_progress)):
                         print(f"Constructing free energy surface: {(progress/max_progress):.2%} finished", end="\r")
                     
                     dist_cv2 = self.cv2[time_min-1:time_max]-(cv2min+(y)*cv2_fes_range/(self.res))
@@ -1123,7 +1142,8 @@ class Fes:
                     
             fes = fes - np.min(fes)
             self.fes = np.array(fes)
-            print("\n")
+            if print_output:
+                print("\n")
             
         elif self.cvs == 3:
             if cv1range==None:
@@ -1199,7 +1219,7 @@ class Fes:
                         
                     for z in range(self.res):
                         progress += 1
-                        if (progress) % 200 == 0 or (progress == max_progress):
+                        if print_output and ((progress) % 200 == 0 or (progress == max_progress)):
                             print(f"Constructing free energy surface: {(progress/max_progress):.2%} finished", end="\r")
                         
                         dist_cv3 = self.cv3[time_min-1:time_max]-(cv3min+(z)*cv3_fes_range/(self.res))
@@ -1217,13 +1237,14 @@ class Fes:
                         
             fes = fes - np.min(fes)
             self.fes = np.array(fes)
-            print("\n")
+            if print_output:
+                print("\n")
         else:
             print(f"Error: unsupported number of CVs: {self.cvs}.")
     
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "jet", 
-                 energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
-                 vmin = 0, vmax = None, opacity=0.2, levels=None):
+                 energy_unit="kJ/mole", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
+                 vmin = 0, vmax = None, opacity=0.2, levels=None, title = None, off_screen = False):
         """
         Function used to visualize FES, based on Matplotlib and PyVista. 
         
@@ -1260,6 +1281,10 @@ class Fes:
         
         * levels = Here you can specify list of free energy values for isosurfaces on 3D FES. 
                         If not provided, default values from contours parameters will be used instead. 
+
+        * title = optional, string that defines the title of the graph
+
+        * offscreen (default = False) = for 3D FES only, grapf will not be shown after creation - used internally by metadynminer when making animations
         """
         if vmax == None:
             vmax = np.max(self.fes)+0.01 # if the addition is smaller than 0.01, the 3d plot stops working. 
@@ -1306,6 +1331,10 @@ class Fes:
                 plt.ylabel(f'free energy ({energy_unit})', size=label_size)
             else:
                 plt.ylabel(ylabel, size=label_size)
+            if title != None:
+                plt.title(title)
+            if png_name != None:
+                plt.savefig(png_name)
             
         if self.cvs == 2:
             fig = plt.figure(figsize=(image_size[0],image_size[1]))
@@ -1329,6 +1358,10 @@ class Fes:
                 plt.ylabel(f'CV2 - {self.cv2_name}', size=label_size)
             else:
                 plt.ylabel(ylabel, size=label_size)
+            if title != None:
+                plt.title(title)
+            if png_name != None:
+                plt.savefig(png_name)
         
         if self.cvs == 3:
             if xlabel == None:
@@ -1338,7 +1371,7 @@ class Fes:
             if zlabel == None:
                 zlabel = "CV3 - " + self.cv3_name
             
-            grid = pv.UniformGrid(
+            grid = pv.ImageData(
                 dimensions=(self.res, self.res, self.res),
                 spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
                 origin=(cv1min, cv2min, cv3min)
@@ -1354,20 +1387,25 @@ class Fes:
                                           int((contours.points[i,1]-cv2min)*self.res/(cv2max-cv2min)),
                                           int((contours.points[i,2]-cv3min)*self.res/(cv3max-cv3min))])
             #%% Visualization
+            bounds = [cv1min, cv1max, cv2min, cv2max, cv3min, cv3max]
             pv.set_plot_theme('document')
             p = pv.Plotter()
             p.add_mesh(contours, scalars=fescolors, opacity=opacity, cmap=cmap, show_scalar_bar=False, interpolate_before_map=True)
-            p.show_grid(xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
-            p.show()
+            p.show_bounds(bounds=bounds, xtitle=xlabel, ytitle=ylabel, ztitle=zlabel, grid=True, location="outer")
+            if title != None:
+                p.add_title(title, font_size=label_size)
+            if not off_screen:
+                p.show()
             
-        if png_name != None:
-            plt.savefig(png_name)
-        
+            if png_name != None:
+                p.save_graphic(png_name)
+            
+    
     def set_fes(self, fes):
         self.fes = fes
         
     def surface_plot(self, cmap = "jet", 
-                     energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, 
+                     energy_unit="kJ/mole", xlabel=None, ylabel=None, zlabel=None, 
                      label_size=12, image_size=[12,7], rstride=1, cstride=1, vmin = 0, vmax = None):
         """
         Function for visualization of 2D FES as 3D surface plot. For now, it is based on Matplotlib, but there are issues with interactivity. 
@@ -1444,7 +1482,7 @@ class Fes:
         else:
             print(f"Surface plot only works for FES with exactly two CVs, and this FES has {self.cvs}")
     
-    def removeCV(self, CV=None, energy_unit="kJ/mol", temp=300.0):
+    def removeCV(self, CV=None, energy_unit="kJ/mole", temp=300.0):
         """
         This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities 
         are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. 
@@ -1633,6 +1671,138 @@ class Fes:
             else:
                 print("Error: unknown energy unit")
                 return None
+
+    def flooding_animation(self, gif_name = "flooding.gif", use_vmax_from_end = True, with_minima = True, use_minima_from_end=False, cmap="jet", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], time_min=None, time_max=None, step=1000, contours_spacing = 20, levels=None, opacity = 0.2, vmin = 0, vmax = None, energy_unit="kJ/mole", clear_temporary_folder=True, temporary_folder_name="temporary_folder", time_unit="ps", fps=5, enable_loop = True):
+        """
+        This method is used to make an animation that shows, how the FES was evolving during metadynamics simulation. It creates temporary folder and svaes plots of FES at different times during simulation, then it concatenates them to make a gif animation and removes the temporary files (remove can be switched off, if necessary). 
+
+        Use:
+        
+        ```python
+        fes.flooding_animation()
+        ```
+        Parameters:
+        * gif_name (default="flooding.gif") = name for the animation file
+
+        * optional parameters used when calling
+        ```python
+        fes.plot()
+        ```
+        or
+        ```python
+        minima.plot()
+        ```
+        can be used to adjust the graphs used to create animation
+
+        * use_vmax_from_end (default=True), boolean value, if it is True and vmax is not specified, it will use the vmax value from the end point of the fes object for all frames of animation; then, for 2D FES, the colors will be comparable to each other
+
+        * with_minima (default = True), boolean value, if True, graphs will be shown with letters at each local minima found at each frame of the animation
+
+        * use _minima_from_end (default = True), boolean value, if True, the local minima from the end point of the fes object wil be depicted at each frame of animation
+
+        * step (default=1000), integer, frames for animation will be made at each n-th line in HILLS file
+
+        * temporary_folder_name (default="temporary_folder"), name of the temporary folder where the individual graphs will be saved; directory with this name shouldn't be present in working irectory when calling the method, otherwise it will throw an error
+        
+        * clear_temporary_folder (default=True), if set to false, the graphs made for each frame of the simulation will not be removed afterwards, so they can be viewed by the user later
+
+        * fps (defalt=5) = how many frames per second the animation will have
+
+        * enable_loop (default=True) = whether the animation should be running in loop
+        """
+        current_directory = os.getcwd()
+        final_directory = os.path.join(current_directory, temporary_folder_name)
+        if os.path.exists(final_directory):
+            print(f"Error: directory with the name {temporary_folder_name} already exists. Try using different name using temporary_folder_name keyword. ")
+            return None
+        else:
+           os.makedirs(final_directory)
+        flooding_fes = copy.deepcopy(self)
+        step_fes = copy.deepcopy(self)
+        
+        if time_min != None:
+            if time_min < 0:
+                print("Warning: Start time is lower than zero. ")
+            if time_min < int(self.hills.hills[0,0]):
+                print(f"Warning: Start time {time_min} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. ")
+                time_min = int(self.hills.hills[0,0])
+        else:
+            time_min = int(self.hills.hills[0,0])
+        if time_max != None:     
+            if time_max < time_min:
+                print("Warning: End time is lower than start time. Values are flipped. ")
+                time_value = time_max
+                time_max = time_min
+                time_min = time_value
+            if time_max > int(self.hills.hills[-1,0]):
+                print(f"Warning: End time {time_max} is higher than number of lines in HILLS file {int(hills.hills[-1,0])}, which will be used instead. ")
+                time_max = int(self.hills.hills[-1,0])
+        else:
+            time_max = int(self.hills.hills[-1,0])
+
+        if (vmax == None) and use_vmax_from_end:
+            vmax = np.max(self.fes)+0.1
+        if self.cvs == 1 or self.cvs == 2:
+            suffix="png"
+        if self.cvs == 3:
+            suffix="eps"
+        times = np.array((range(time_min-1, time_max+1, step)))
+        image_files = [f'{final_directory}/{times[i]}.{suffix}'.format(i) for i in range(1, len(times))]
+        
+        minima_final = Minima(self)
+        
+        for i in range(1,len(times)):
+            print(f"Constructing flooding animation: {((i+1)/len(times)):.2%} finished", end="\r")
+            if self.original==False:
+                step_fes.makefes(flooding_fes.res, flooding_fes.cv1range, flooding_fes.cv2range, flooding_fes.cv3range, time_min=(times[i-1]+1), time_max=times[i], print_output=False)
+            else:
+                step_fes.makefes2(flooding_fes.res, flooding_fes.cv1range, flooding_fes.cv2range, flooding_fes.cv3range, time_min=(times[i-1]+1), time_max=times[i], print_output=False)
+            if i == 1:
+                flooding_fes.fes = step_fes.fes
+            else:
+                flooding_fes.fes += step_fes.fes
+            flooding_fes.fes = flooding_fes.fes - np.min(flooding_fes.fes)
+            try:
+                if with_minima:
+                    mf = Minima(flooding_fes)
+                    if use_minima_from_end:
+                        mf.minima = minima_final.minima
+                    mf.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f"{final_directory}/{times[i]}.{suffix}", title=f"{times[i]} {time_unit}")
+                else:
+                    flooding_fes.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f"{final_directory}/{times[i]}.{suffix}", title=f"{times[i]} {time_unit}")
+                plt.close()
+            except ValueError:
+                print("Warning: The first frame of animation would be blank with the current ettings, but PyVista 3D plotter can not plot empty meshes. Try to increase the timestep between frames or decrease the spacing between isosurfaces.")
+        print("\n")
+        if enable_loop:
+            with imageio.get_writer(gif_name, format="GIF", fps = fps, loop=0) as writer:
+                for image_file in image_files:
+                    try:
+                        image = imageio.imread(image_file)
+                        writer.append_data(image)
+                    except FileNotFoundError:
+                        print("Warning: File for animation was not found.")
+        else:
+            with imageio.get_writer(gif_name, format="GIF", fps = fps) as writer:
+                for image_file in image_files:
+                    try:
+                        image = imageio.imread(image_file)
+                        writer.append_data(image)
+                    except FileNotFoundError:
+                        print("Warning: File for animation was not found.")
+
+        if clear_temporary_folder:
+            for image_file in image_files:
+                try:
+                    os.remove(image_file)
+                except FileNotFoundError:
+                        print("Warning: File for animation was not found.")
+            try: 
+                os.rmdir(final_directory)
+            except OSError:
+                print("Warning: temporary_folder in this path is not empty and will not be removed. Metadynminer's temporary files inside were removed. ")
+               
+
     
     def make_gif(self, gif_name=None, cmap = "jet", 
                  xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
@@ -1747,7 +1917,7 @@ class Minima():
     minima = metadynminer.Minima(fes=f, nbins=8)
     ```
     
-    List of minima can be later called like this:
+    List of minima can be later shown like this:
     
     ```python
     print(minima.minima)
@@ -2148,7 +2318,7 @@ class Minima():
 
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "jet", 
                  energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
-                 color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0):
+                 color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0, title = None, off_screen = False):
         """
         The same function as for visualizing Fes objects, but this time 
         with the positions of local minima shown as letters on the graph.
@@ -2194,6 +2364,10 @@ class Minima():
         * show_points (default=True) = boolean, tells if points should be visualized too, instead of just the letters. Only on 3D FES. 
         
         * point_size (default=4.0) = float, sets the size of points if show_points=True
+
+        * title = optional, string that defines the title of the graph
+
+        * offscreen (default = False) = for 3D FES only, grapf will not be shown after creation - used internally when making animations
         """
         
         if vmax == None:
@@ -2261,6 +2435,11 @@ class Minima():
                 plt.ylabel(f'free energy ({energy_unit})', size=label_size)
             else:
                 plt.ylabel(ylabel, size=label_size)
+            if title != None:
+                plt.title(title)
+            if png_name != None:
+                plt.savefig(png_name)
+                
             
         elif self.cvs == 2:
             fig = plt.figure(figsize=(image_size[0],image_size[1]))
@@ -2295,7 +2474,7 @@ class Minima():
                     elif luma <= 0.6 and not color_set:
                         color="white"
                     plt.text(float(self.minima.iloc[m,4])+0.5*(cv1max-cv1min)/self.res, float(self.minima.iloc[m,5])+0.5*(cv2max-cv2min)/self.res, self.minima.iloc[m,0], fontsize=label_size, horizontalalignment='center', verticalalignment='center', c=color)
-
+            
             
             if xlabel == None:
                 plt.xlabel(f'CV1 - {self.cv1_name}', size=label_size)
@@ -2305,7 +2484,12 @@ class Minima():
                 plt.ylabel(f'CV2 - {self.cv2_name}', size=label_size)
             else:
                 plt.ylabel(ylabel, size=label_size)
-        
+            if title != None:
+                plt.title(title)
+            if png_name != None:
+                plt.savefig(png_name)
+            
+            
         elif self.cvs == 3:
             if xlabel == None:
                 xlabel = "CV1 - " + self.cv1_name
@@ -2317,7 +2501,7 @@ class Minima():
             min_ar = self.minima.iloc[:,5:8].values
             min_ar = min_ar.astype(np.float32)
             min_pv = pv.PolyData(min_ar)
-            grid = pv.UniformGrid(
+            grid = pv.ImageData(
                 dimensions=(self.res, self.res, self.res),
                 spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
                 origin=(cv1min, cv2min, cv3min)
@@ -2333,18 +2517,24 @@ class Minima():
                                           int((contours.points[i,1]-cv2min)*self.res/(cv2max-cv2min)),
                                           int((contours.points[i,2]-cv3min)*self.res/(cv3max-cv3min))])
             #%% Visualization
+            bounds = [cv1min, cv1max, cv2min, cv2max, cv3min, cv3max]
             pv.set_plot_theme('document')
             p = pv.Plotter()
             p.add_mesh(contours, scalars=fescolors, opacity=opacity, cmap=cmap, show_scalar_bar=False, interpolate_before_map=True)
-            p.show_grid(xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
+            p.show_bounds(bounds=bounds, xtitle=xlabel, ytitle=ylabel, ztitle=zlabel, grid=True, location="outer")
             p.add_point_labels(min_pv, self.minima.iloc[:,0], 
                    show_points=show_points, always_visible = True, 
                    point_color="black", point_size=point_size, 
                    font_size=label_size, shape=None)
-            p.show()
             
-        if png_name != None:
-            plt.savefig(png_name)
+            if title != None:
+                plt.title(title)
+            if not off_screen:
+                p.show()
+
+            if png_name != None:
+                p.save_graphic(png_name)
+            
 
     def make_gif(self, gif_name=None, cmap = "jet", 
                  xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
@@ -2430,6 +2620,7 @@ class Minima():
         else:
             print("Error: gif_plot is only available for FES with 3 CVs.")
 
+
 class FEProfile:
     """
     Free energy profile is a visualization of differences between local 
@@ -2449,6 +2640,8 @@ class FEProfile:
     * hillsfile = metadynminer.Hills object
     
     """
+    
+    __pdoc__["FEProfile.makefeprofile"] = False
     
     def __init__(self, minima, hills):
         self.cvs = minima.cvs
@@ -2735,3 +2928,4 @@ class FEProfile:
             plt.legend(self.minima.iloc[:,0], loc="lower right")
         if png_name != None:
             plt.savefig(png_name)
+
