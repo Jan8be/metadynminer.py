@@ -1508,7 +1508,7 @@ class Fes:
             print("Error: You can not remove the only CV. ")
             return None
         elif self.cvs == 2:
-            if energy_unit == "kJ/mol":
+            if energy_unit == "kJ/mole":
                 probabilities = np.exp(-1000*self.fes/8.314/temp)
                 if CV == 1:
                     new_prob = np.sum(probabilities, axis=0)
@@ -1535,7 +1535,7 @@ class Fes:
                     new_fes.cv1_name = self.cv1_name
                     new_fes.cv1per = self.cv1per
                 return new_fes
-            elif energy_unit == "kcal/mol":
+            elif energy_unit == "kcal/mole":
                 probabilities = np.exp(-1000*4.184*self.fes/8.314/temp)
                 if CV == 1:
                     new_prob = np.sum(probabilities, axis=1)
@@ -1566,7 +1566,7 @@ class Fes:
                 print("Error: unknown energy unit")
                 return None
         elif self.cvs == 3:
-            if energy_unit == "kJ/mol":
+            if energy_unit == "kJ/mole":
                 probabilities = np.exp(-1000*self.fes/8.314/temp)
                 if CV == 1:
                     new_prob = np.sum(probabilities, axis=0)
@@ -1617,7 +1617,7 @@ class Fes:
                     new_fes.cv1per = self.cv1per
                     new_fes.cv2per = self.cv2per
                 return new_fes
-            elif energy_unit == "kcal/mol":
+            elif energy_unit == "kcal/mole":
                 probabilities = np.exp(-1000*4.184*self.fes/8.314/temp)
                 if CV == 1:
                     new_prob = np.sum(probabilities, axis=0)
@@ -1802,7 +1802,7 @@ class Fes:
             try: 
                 os.rmdir(final_directory)
             except OSError:
-                print("Warning: temporary_folder in this path is not empty and will not be removed. Metadynminer's temporary files inside were removed. ")
+                print(f"Warning: directory{final_directory} is not empty and will not be removed. Metadynminer's temporary files inside were removed. ")
                
 
     
