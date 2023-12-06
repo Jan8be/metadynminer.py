@@ -1243,7 +1243,7 @@ class Fes:
             print(f"Error: unsupported number of CVs: {self.cvs}.")
     
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "jet", 
-                 energy_unit="kJ/mole", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
+                 energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
                  vmin = 0, vmax = None, opacity=0.2, levels=None, title = None, off_screen = False):
         """
         Function used to visualize FES, based on Matplotlib and PyVista. 
@@ -1405,7 +1405,7 @@ class Fes:
         self.fes = fes
         
     def surface_plot(self, cmap = "jet", 
-                     energy_unit="kJ/mole", xlabel=None, ylabel=None, zlabel=None, 
+                     energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, 
                      label_size=12, image_size=[12,7], rstride=1, cstride=1, vmin = 0, vmax = None):
         """
         Function for visualization of 2D FES as 3D surface plot. For now, it is based on Matplotlib, but there are issues with interactivity. 
@@ -1482,7 +1482,7 @@ class Fes:
         else:
             print(f"Surface plot only works for FES with exactly two CVs, and this FES has {self.cvs}")
     
-    def removeCV(self, CV=None, energy_unit="kJ/mole", temp=300.0):
+    def removeCV(self, CV=None, energy_unit="kJ/mol", temp=300.0):
         """
         This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities 
         are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. 
@@ -1508,7 +1508,7 @@ class Fes:
             print("Error: You can not remove the only CV. ")
             return None
         elif self.cvs == 2:
-            if energy_unit == "kJ/mole":
+            if energy_unit == "kJ/mol":
                 probabilities = np.exp(-1000*self.fes/8.314/temp)
                 if CV == 1:
                     new_prob = np.sum(probabilities, axis=0)
@@ -1535,7 +1535,7 @@ class Fes:
                     new_fes.cv1_name = self.cv1_name
                     new_fes.cv1per = self.cv1per
                 return new_fes
-            elif energy_unit == "kcal/mole":
+            elif energy_unit == "kcal/mol":
                 probabilities = np.exp(-1000*4.184*self.fes/8.314/temp)
                 if CV == 1:
                     new_prob = np.sum(probabilities, axis=1)
@@ -1566,7 +1566,7 @@ class Fes:
                 print("Error: unknown energy unit")
                 return None
         elif self.cvs == 3:
-            if energy_unit == "kJ/mole":
+            if energy_unit == "kJ/mol":
                 probabilities = np.exp(-1000*self.fes/8.314/temp)
                 if CV == 1:
                     new_prob = np.sum(probabilities, axis=0)
@@ -1617,7 +1617,7 @@ class Fes:
                     new_fes.cv1per = self.cv1per
                     new_fes.cv2per = self.cv2per
                 return new_fes
-            elif energy_unit == "kcal/mole":
+            elif energy_unit == "kcal/mol":
                 probabilities = np.exp(-1000*4.184*self.fes/8.314/temp)
                 if CV == 1:
                     new_prob = np.sum(probabilities, axis=0)
@@ -1672,7 +1672,7 @@ class Fes:
                 print("Error: unknown energy unit")
                 return None
 
-    def flooding_animation(self, gif_name = "flooding.gif", use_vmax_from_end = True, with_minima = True, use_minima_from_end=False, cmap="jet", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], time_min=None, time_max=None, step=1000, contours_spacing = 20, levels=None, opacity = 0.2, vmin = 0, vmax = None, energy_unit="kJ/mole", clear_temporary_folder=True, temporary_folder_name="temporary_folder", time_unit="ps", fps=5, enable_loop = True):
+    def flooding_animation(self, gif_name = "flooding.gif", use_vmax_from_end = True, with_minima = True, use_minima_from_end=False, cmap="jet", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], time_min=None, time_max=None, step=1000, contours_spacing = 20, levels=None, opacity = 0.2, vmin = 0, vmax = None, energy_unit="kJ/mol", clear_temporary_folder=True, temporary_folder_name="temporary_folder", time_unit="ps", fps=5, enable_loop = True):
         """
         This method is used to make an animation that shows, how the FES was evolving during metadynamics simulation. It creates temporary folder and svaes plots of FES at different times during simulation, then it concatenates them to make a gif animation and removes the temporary files (remove can be switched off, if necessary). 
 
