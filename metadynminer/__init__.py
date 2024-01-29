@@ -56,7 +56,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.6.1"
+__version__ = "0.6.2"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -1346,10 +1346,10 @@ class Fes:
             cbar.set_label(energy_unit, size=label_size)
             if contours:
                 cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
-                         levels = np.arange(0, (vmax - 0.01), contours_spacing), 
+                         levels = np.arange(vmin, (vmax - 0.01), contours_spacing), 
                          extent=[cv1min, cv1max, cv2max, cv2min], 
-                         colors = "k")
-                plt.clabel(cont, levels = np.arange(0, (vmax - 0.01), contours_spacing))
+                         colors = "k", linestyles = "solid")
+                plt.clabel(cont, levels = np.arange(vmin, (vmax - 0.01), contours_spacing))
             if xlabel == None:
                 plt.xlabel(f'CV1 - {self.cv1_name}', size=label_size)
             else:
@@ -1458,12 +1458,9 @@ class Fes:
             y = np.linspace(cv2min, cv2max, self.res)
             
             X, Y = np.meshgrid(x, y)
-            Z = self.fes
+            Z = self.fes.T
             
-            #grid = pv.StructuredGrid(X, Y, Z)
-            #grid.plot()
-            
-            fig = plt.figure()
+            fig = plt.figure(figsize=(image_size[0],image_size[1]))
             ax = plt.axes(projection="3d")
             ax.plot_surface(X,Y,Z, cmap=cmap, rstride=rstride, cstride=cstride)
             
