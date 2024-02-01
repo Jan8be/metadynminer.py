@@ -1,5 +1,9 @@
 # metadynminer.py
 
+Quickstart: run in Binder
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ljocha/metadynminer.py/binder)
+
 [![Build](https://github.com/Jan8be/metadynminer.py/actions/workflows/ci.yml/badge.svg)](https://github.com/Jan8be/metadynminer.py/actions/workflows/ci.yml)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/metadynminer?label=PyPI%20downloads&color=green&link=https%3A%2F%2Fpypi.org%2Fproject%2Fmetadynminer%2F)](https://pypi.org/project/metadynminer/)
 [![conda downloads](https://img.shields.io/conda/d/Jan8be/metadynminer?label=Conda%20total%20downloads&color=green&link=https%3A%2F%2Fanaconda.org%2FJan8be%2Fmetadynminer)](https://anaconda.org/Jan8be/metadynminer)
