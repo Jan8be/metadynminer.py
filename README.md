@@ -15,9 +15,13 @@ All these functions can be easily customized with many parameters. You can learn
 
 ## Quickstart: run in Binder
 
-Click the icon bellow and wait (couple of minutes) for the container to build and started.
+Click the icon bellow and wait (couple of minutes) for the container to build and started on public [MyBinder](http://mybinder.org/).
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ljocha/metadynminer.py/binder)
+
+Alternatively, for [Metacentrum](https://metacentrum.cz/) users, somewhate better resources are available:
+
+[![Binder](https://binderhub.cloud.e-infra.cz/badge_logo.svg)](https://binderhub.cloud.e-infra.cz/v2/gh/ljocha/metadynminer.py/binder?urlpath=lab)
 
 Once in the Jupyterlab environment, upload your ```HILLS``` file and start the ```python_metadynminer.ipynb``` notebook.
 
