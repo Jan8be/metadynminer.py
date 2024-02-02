@@ -1,4 +1,4 @@
-FROM jupyter/all-spark-notebook
+FROM jupyter/base-notebook
 
 RUN mkdir /tmp/build
 COPY README.md meta.yaml setup.py /tmp/build/
