@@ -1,8 +1,11 @@
 # metadynminer.py
 
+
+
 [![Build](https://github.com/Jan8be/metadynminer.py/actions/workflows/ci.yml/badge.svg)](https://github.com/Jan8be/metadynminer.py/actions/workflows/ci.yml)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/metadynminer?label=PyPI%20downloads&color=green&link=https%3A%2F%2Fpypi.org%2Fproject%2Fmetadynminer%2F)](https://pypi.org/project/metadynminer/)
 [![conda downloads](https://img.shields.io/conda/d/Jan8be/metadynminer?label=Conda%20total%20downloads&color=green&link=https%3A%2F%2Fanaconda.org%2FJan8be%2Fmetadynminer)](https://anaconda.org/Jan8be/metadynminer)
+
 
 Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. 
 
@@ -10,7 +13,20 @@ It is based on Metadynminer package for R programming language, but it is not ju
 
 All these functions can be easily customized with many parameters. You can learn more about that later in the documentation. There are also other predefined functions allowing you to for example to enhance your presentation with animations of your 3D FES or remove a CV from existing FES. 
 
-Installation:
+## Quickstart: run in Binder
+
+Click the icon bellow and wait (couple of minutes) for the container to build and started on public [MyBinder](http://mybinder.org/).
+
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ljocha/metadynminer.py/binder)
+
+Alternatively, for [Metacentrum](https://metacentrum.cz/) users, somewhate better resources are available:
+
+[![Binder](https://binderhub.cloud.e-infra.cz/badge_logo.svg)](https://binderhub.cloud.e-infra.cz/v2/gh/ljocha/metadynminer.py/binder?urlpath=lab)
+
+Once in the Jupyterlab environment, upload your ```HILLS``` file and start the ```python_metadynminer.ipynb``` notebook.
+
+## Installation:
+
 ```bash
 pip install metadynminer
 ```
@@ -19,7 +35,7 @@ or
 conda install -c jan8be metadynminer
 ```
 
-Sample code:
+## Sample code:
 
 Load your HILLS file: 
 ```python
