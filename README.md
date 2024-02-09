@@ -37,6 +37,11 @@ conda install -c jan8be metadynminer
 
 ## Sample code:
 
+Load metadynminer:
+```python
+import metadynminer
+```
+
 Load your HILLS file: 
 ```python
 hillsfile = metadynminer.Hills(name="HILLS", periodic=[True,True])
@@ -53,7 +58,12 @@ with the option original=True. This algorithm was checked and it gives the same 
 fes2 = metadynminer.Fes(hillsfile, original=True)
 ```
 
-Visualize the free energy surface and save the picture to a file:
+Visualize the free energy surface:
+```python
+fes.plot()
+```
+
+Visualize and save the picture to a file:
 ```python
 fes.plot(png_name="fes.png")
 ```
@@ -62,13 +72,13 @@ Find local minima on the FES, print them and save FES with minima as a picture:
 ```python
 minima = metadynminer.Minima(fes)
 print(minima.minima)
-minima.plot(png_name="fes.png")
+minima.plot()
 ```
 
 You can also plot free energy profile to see, how the differences between each minima were evolving 
 during the simulation. Convergence in the free energy profile suggests, that the resulting free energy surface converged to correct values.
 ```python
 fep = metadynminer.FEProfile(minima, hillsfile)
-fep.plot(png_name="FEProfile.png")
+fep.plot()
 ```
 
