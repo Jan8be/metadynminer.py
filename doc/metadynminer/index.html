@@ -33,12 +33,12 @@
 </code></pre>
 <p>Sample code:</p>
 <p>Load your HILLS file: </p>
-<pre><code class="language-python">hillsfile = metadynminer.Hills(name=&quot;HILLS&quot;, periodic=[True,True])
+<pre><code class="language-python">hillsfile = metadynminer.Hills(name=&quot;HILLS&quot;)
 </code></pre>
 <p>Compute the free energy surface using the fast Bias Sum Algorithm:</p>
 <pre><code class="language-python">fes = metadynminer.Fes(hillsfile)
 </code></pre>
-<p>You can also use slower (but exact) algorithm to sum the hills and compute the free energy surface
+<p>Alternativelly, you can use slower, exact algorithm to sum the hills and compute the free energy surface
 with the option original=True. This algorithm was checked and it gives the same result
 (to the machine level precision) as the PLUMED sum_hills function (for plumed v2.8.0).</p>
 <pre><code class="language-python">fes2 = metadynminer.Fes(hillsfile, original=True)
@@ -82,7 +82,7 @@ Sample code:
 
 Load your HILLS file: 
 ```python
-hillsfile = metadynminer.Hills(name=&#34;HILLS&#34;, periodic=[True,True])
+hillsfile = metadynminer.Hills(name=&#34;HILLS&#34;)
 ```
 
 Compute the free energy surface using the fast Bias Sum Algorithm:
@@ -90,7 +90,7 @@ Compute the free energy surface using the fast Bias Sum Algorithm:
 fes = metadynminer.Fes(hillsfile)
 ```
 
-You can also use slower (but exact) algorithm to sum the hills and compute the free energy surface 
+Alternativelly, you can use slower, exact algorithm to sum the hills and compute the free energy surface 
 with the option original=True. This algorithm was checked and it gives the same result 
 (to the machine level precision) as the PLUMED sum_hills function (for plumed v2.8.0).
 ```python
@@ -118,7 +118,7 @@ fep.plot()
 &#34;&#34;&#34;
 
 name = &#34;metadynminer&#34;
-__version__ = &#34;0.6.0&#34;
+__version__ = &#34;0.7.0&#34;
 __author__ = &#39;Jan Beránek&#39;
 
 __pdoc__ = {}
@@ -164,6 +164,46 @@ except:
     print(&#34;Error while loading copy&#34;)
     exit()
 
+class TU:
+    def __init__(self, name=&#34;ps&#34;):
+        if name == &#34;ps&#34;:
+            self.name = name
+            self.factor = 1.0
+        elif name == &#34;fs&#34;:
+            self.name = name
+            self.factor = 1e-3
+        elif name == &#34;ns&#34;:
+            self.name = name
+            self.factor = 1e3
+        elif name == &#34;us&#34;:
+            self.name = &#34;\u03bcs&#34;
+            self.factor = 1e6
+        elif name == &#34;\u03bcs&#34;:
+            self.name = &#34;\u03bcs&#34;
+            self.factor = 1e6
+        elif name == &#34;ms&#34;:
+            self.name = name
+            self.factor = 1e9
+        elif name == &#34;s&#34;:
+            self.name = name
+            self.factor = 1e12
+        else:
+            print(f&#34;Error: invalid name of time unit ({name})&#34;)
+            
+    def inps(self, i):
+        if type(i) == int:
+            return int(i*self.factor)
+        else:
+            return i*self.factor
+
+    def intu(self, i):
+        if type(i) == int:
+            return int(i/self.factor)
+        else:
+            return i/self.factor
+
+
+
 class Hills:
     &#34;&#34;&#34;
     Object of Hills class are created for loading HILLS files, and obtaining the necessary information from them. 
@@ -189,7 +229,7 @@ class Hills:
                                         Has to be provided for each periodic CV.
     &#34;&#34;&#34;
     
-    def __init__(self, name=&#34;HILLS&#34;, encoding=&#34;utf8&#34;, ignoretime=True, periodic=[False, False], 
+    def __init__(self, name=&#34;HILLS&#34;, encoding=&#34;utf8&#34;, ignoretime=True, periodic=None, 
                  cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=None):
         self.read(name, encoding, ignoretime, periodic, 
                  cv1per=cv1per,cv2per=cv2per,cv3per=cv3per, timestep=timestep)
@@ -205,37 +245,38 @@ class Hills:
         if number_of_columns_head == 5:
             self.cvs = 1
             self.cv1_name = lines[0].split()[3]
-            if periodic == None:
-                periodic = list(False)
-            
-            self.periodic = list(periodic[0:1])
+            #if periodic == None:
+            #    periodic = list(False)
+            #
+            #self.periodic = list(periodic[0:1])
             self.cv1per = cv1per
 
         elif number_of_columns_head == 7:
             self.cvs = 2
             self.cv1_name = lines[0].split()[3]
             self.cv2_name = lines[0].split()[4]
-            if len(periodic) == 2:
-                self.periodic = periodic[0:2]
-                self.cv1per = cv1per
-                self.cv2per = cv2per
-            else:
-                print(f&#34;Error: argument &#39;periodic&#39; has wrong number of parameters({len(periodic)})&#34;)
+            #if len(periodic) == 2:
+            #    self.periodic = periodic[0:2]
+            self.cv1per = cv1per
+            self.cv2per = cv2per
+            #else:
+            #    print(f&#34;Error: argument &#39;periodic&#39; has wrong number of parameters({len(periodic)})&#34;)
         elif number_of_columns_head == 9:
             self.cvs = 3
             self.cv1_name = lines[0].split()[3]
             self.cv2_name = lines[0].split()[4]
             self.cv3_name = lines[0].split()[5]
             
-            if len(periodic) == 3:
-                self.periodic = periodic[0:3]
-                self.cv1per = cv1per
-                self.cv2per = cv2per
-                self.cv3per = cv3per
-            else:
-                print(f&#34;Argument &#39;periodic&#39; has wrong number of parameters({len(periodic)})&#34;)
+            #if len(periodic) == 3:
+            #    self.periodic = periodic[0:3]
+            self.cv1per = cv1per
+            self.cv2per = cv2per
+            self.cv3per = cv3per
+            #else:
+            #    print(f&#34;Argument &#39;periodic&#39; has wrong number of parameters({len(periodic)})&#34;)
         else:
-            print(&#34;Unexpected number of columns in provided HILLS file.&#34;)
+            print(&#34;Error: Unexpected number of columns in provided HILLS file.&#34;)
+            return None
         
         self.ignoretime = ignoretime
         if not ignoretime:
@@ -309,6 +350,59 @@ class Hills:
             self.sigma3 = self.hills[:,6]
             self.heights = self.hills[:,7]
             self.biasf = self.hills[:,8]
+        print(f&#34;Loaded HILLS file named {name}. &#34;)
+        
+        # detect periodicity
+        if periodic == None:
+            if self.cvs &gt;= 1:
+                if np.max(np.diff(self.cv1)) &gt; 0.8*(np.max(self.cv1)-np.min(self.cv1)):
+                    periodic = list([True])
+                else:
+                    periodic = list([False])
+            if self.cvs &gt;= 2:
+                if np.max(np.diff(self.cv2)) &gt; 0.8*(np.max(self.cv2)-np.min(self.cv2)):
+                    periodic.append(True)
+                else:
+                    periodic.append(False)
+            if self.cvs &gt;= 3:
+                if np.max(np.diff(self.cv3)) &gt; 0.8*(np.max(self.cv3)-np.min(self.cv3)):
+                    periodic.append(True)
+                else:
+                    periodic.append(False)
+            print(f&#34;Automatically detected which CVs are periodic: {periodic}. &#34;)
+            print(&#34;This detection can be overriden by specifying the list of boolean values to &#39;periodic&#39; keyword. &#34;)
+        else:
+            if self.cvs == 1:
+                if len(periodic) != 1 or (type(periodic[0]) != type(True)):
+                    print(f&#34;Error: argument &#39;periodic&#39; has wrong number of parameters({len(periodic)})&#34;)
+            if self.cvs == 2:
+                if len(periodic) != 2 or (type(periodic[0]) != type(True)) or (type(periodic[1]) != type(True)):
+                    print(f&#34;Error: argument &#39;periodic&#39; has wrong number of parameters({len(periodic)})&#34;)
+            if self.cvs == 3:
+                if len(periodic) != 3 or (type(periodic[0]) != type(True)) or (type(periodic[1]) != type(True)) or (type(periodic[2]) != type(True)):
+                    print(f&#34;Error: argument &#39;periodic&#39; has wrong number of parameters({len(periodic)})&#34;)
+        
+        self.periodic = periodic
+        # check periodicity
+
+        if self.cvs &gt;= 1:
+            if periodic[0] == False and np.max(np.diff(self.cv1))&gt;0.8*(np.max(self.cv1)-np.min(self.cv1)):
+                print(f&#34;WARNING: It looks like CV 1 ({self.cv1_name}) is periodic, however you specified that it is not. This may be completely fine, however, if you forgot to specify the periodicity correctly, it will lead to errors later during FES calculation.&#34;)
+            if periodic[0] == True and np.max(np.diff(self.cv1))&lt;0.2*(np.max(self.cv1)-np.min(self.cv1)):
+                print(f&#34;WARNING: It looks like CV 1 ({self.cv1_name}) is not periodic, however you specified that it is. This may be completely fine, however, if you forgot to specify the periodicity correctly, it will lead to errors later during FES calculation.&#34;)
+                
+        if self.cvs &gt;= 2:
+            if periodic[1] == False and np.max(np.diff(self.cv2))&gt;0.8*(np.max(self.cv2)-np.min(self.cv2)):
+                print(f&#34;WARNING: It looks like CV 2 ({self.cv2_name}) is periodic, however you specified that it is not. This may be completely fine, however, if you forgot to specify the periodicity correctly, it will lead to errors later during FES calculation.&#34;)
+            if periodic[1] == True and np.max(np.diff(self.cv2))&lt;0.2*(np.max(self.cv2)-np.min(self.cv2)):
+                print(f&#34;WARNING: It looks like CV 2 ({self.cv2_name}) is not periodic, however you specified that it is. This may be completely fine, however, if you forgot to specify the periodicity correctly, it will lead to errors later during FES calculation.&#34;)
+        
+        if self.cvs &gt;= 3:
+            if periodic[2] == False and np.max(np.diff(self.cv3))&gt;0.8*(np.max(self.cv3)-np.min(self.cv3)):
+                print(f&#34;WARNING: It looks like CV 3 ({self.cv3_name}) is periodic, however you specified that it is not. This may be completely fine, however, if you forgot to specify the periodicity correctly, it will lead to errors later during FES calculation.&#34;)
+            if periodic[2] == True and np.max(np.diff(self.cv3))&lt;0.2*(np.max(self.cv3)-np.min(self.cv3)):
+                print(f&#34;WARNING: It looks like CV 3 ({self.cv3_name}) is not periodic, however you specified that it is. This may be completely fine, however, if you forgot to specify the periodicity correctly, it will lead to errors later during FES calculation.&#34;)
+                
         return self
     
     
@@ -370,7 +464,7 @@ class Hills:
     __pdoc__[&#34;Hills.get_heights&#34;] = False
     __pdoc__[&#34;Hills.read&#34;] = False
 
-    def plot_heights(self, png_name=None, energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, label_size=12, image_size=[10,7]):
+    def plot_heights(self, png_name=None, energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, label_size=12, image_size=[6,4], dpi=150, tu = &#34;ps&#34;, time_min=None, time_max=None):
         &#34;&#34;&#34;
         Function used to visualize heights of the hills that were added during the simulation. 
         
@@ -388,13 +482,54 @@ class Hills:
         
         * labelsize (default = 12) = size of text in labels
         
-        * image_size (default = [10,7]) = List of the width and height of the picture
+        * image_size (default = [6,4]) = List of the width and height of the picture
+
+        * dpi (default = 100) = DPI of the resulting image. 
         
         &#34;&#34;&#34;
-        plt.figure(figsize=(image_size[0],image_size[1]))
-        plt.plot(range(len(self.heights)), self.heights)
+        tu = TU(tu)
+        
+        if time_min == time_max == 0:
+                print(&#34;Error: Values of start and end time are zero.&#34;)
+                return None
+        if time_min != None:
+            time_min = tu.inps(time_min)
+            if time_min &lt; 0:
+                print(&#34;Warning: Start time is lower than zero, it will be set to zero instead. &#34;)
+                time_min = 0
+            if time_min &lt; int(self.hills[0,0]):
+                print(f&#34;Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
+                time_min = int(self.hills[0,0])
+        else:
+            time_min = int(self.hills[0,0])
+        if time_max != None:
+            time_max = tu.inps(time_max)
+            if time_max &lt; time_min:
+                print(&#34;Warning: End time is lower than start time. Values are flipped. &#34;)
+                time_value = time_max
+                time_max = time_min
+                time_min = time_value
+            if time_max &gt; int(self.hills[-1,0]):
+                print(f&#34;Warning: End time {tu.inps(time_max)} ps is higher than number of lines in HILLS file {int(self.hills[-1,0])}, which will be used instead. &#34;)
+                time_max = int(self.hills[-1,0])
+        else:
+            time_max = int(self.hills[-1,0])
+        #print(f&#34;Berofe fes: min {time_min}, max {time_max}&#34;)
+        
+        if not self.ignoretime:
+            time_max = int(round(((time_max - self.hills[0,0])/self.dt),0)) + 1
+            time_min = int(round(((time_min - self.hills[0,0])/self.dt),0)) + 1
+
+        if time_min==None:
+            time_min=1
+        if time_max==None:
+            time_max = int(self.hills[-1,0])
+        
+        
+        plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
+        plt.plot(tu.intu(np.array(range(len(self.heights))))[time_min-1:time_max], self.heights[time_min-1:time_max])
         if xlabel == None:
-            plt.xlabel(f&#39;time (ps)&#39;, size=label_size)
+            plt.xlabel(f&#39;time ({tu.name})&#39;, size=label_size)
         else:
             plt.xlabel(xlabel, size=label_size)
         if ylabel == None:
@@ -405,7 +540,7 @@ class Hills:
         if png_name != None:
             plt.savefig(png_name)
 
-    def plot_CV(self, png_name=None, CV=None, xlabel=None, ylabel=None, label_size=12, image_size=[10,7], time_min=None, time_max=None, points = True, point_size=1):
+    def plot_CV(self, png_name=None, CV=None, xlabel=None, ylabel=None, label_size=12, image_size=[6,4], dpi=150, tu = &#34;ps&#34;, time_min=None, time_max=None, points = True, point_size=1):
         &#34;&#34;&#34;
         Function used to visualize CV values from the simulation. 
         
@@ -423,9 +558,13 @@ class Hills:
         
         * labelsize (default = 12) = size of text in labels
         
-        * image_size (default = [10,7]) = List of the width and height of the picture
+        * image_size (default = [6,4]) = List of the width and height of the picture
 
-        * time_min, time_max = The time range for plotting (should be in the same units that are used in HILLS file)
+        * dpi (default = 100) = DPI of the resulting image. 
+        
+        * tu (default = &#34;ps&#34;) = string, time unit to be shown on x axis. Also aplies to time_min and time_max, if those are used. Available options: &#34;s&#34;, &#34;ms&#34;, &#34;us&#34;, &#34;ns&#34;, &#34;ps&#34;, &#34;fs&#34;
+
+        * time_min, time_max = The time range for plot
 
         * points (default=True) = Boolean value; if True, plot type will be scatter plot, which is better for periodic CVs; if False, it will be line plot, which is sometimes more suitable for non-periodic CVs. 
 
@@ -448,30 +587,33 @@ class Hills:
             print(f&#34;Error: supplied value of CV {CV} is not correct value&#34;)
             return None
 
+        tu = TU(tu)
+        
         if time_min == time_max == 0:
                 print(&#34;Error: Values of start and end time are zero.&#34;)
                 return None
         if time_min != None:
+            time_min = tu.inps(time_min)
             if time_min &lt; 0:
                 print(&#34;Warning: Start time is lower than zero, it will be set to zero instead. &#34;)
                 time_min = 0
             if time_min &lt; int(self.hills[0,0]):
-                print(&#34;Warning: Start time {time_min} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
+                print(f&#34;Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
                 time_min = int(self.hills[0,0])
         else:
             time_min = int(self.hills[0,0])
-        if time_max != None:     
+        if time_max != None:
+            time_max = tu.inps(time_max)
             if time_max &lt; time_min:
                 print(&#34;Warning: End time is lower than start time. Values are flipped. &#34;)
                 time_value = time_max
                 time_max = time_min
                 time_min = time_value
             if time_max &gt; int(self.hills[-1,0]):
-                print(f&#34;Warning: End time {time_max} is higher than number of lines in HILLS file {int(self.hills[-1,0])}, which will be used instead. &#34;)
+                print(f&#34;Warning: End time {tu.inps(time_max)} ps is higher than number of lines in HILLS file {int(self.hills[-1,0])}, which will be used instead. &#34;)
                 time_max = int(self.hills[-1,0])
         else:
             time_max = int(self.hills[-1,0])
-        #print(f&#34;Berofe fes: min {time_min}, max {time_max}&#34;)
         
         if not self.ignoretime:
             time_max = int(round(((time_max - self.hills[0,0])/self.dt),0)) + 1
@@ -480,26 +622,26 @@ class Hills:
         if time_min==None:
             time_min=1
         if time_max==None:
-            time_max = int(self.hills[-1,0])
+            time_max = int(self.hills[-1,0], dpi=dpi)
                 
-        plt.figure(figsize=(image_size[0],image_size[1]))
+        plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
         if points:
             if CV==1:
-                plt.scatter(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv1[time_min-1:time_max], s=point_size)
+                plt.scatter(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv1[time_min-1:time_max], s=point_size)
             if CV==2:
-                plt.scatter(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv2[time_min-1:time_max], s=point_size)
+                plt.scatter(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv2[time_min-1:time_max], s=point_size)
             if CV==3:
-                plt.scatter(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv3[time_min-1:time_max], s=point_size)
+                plt.scatter(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv3[time_min-1:time_max], s=point_size)
         else:
             if CV==1:
-                plt.plot(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv1[time_min-1:time_max], lw=point_size)
+                plt.plot(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv1[time_min-1:time_max], lw=point_size)
             if CV==2:
-                plt.plot(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv2[time_min-1:time_max], lw=point_size)
+                plt.plot(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv2[time_min-1:time_max], lw=point_size)
             if CV==3:
-                plt.plot(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv3[time_min-1:time_max], lw=point_size)
+                plt.plot(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv3[time_min-1:time_max], lw=point_size)
             
         if xlabel == None:
-            plt.xlabel(f&#39;time (ps)&#39;, size=label_size)
+            plt.xlabel(f&#39;time ({tu.name})&#39;, size=label_size)
         else:
             plt.xlabel(xlabel, size=label_size)
         if ylabel == None:
@@ -534,7 +676,11 @@ class Fes:
                                         with PLUMED sum_hills function
                                         
     * cv1range, cv2range, cv3range = lists of two numbers, defining lower and upper bound of the respective CV (in the units of the CVs)
+    
     * time_min, time_max = Limit points for closed interval of times from the HILLS file from which the FES will be constructed. Useful for making animations of flooding of the FES during simulation. The values here should have the same units as those in the HILLS file, especially if ignoretime = False. 
+
+    * tu (default = &#34;ps&#34;) = string, time unit for time_min and time_max parameters, if those are used. Available options: &#34;s&#34;, &#34;ms&#34;, &#34;us&#34;, &#34;ns&#34;, &#34;ps&#34;, &#34;fs&#34;
+
     &#34;&#34;&#34;
     
     __pdoc__[&#34;Fes.makefes&#34;] = False
@@ -543,7 +689,7 @@ class Fes:
     
     def __init__(self, hills=None, resolution=256, original=False, \
                  calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, \
-                 time_min=None, time_max=None):
+                 time_min=None, time_max=None, tu=&#34;ps&#34;):
         self.res = resolution
         self.original = original
         self.cv1range = cv1range
@@ -618,29 +764,34 @@ class Fes:
                         For this file, you need the exact algorithm, to do that, 
                         set the argument &#39;original&#39; to True.&#34;&#34;&#34;)
                         return None
+                        
+            tu = TU(tu)
+        
             if time_min == time_max == 0:
-                print(&#34;Error: Values of start and end time are zero.&#34;)
-                return None
+                    print(&#34;Error: Values of start and end time are zero.&#34;)
+                    return None
             if time_min != None:
+                time_min = tu.inps(time_min)
                 if time_min &lt; 0:
-                    print(&#34;Warning: Start time is lower than zero. &#34;)
+                    print(&#34;Warning: Start time is lower than zero, it will be set to zero instead. &#34;)
+                    time_min = 0
                 if time_min &lt; int(hills.hills[0,0]):
-                    print(f&#34;Warning: Start time {time_min} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
+                    print(f&#34;Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
                     time_min = int(hills.hills[0,0])
             else:
                 time_min = int(hills.hills[0,0])
-            if time_max != None:     
+            if time_max != None:
+                time_max = tu.inps(time_max)
                 if time_max &lt; time_min:
                     print(&#34;Warning: End time is lower than start time. Values are flipped. &#34;)
                     time_value = time_max
                     time_max = time_min
                     time_min = time_value
                 if time_max &gt; int(hills.hills[-1,0]):
-                    print(f&#34;Warning: End time {time_max} is higher than number of lines in HILLS file {int(hills.hills[-1,0])}, which will be used instead. &#34;)
+                    print(f&#34;Warning: End time {tu.inps(time_max)} ps is higher than number of lines in HILLS file {int(hills.hills[-1,0])}, which will be used instead. &#34;)
                     time_max = int(hills.hills[-1,0])
             else:
                 time_max = int(hills.hills[-1,0])
-            #print(f&#34;Berofe fes: min {time_min}, max {time_max}&#34;)
             
             if not self.ignoretime:
                 time_max = int(round(((time_max - hills.hills[0,0])/self.dt),0)) + 1
@@ -793,11 +944,11 @@ class Fes:
             fes = np.zeros((self.res,self.res))
             for line in range(time_min-1, time_max):
                 if print_output and (((line) % 500 == 0) or (line == time_max-1)):
-                    print(f&#34;Constructing free energy surface: {((line+1-time_min+1)/(time_max-time_min+1)):.1%} finished&#34;, end=&#34;\r&#34;)
+                    print(f&#34;Constructing free energy surface: {((line+1-time_min+1)/(time_max-time_min+1)):.1%} finished.&#34;, end=&#34;\r&#34;)
                 
                 #fes_center = int((self.res-1)/2)
                 gauss_center_to_end = int((gauss_res-1)/2)
-                #print(f&#34;\ng_res: {gauss_res}, gauss_center_to_end: {gauss_center_to_end}&#34;)
+                #print(f&#34;\ng_res: {gauss_res}, gauss_center_to_end: {gauss_center_to_end}, cvib:{cv1bin[line]}, cv2b:{cv2bin[line]}&#34;)
                 
                 fes_to_edit_cv1 = [cv1bin[line]-1-gauss_center_to_end,
                                    cv1bin[line]-1+gauss_center_to_end]
@@ -1305,8 +1456,7 @@ class Fes:
             print(f&#34;Error: unsupported number of CVs: {self.cvs}.&#34;)
     
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = &#34;jet&#34;, 
-                 energy_unit=&#34;kJ/mole&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
-                 vmin = 0, vmax = None, opacity=0.2, levels=None, title = None, off_screen = False):
+                 energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[8,6], dpi=100, vmin = 0, vmax = None, opacity=0.2, levels=None, title = None, off_screen = False):
         &#34;&#34;&#34;
         Function used to visualize FES, based on Matplotlib and PyVista. 
         
@@ -1333,7 +1483,9 @@ class Fes:
         
         * labelsize (default = 12) = size of text in labels
         
-        * image_size (default = [10,7]) = List of the width and height of the picture
+        * image_size (default = [8,6]) = List of the width and height of the picture
+
+        * dpi (default = 100) = DPI of the resulting image (for 1D and 2D FES). 
         
         * vmin (default=0) = real number, lower bound for the colormap on 2D FES
         
@@ -1382,7 +1534,7 @@ class Fes:
                 cv3max = self.cv3per[1] 
         
         if self.cvs == 1:
-            plt.figure(figsize=(image_size[0],image_size[1]))
+            plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
             X = np.linspace(cv1min, cv1max, self.res)
             plt.plot(X, self.fes)
             if xlabel == None:
@@ -1399,7 +1551,7 @@ class Fes:
                 plt.savefig(png_name)
             
         if self.cvs == 2:
-            fig = plt.figure(figsize=(image_size[0],image_size[1]))
+            fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
             plt.imshow(np.rot90(self.fes, axes=(0,1)), cmap=cmap, interpolation=&#39;nearest&#39;, 
                        extent=[cv1min, cv1max, cv2min, cv2max], 
                        aspect = (((cv1max-cv1min)/(cv2max-cv2min))/(aspect)),
@@ -1408,10 +1560,10 @@ class Fes:
             cbar.set_label(energy_unit, size=label_size)
             if contours:
                 cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
-                         levels = np.arange(0, (vmax - 0.01), contours_spacing), 
+                         levels = np.arange(vmin, (vmax - 0.01), contours_spacing), 
                          extent=[cv1min, cv1max, cv2max, cv2min], 
-                         colors = &#34;k&#34;)
-                plt.clabel(cont, levels = np.arange(0, (vmax - 0.01), contours_spacing))
+                         colors = &#34;k&#34;, linestyles = &#34;solid&#34;)
+                plt.clabel(cont, levels = np.arange(vmin, (vmax - 0.01), contours_spacing))
             if xlabel == None:
                 plt.xlabel(f&#39;CV1 - {self.cv1_name}&#39;, size=label_size)
             else:
@@ -1433,7 +1585,7 @@ class Fes:
             if zlabel == None:
                 zlabel = &#34;CV3 - &#34; + self.cv3_name
             
-            grid = pv.ImageData(
+            grid = pv.UniformGrid(
                 dimensions=(self.res, self.res, self.res),
                 spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
                 origin=(cv1min, cv2min, cv3min)
@@ -1467,7 +1619,7 @@ class Fes:
         self.fes = fes
         
     def surface_plot(self, cmap = &#34;jet&#34;, 
-                     energy_unit=&#34;kJ/mole&#34;, xlabel=None, ylabel=None, zlabel=None, 
+                     energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, zlabel=None, dpi=100, 
                      label_size=12, image_size=[12,7], rstride=1, cstride=1, vmin = 0, vmax = None):
         &#34;&#34;&#34;
         Function for visualization of 2D FES as 3D surface plot. For now, it is based on Matplotlib, but there are issues with interactivity. 
@@ -1520,12 +1672,9 @@ class Fes:
             y = np.linspace(cv2min, cv2max, self.res)
             
             X, Y = np.meshgrid(x, y)
-            Z = self.fes
+            Z = self.fes.T
             
-            #grid = pv.StructuredGrid(X, Y, Z)
-            #grid.plot()
-            
-            fig = plt.figure()
+            fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
             ax = plt.axes(projection=&#34;3d&#34;)
             ax.plot_surface(X,Y,Z, cmap=cmap, rstride=rstride, cstride=cstride)
             
@@ -1544,13 +1693,13 @@ class Fes:
         else:
             print(f&#34;Surface plot only works for FES with exactly two CVs, and this FES has {self.cvs}&#34;)
     
-    def removeCV(self, CV=None, energy_unit=&#34;kJ/mole&#34;, temp=300.0):
+    def removeCV(self, CV=None, energy_unit=&#34;kJ/mol&#34;, temp=300.0):
         &#34;&#34;&#34;
         This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities 
         are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. 
 
         ```python
-        fes1 = fes.removeCV(CV=1)
+        fes_cv1 = fes.removeCV(CV=2)
         ```
         
         Parameters:
@@ -1734,7 +1883,7 @@ class Fes:
                 print(&#34;Error: unknown energy unit&#34;)
                 return None
 
-    def flooding_animation(self, gif_name = &#34;flooding.gif&#34;, use_vmax_from_end = True, with_minima = True, use_minima_from_end=False, cmap=&#34;jet&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], time_min=None, time_max=None, step=1000, contours_spacing = 20, levels=None, opacity = 0.2, vmin = 0, vmax = None, energy_unit=&#34;kJ/mole&#34;, clear_temporary_folder=True, temporary_folder_name=&#34;temporary_folder&#34;, time_unit=&#34;ps&#34;, fps=5, enable_loop = True):
+    def flooding_animation(self, gif_name = &#34;flooding.gif&#34;, use_vmax_from_end = True, with_minima = True, use_minima_from_end=False, cmap=&#34;jet&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[8,6], dpi=100, tu = &#34;ps&#34;, time_min=None, time_max=None, step=1000, contours_spacing = 20, levels=None, opacity = 0.2, vmin = 0, vmax = None, energy_unit=&#34;kJ/mol&#34;, clear_temporary_folder=True, temporary_folder_name=&#34;temporary_folder&#34;, time_unit=&#34;ps&#34;, fps=5, enable_loop = True):
         &#34;&#34;&#34;
         This method is used to make an animation that shows, how the FES was evolving during metadynamics simulation. It creates temporary folder and svaes plots of FES at different times during simulation, then it concatenates them to make a gif animation and removes the temporary files (remove can be switched off, if necessary). 
 
@@ -1772,6 +1921,8 @@ class Fes:
 
         * enable_loop (default=True) = whether the animation should be running in loop
         &#34;&#34;&#34;
+        tu = TU(tu)
+        
         current_directory = os.getcwd()
         final_directory = os.path.join(current_directory, temporary_folder_name)
         if os.path.exists(final_directory):
@@ -1782,25 +1933,40 @@ class Fes:
         flooding_fes = copy.deepcopy(self)
         step_fes = copy.deepcopy(self)
         
+        if time_min == time_max == 0:
+                print(&#34;Error: Values of start and end time are zero.&#34;)
+                return None
         if time_min != None:
+            time_min = tu.inps(time_min)
             if time_min &lt; 0:
-                print(&#34;Warning: Start time is lower than zero. &#34;)
-            if time_min &lt; int(self.hills.hills[0,0]):
-                print(f&#34;Warning: Start time {time_min} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
-                time_min = int(self.hills.hills[0,0])
+                print(&#34;Warning: Start time is lower than zero, it will be set to zero instead. &#34;)
+                time_min = 0
+            if time_min &lt; int(self.hills[0,0]):
+                print(f&#34;Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
+                time_min = int(self.hills[0,0])
         else:
-            time_min = int(self.hills.hills[0,0])
-        if time_max != None:     
+            time_min = int(self.hills[0,0])
+        if time_max != None:
+            time_max = tu.inps(time_max)
             if time_max &lt; time_min:
                 print(&#34;Warning: End time is lower than start time. Values are flipped. &#34;)
                 time_value = time_max
                 time_max = time_min
                 time_min = time_value
-            if time_max &gt; int(self.hills.hills[-1,0]):
-                print(f&#34;Warning: End time {time_max} is higher than number of lines in HILLS file {int(hills.hills[-1,0])}, which will be used instead. &#34;)
-                time_max = int(self.hills.hills[-1,0])
+            if time_max &gt; int(self.hills[-1,0]):
+                print(f&#34;Warning: End time {tu.inps(time_max)} ps is higher than number of lines in HILLS file {int(self.hills[-1,0])}, which will be used instead. &#34;)
+                time_max = int(self.hills[-1,0])
         else:
-            time_max = int(self.hills.hills[-1,0])
+            time_max = int(self.hills[-1,0])
+        
+        if not self.ignoretime:
+            time_max = int(round(((time_max - self.hills[0,0])/self.dt),0)) + 1
+            time_min = int(round(((time_min - self.hills[0,0])/self.dt),0)) + 1
+
+        if time_min==None:
+            time_min=1
+        if time_max==None:
+            time_max = int(self.hills[-1,0])
 
         if (vmax == None) and use_vmax_from_end:
             vmax = np.max(self.fes)+0.1
@@ -1829,15 +1995,17 @@ class Fes:
                     mf = Minima(flooding_fes)
                     if use_minima_from_end:
                         mf.minima = minima_final.minima
-                    mf.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f&#34;{final_directory}/{times[i]}.{suffix}&#34;, title=f&#34;{times[i]} {time_unit}&#34;)
+                    mf.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, dpi=dpi, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f&#34;{final_directory}/{times[i]}.{suffix}&#34;, title=f&#34;{times[i]} {time_unit}&#34;)
                 else:
-                    flooding_fes.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f&#34;{final_directory}/{times[i]}.{suffix}&#34;, title=f&#34;{times[i]} {time_unit}&#34;)
+                    flooding_fes.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, dpi = dpi, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f&#34;{final_directory}/{times[i]}.{suffix}&#34;, title=f&#34;{times[i]} {time_unit}&#34;)
                 plt.close()
             except ValueError:
                 print(&#34;Warning: The first frame of animation would be blank with the current ettings, but PyVista 3D plotter can not plot empty meshes. Try to increase the timestep between frames or decrease the spacing between isosurfaces.&#34;)
         print(&#34;\n&#34;)
+
+        duration = 1000/fps
         if enable_loop:
-            with imageio.get_writer(gif_name, format=&#34;GIF&#34;, fps = fps, loop=0) as writer:
+            with imageio.get_writer(gif_name, format=&#34;GIF&#34;, duration=duration, loop=0) as writer:
                 for image_file in image_files:
                     try:
                         image = imageio.imread(image_file)
@@ -1862,12 +2030,12 @@ class Fes:
             try: 
                 os.rmdir(final_directory)
             except OSError:
-                print(&#34;Warning: temporary_folder in this path is not empty and will not be removed. Metadynminer&#39;s temporary files inside were removed. &#34;)
+                print(f&#34;Warning: directory{final_directory} is not empty and will not be removed. Metadynminer&#39;s temporary files inside were removed. &#34;)
                
 
     
     def make_gif(self, gif_name=None, cmap = &#34;jet&#34;, 
-                 xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
+                 xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[6,4], 
                   opacity=0.2, levels=None, frames=64):
         &#34;&#34;&#34;
         Function that generates animation of 3D FES showing different isosurfaces.
@@ -2379,8 +2547,7 @@ class Minima():
         
 
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = &#34;jet&#34;, 
-                 energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
-                 color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0, title = None, off_screen = False):
+                 energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[8,6], dpi=100, color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0, title = None, off_screen = False):
         &#34;&#34;&#34;
         The same function as for visualizing Fes objects, but this time 
         with the positions of local minima shown as letters on the graph.
@@ -2408,7 +2575,9 @@ class Minima():
         
         * labelsize (default = 12) = size of text in labels
         
-        * image_size (default = [10,7]) = List of the width and height of the picture
+        * image_size (default = [6,4]) = List of the width and height of the picture
+
+        * dpi (default = 100) = DPI of the resulting image. 
         
         * color = string = name of color in matplotlib, if set, the color will be used for the letters. 
                 If not set, the color should be automatically either black or white, 
@@ -2470,7 +2639,7 @@ class Minima():
                 cv3max = self.cv3per[1] 
         
         if self.cvs == 1:
-            plt.figure(figsize=(image_size[0],image_size[1]))
+            plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
             X = np.linspace(cv1min, cv1max, self.res)
             plt.plot(X, self.fes)
             
@@ -2504,7 +2673,7 @@ class Minima():
                 
             
         elif self.cvs == 2:
-            fig = plt.figure(figsize=(image_size[0],image_size[1]))
+            fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
             plt.imshow(np.rot90(self.fes, axes=(0,1)), cmap=cmap, interpolation=&#39;nearest&#39;, 
                        extent=[cv1min, cv1max, cv2min, cv2max], 
                        aspect = (((cv1max-cv1min)/(cv2max-cv2min))/(aspect)),
@@ -2563,7 +2732,9 @@ class Minima():
             min_ar = self.minima.iloc[:,5:8].values
             min_ar = min_ar.astype(np.float32)
             min_pv = pv.PolyData(min_ar)
-            grid = pv.ImageData(
+            
+            
+            grid = pv.UniformGrid(
                 dimensions=(self.res, self.res, self.res),
                 spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
                 origin=(cv1min, cv2min, cv3min)
@@ -2680,7 +2851,7 @@ class Minima():
             # Be sure to close the plotter when finished
             plotter.close()
         else:
-            print(&#34;Error: gif_plot is only available for FES with 3 CVs.&#34;)
+            print(&#34;Error: make_gif is only available for FES with 3 CVs.&#34;)
 
 
 class FEProfile:
@@ -2941,7 +3112,7 @@ class FEProfile:
         else:
             print(&#34;Fes object doesn&#39;t have supported number of CVs.&#34;)
     
-    def plot(self, png_name=None, image_size=[10,7], xlabel=None, ylabel=None, label_size=12, cmap=&#34;jet&#34;, legend=True):
+    def plot(self, png_name=None, image_size=[6,4], dpi=150, tu = &#34;ps&#34;, xlabel=None, ylabel=None, label_size=12, cmap=&#34;jet&#34;, legend=True):
         &#34;&#34;&#34;
         Visualization function for free energy profiles. 
         
@@ -2953,9 +3124,13 @@ class FEProfile:
         Parameters:
         
         
-        * name (default=None) = name for .png file to save the plot to
+        * png_name (default=None) = name for image file to save the plot to
         
-        * image_size (default=[10,7]) = list of two dimensions of the picture
+        * image_size (default = [6,4]) = list of the width and height of the picture
+
+        * dpi (default = 100) = DPI of the resulting image. 
+        
+        * tu (default = &#34;ps&#34;) = string, time unit to be shown on x axis. Available options: &#34;s&#34;, &#34;ms&#34;, &#34;us&#34;, &#34;ns&#34;, &#34;ps&#34;, &#34;fs&#34;
         
         * xlabel (default=&#34;time (ps)&#34;)
         
@@ -2968,7 +3143,9 @@ class FEProfile:
         * legend (default=True) = whether there should be a matplotlib&#39;s legend in the graph
         &#34;&#34;&#34;
         
-        plt.figure(figsize=(image_size[0],image_size[1]))
+        tu = TU(tu)
+        
+        plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
         
         cmap=cm.get_cmap(cmap)
         
@@ -2976,10 +3153,10 @@ class FEProfile:
         #                (np.max(self.minima.iloc[:,1].to_numpy().astype(float))))
         colors = cmap(np.linspace(0,1,self.minima.shape[0]))
         for m in range(self.minima.shape[0]):
-            plt.plot(self.feprofile[:,0], self.feprofile[:,m+1], color=colors[m])
+            plt.plot(tu.intu(self.feprofile[:,0]), self.feprofile[:,m+1], color=colors[m])
 
         if xlabel == None:
-            plt.xlabel(&#39;time (ps)&#39;, size=label_size)
+            plt.xlabel(f&#39;time ({tu.name})&#39;, size=label_size)
         else:
             plt.xlabel(xlabel, size=label_size)
         if ylabel == None:
@@ -3284,7 +3461,7 @@ but not fully prooves, that the obtained FES did converge to the correct shape.<
         else:
             print(&#34;Fes object doesn&#39;t have supported number of CVs.&#34;)
     
-    def plot(self, png_name=None, image_size=[10,7], xlabel=None, ylabel=None, label_size=12, cmap=&#34;jet&#34;, legend=True):
+    def plot(self, png_name=None, image_size=[6,4], dpi=150, tu = &#34;ps&#34;, xlabel=None, ylabel=None, label_size=12, cmap=&#34;jet&#34;, legend=True):
         &#34;&#34;&#34;
         Visualization function for free energy profiles. 
         
@@ -3296,9 +3473,13 @@ but not fully prooves, that the obtained FES did converge to the correct shape.<
         Parameters:
         
         
-        * name (default=None) = name for .png file to save the plot to
+        * png_name (default=None) = name for image file to save the plot to
         
-        * image_size (default=[10,7]) = list of two dimensions of the picture
+        * image_size (default = [6,4]) = list of the width and height of the picture
+
+        * dpi (default = 100) = DPI of the resulting image. 
+        
+        * tu (default = &#34;ps&#34;) = string, time unit to be shown on x axis. Available options: &#34;s&#34;, &#34;ms&#34;, &#34;us&#34;, &#34;ns&#34;, &#34;ps&#34;, &#34;fs&#34;
         
         * xlabel (default=&#34;time (ps)&#34;)
         
@@ -3311,7 +3492,9 @@ but not fully prooves, that the obtained FES did converge to the correct shape.<
         * legend (default=True) = whether there should be a matplotlib&#39;s legend in the graph
         &#34;&#34;&#34;
         
-        plt.figure(figsize=(image_size[0],image_size[1]))
+        tu = TU(tu)
+        
+        plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
         
         cmap=cm.get_cmap(cmap)
         
@@ -3319,10 +3502,10 @@ but not fully prooves, that the obtained FES did converge to the correct shape.<
         #                (np.max(self.minima.iloc[:,1].to_numpy().astype(float))))
         colors = cmap(np.linspace(0,1,self.minima.shape[0]))
         for m in range(self.minima.shape[0]):
-            plt.plot(self.feprofile[:,0], self.feprofile[:,m+1], color=colors[m])
+            plt.plot(tu.intu(self.feprofile[:,0]), self.feprofile[:,m+1], color=colors[m])
 
         if xlabel == None:
-            plt.xlabel(&#39;time (ps)&#39;, size=label_size)
+            plt.xlabel(f&#39;time ({tu.name})&#39;, size=label_size)
         else:
             plt.xlabel(xlabel, size=label_size)
         if ylabel == None:
@@ -3337,7 +3520,7 @@ but not fully prooves, that the obtained FES did converge to the correct shape.<
 <h3>Methods</h3>
 <dl>
 <dt id="metadynminer.FEProfile.plot"><code class="name flex">
-<span>def <span class="ident">plot</span></span>(<span>self, png_name=None, image_size=[10, 7], xlabel=None, ylabel=None, label_size=12, cmap='jet', legend=True)</span>
+<span>def <span class="ident">plot</span></span>(<span>self, png_name=None, image_size=[6, 4], dpi=150, tu='ps', xlabel=None, ylabel=None, label_size=12, cmap='jet', legend=True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Visualization function for free energy profiles. </p>
@@ -3346,10 +3529,16 @@ but not fully prooves, that the obtained FES did converge to the correct shape.<
 <h2 id="parameters">Parameters</h2>
 <ul>
 <li>
-<p>name (default=None) = name for .png file to save the plot to</p>
+<p>png_name (default=None) = name for image file to save the plot to</p>
 </li>
 <li>
-<p>image_size (default=[10,7]) = list of two dimensions of the picture</p>
+<p>image_size (default = [6,4]) = list of the width and height of the picture</p>
+</li>
+<li>
+<p>dpi (default = 100) = DPI of the resulting image. </p>
+</li>
+<li>
+<p>tu (default = "ps") = string, time unit to be shown on x axis. Available options: "s", "ms", "us", "ns", "ps", "fs"</p>
 </li>
 <li>
 <p>xlabel (default="time (ps)")</p>
@@ -3371,7 +3560,7 @@ but not fully prooves, that the obtained FES did converge to the correct shape.<
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def plot(self, png_name=None, image_size=[10,7], xlabel=None, ylabel=None, label_size=12, cmap=&#34;jet&#34;, legend=True):
+<pre><code class="python">def plot(self, png_name=None, image_size=[6,4], dpi=150, tu = &#34;ps&#34;, xlabel=None, ylabel=None, label_size=12, cmap=&#34;jet&#34;, legend=True):
     &#34;&#34;&#34;
     Visualization function for free energy profiles. 
     
@@ -3383,9 +3572,13 @@ but not fully prooves, that the obtained FES did converge to the correct shape.<
     Parameters:
     
     
-    * name (default=None) = name for .png file to save the plot to
+    * png_name (default=None) = name for image file to save the plot to
     
-    * image_size (default=[10,7]) = list of two dimensions of the picture
+    * image_size (default = [6,4]) = list of the width and height of the picture
+
+    * dpi (default = 100) = DPI of the resulting image. 
+    
+    * tu (default = &#34;ps&#34;) = string, time unit to be shown on x axis. Available options: &#34;s&#34;, &#34;ms&#34;, &#34;us&#34;, &#34;ns&#34;, &#34;ps&#34;, &#34;fs&#34;
     
     * xlabel (default=&#34;time (ps)&#34;)
     
@@ -3398,7 +3591,9 @@ but not fully prooves, that the obtained FES did converge to the correct shape.<
     * legend (default=True) = whether there should be a matplotlib&#39;s legend in the graph
     &#34;&#34;&#34;
     
-    plt.figure(figsize=(image_size[0],image_size[1]))
+    tu = TU(tu)
+    
+    plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
     
     cmap=cm.get_cmap(cmap)
     
@@ -3406,10 +3601,10 @@ but not fully prooves, that the obtained FES did converge to the correct shape.<
     #                (np.max(self.minima.iloc[:,1].to_numpy().astype(float))))
     colors = cmap(np.linspace(0,1,self.minima.shape[0]))
     for m in range(self.minima.shape[0]):
-        plt.plot(self.feprofile[:,0], self.feprofile[:,m+1], color=colors[m])
+        plt.plot(tu.intu(self.feprofile[:,0]), self.feprofile[:,m+1], color=colors[m])
 
     if xlabel == None:
-        plt.xlabel(&#39;time (ps)&#39;, size=label_size)
+        plt.xlabel(f&#39;time ({tu.name})&#39;, size=label_size)
     else:
         plt.xlabel(xlabel, size=label_size)
     if ylabel == None:
@@ -3426,7 +3621,7 @@ but not fully prooves, that the obtained FES did converge to the correct shape.<
 </dd>
 <dt id="metadynminer.Fes"><code class="flex name class">
 <span>class <span class="ident">Fes</span></span>
-<span>(</span><span>hills=None, resolution=256, original=False, calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, time_min=None, time_max=None)</span>
+<span>(</span><span>hills=None, resolution=256, original=False, calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, time_min=None, time_max=None, tu='ps')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Object of this class is created to compute the free energy surface corresponding to the provided Hills object.
@@ -3450,7 +3645,12 @@ with PLUMED sum_hills function</p>
 <li>
 <p>cv1range, cv2range, cv3range = lists of two numbers, defining lower and upper bound of the respective CV (in the units of the CVs)</p>
 </li>
-<li>time_min, time_max = Limit points for closed interval of times from the HILLS file from which the FES will be constructed. Useful for making animations of flooding of the FES during simulation. The values here should have the same units as those in the HILLS file, especially if ignoretime = False.</li>
+<li>
+<p>time_min, time_max = Limit points for closed interval of times from the HILLS file from which the FES will be constructed. Useful for making animations of flooding of the FES during simulation. The values here should have the same units as those in the HILLS file, especially if ignoretime = False. </p>
+</li>
+<li>
+<p>tu (default = "ps") = string, time unit for time_min and time_max parameters, if those are used. Available options: "s", "ms", "us", "ns", "ps", "fs"</p>
+</li>
 </ul></div>
 <details class="source">
 <summary>
@@ -3475,7 +3675,11 @@ with PLUMED sum_hills function</p>
                                         with PLUMED sum_hills function
                                         
     * cv1range, cv2range, cv3range = lists of two numbers, defining lower and upper bound of the respective CV (in the units of the CVs)
+    
     * time_min, time_max = Limit points for closed interval of times from the HILLS file from which the FES will be constructed. Useful for making animations of flooding of the FES during simulation. The values here should have the same units as those in the HILLS file, especially if ignoretime = False. 
+
+    * tu (default = &#34;ps&#34;) = string, time unit for time_min and time_max parameters, if those are used. Available options: &#34;s&#34;, &#34;ms&#34;, &#34;us&#34;, &#34;ns&#34;, &#34;ps&#34;, &#34;fs&#34;
+
     &#34;&#34;&#34;
     
     __pdoc__[&#34;Fes.makefes&#34;] = False
@@ -3484,7 +3688,7 @@ with PLUMED sum_hills function</p>
     
     def __init__(self, hills=None, resolution=256, original=False, \
                  calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, \
-                 time_min=None, time_max=None):
+                 time_min=None, time_max=None, tu=&#34;ps&#34;):
         self.res = resolution
         self.original = original
         self.cv1range = cv1range
@@ -3559,29 +3763,34 @@ with PLUMED sum_hills function</p>
                         For this file, you need the exact algorithm, to do that, 
                         set the argument &#39;original&#39; to True.&#34;&#34;&#34;)
                         return None
+                        
+            tu = TU(tu)
+        
             if time_min == time_max == 0:
-                print(&#34;Error: Values of start and end time are zero.&#34;)
-                return None
+                    print(&#34;Error: Values of start and end time are zero.&#34;)
+                    return None
             if time_min != None:
+                time_min = tu.inps(time_min)
                 if time_min &lt; 0:
-                    print(&#34;Warning: Start time is lower than zero. &#34;)
+                    print(&#34;Warning: Start time is lower than zero, it will be set to zero instead. &#34;)
+                    time_min = 0
                 if time_min &lt; int(hills.hills[0,0]):
-                    print(f&#34;Warning: Start time {time_min} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
+                    print(f&#34;Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
                     time_min = int(hills.hills[0,0])
             else:
                 time_min = int(hills.hills[0,0])
-            if time_max != None:     
+            if time_max != None:
+                time_max = tu.inps(time_max)
                 if time_max &lt; time_min:
                     print(&#34;Warning: End time is lower than start time. Values are flipped. &#34;)
                     time_value = time_max
                     time_max = time_min
                     time_min = time_value
                 if time_max &gt; int(hills.hills[-1,0]):
-                    print(f&#34;Warning: End time {time_max} is higher than number of lines in HILLS file {int(hills.hills[-1,0])}, which will be used instead. &#34;)
+                    print(f&#34;Warning: End time {tu.inps(time_max)} ps is higher than number of lines in HILLS file {int(hills.hills[-1,0])}, which will be used instead. &#34;)
                     time_max = int(hills.hills[-1,0])
             else:
                 time_max = int(hills.hills[-1,0])
-            #print(f&#34;Berofe fes: min {time_min}, max {time_max}&#34;)
             
             if not self.ignoretime:
                 time_max = int(round(((time_max - hills.hills[0,0])/self.dt),0)) + 1
@@ -3734,11 +3943,11 @@ with PLUMED sum_hills function</p>
             fes = np.zeros((self.res,self.res))
             for line in range(time_min-1, time_max):
                 if print_output and (((line) % 500 == 0) or (line == time_max-1)):
-                    print(f&#34;Constructing free energy surface: {((line+1-time_min+1)/(time_max-time_min+1)):.1%} finished&#34;, end=&#34;\r&#34;)
+                    print(f&#34;Constructing free energy surface: {((line+1-time_min+1)/(time_max-time_min+1)):.1%} finished.&#34;, end=&#34;\r&#34;)
                 
                 #fes_center = int((self.res-1)/2)
                 gauss_center_to_end = int((gauss_res-1)/2)
-                #print(f&#34;\ng_res: {gauss_res}, gauss_center_to_end: {gauss_center_to_end}&#34;)
+                #print(f&#34;\ng_res: {gauss_res}, gauss_center_to_end: {gauss_center_to_end}, cvib:{cv1bin[line]}, cv2b:{cv2bin[line]}&#34;)
                 
                 fes_to_edit_cv1 = [cv1bin[line]-1-gauss_center_to_end,
                                    cv1bin[line]-1+gauss_center_to_end]
@@ -4246,8 +4455,7 @@ with PLUMED sum_hills function</p>
             print(f&#34;Error: unsupported number of CVs: {self.cvs}.&#34;)
     
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = &#34;jet&#34;, 
-                 energy_unit=&#34;kJ/mole&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
-                 vmin = 0, vmax = None, opacity=0.2, levels=None, title = None, off_screen = False):
+                 energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[8,6], dpi=100, vmin = 0, vmax = None, opacity=0.2, levels=None, title = None, off_screen = False):
         &#34;&#34;&#34;
         Function used to visualize FES, based on Matplotlib and PyVista. 
         
@@ -4274,7 +4482,9 @@ with PLUMED sum_hills function</p>
         
         * labelsize (default = 12) = size of text in labels
         
-        * image_size (default = [10,7]) = List of the width and height of the picture
+        * image_size (default = [8,6]) = List of the width and height of the picture
+
+        * dpi (default = 100) = DPI of the resulting image (for 1D and 2D FES). 
         
         * vmin (default=0) = real number, lower bound for the colormap on 2D FES
         
@@ -4323,7 +4533,7 @@ with PLUMED sum_hills function</p>
                 cv3max = self.cv3per[1] 
         
         if self.cvs == 1:
-            plt.figure(figsize=(image_size[0],image_size[1]))
+            plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
             X = np.linspace(cv1min, cv1max, self.res)
             plt.plot(X, self.fes)
             if xlabel == None:
@@ -4340,7 +4550,7 @@ with PLUMED sum_hills function</p>
                 plt.savefig(png_name)
             
         if self.cvs == 2:
-            fig = plt.figure(figsize=(image_size[0],image_size[1]))
+            fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
             plt.imshow(np.rot90(self.fes, axes=(0,1)), cmap=cmap, interpolation=&#39;nearest&#39;, 
                        extent=[cv1min, cv1max, cv2min, cv2max], 
                        aspect = (((cv1max-cv1min)/(cv2max-cv2min))/(aspect)),
@@ -4349,10 +4559,10 @@ with PLUMED sum_hills function</p>
             cbar.set_label(energy_unit, size=label_size)
             if contours:
                 cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
-                         levels = np.arange(0, (vmax - 0.01), contours_spacing), 
+                         levels = np.arange(vmin, (vmax - 0.01), contours_spacing), 
                          extent=[cv1min, cv1max, cv2max, cv2min], 
-                         colors = &#34;k&#34;)
-                plt.clabel(cont, levels = np.arange(0, (vmax - 0.01), contours_spacing))
+                         colors = &#34;k&#34;, linestyles = &#34;solid&#34;)
+                plt.clabel(cont, levels = np.arange(vmin, (vmax - 0.01), contours_spacing))
             if xlabel == None:
                 plt.xlabel(f&#39;CV1 - {self.cv1_name}&#39;, size=label_size)
             else:
@@ -4374,7 +4584,7 @@ with PLUMED sum_hills function</p>
             if zlabel == None:
                 zlabel = &#34;CV3 - &#34; + self.cv3_name
             
-            grid = pv.ImageData(
+            grid = pv.UniformGrid(
                 dimensions=(self.res, self.res, self.res),
                 spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
                 origin=(cv1min, cv2min, cv3min)
@@ -4408,7 +4618,7 @@ with PLUMED sum_hills function</p>
         self.fes = fes
         
     def surface_plot(self, cmap = &#34;jet&#34;, 
-                     energy_unit=&#34;kJ/mole&#34;, xlabel=None, ylabel=None, zlabel=None, 
+                     energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, zlabel=None, dpi=100, 
                      label_size=12, image_size=[12,7], rstride=1, cstride=1, vmin = 0, vmax = None):
         &#34;&#34;&#34;
         Function for visualization of 2D FES as 3D surface plot. For now, it is based on Matplotlib, but there are issues with interactivity. 
@@ -4461,12 +4671,9 @@ with PLUMED sum_hills function</p>
             y = np.linspace(cv2min, cv2max, self.res)
             
             X, Y = np.meshgrid(x, y)
-            Z = self.fes
+            Z = self.fes.T
             
-            #grid = pv.StructuredGrid(X, Y, Z)
-            #grid.plot()
-            
-            fig = plt.figure()
+            fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
             ax = plt.axes(projection=&#34;3d&#34;)
             ax.plot_surface(X,Y,Z, cmap=cmap, rstride=rstride, cstride=cstride)
             
@@ -4485,13 +4692,13 @@ with PLUMED sum_hills function</p>
         else:
             print(f&#34;Surface plot only works for FES with exactly two CVs, and this FES has {self.cvs}&#34;)
     
-    def removeCV(self, CV=None, energy_unit=&#34;kJ/mole&#34;, temp=300.0):
+    def removeCV(self, CV=None, energy_unit=&#34;kJ/mol&#34;, temp=300.0):
         &#34;&#34;&#34;
         This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities 
         are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. 
 
         ```python
-        fes1 = fes.removeCV(CV=1)
+        fes_cv1 = fes.removeCV(CV=2)
         ```
         
         Parameters:
@@ -4675,7 +4882,7 @@ with PLUMED sum_hills function</p>
                 print(&#34;Error: unknown energy unit&#34;)
                 return None
 
-    def flooding_animation(self, gif_name = &#34;flooding.gif&#34;, use_vmax_from_end = True, with_minima = True, use_minima_from_end=False, cmap=&#34;jet&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], time_min=None, time_max=None, step=1000, contours_spacing = 20, levels=None, opacity = 0.2, vmin = 0, vmax = None, energy_unit=&#34;kJ/mole&#34;, clear_temporary_folder=True, temporary_folder_name=&#34;temporary_folder&#34;, time_unit=&#34;ps&#34;, fps=5, enable_loop = True):
+    def flooding_animation(self, gif_name = &#34;flooding.gif&#34;, use_vmax_from_end = True, with_minima = True, use_minima_from_end=False, cmap=&#34;jet&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[8,6], dpi=100, tu = &#34;ps&#34;, time_min=None, time_max=None, step=1000, contours_spacing = 20, levels=None, opacity = 0.2, vmin = 0, vmax = None, energy_unit=&#34;kJ/mol&#34;, clear_temporary_folder=True, temporary_folder_name=&#34;temporary_folder&#34;, time_unit=&#34;ps&#34;, fps=5, enable_loop = True):
         &#34;&#34;&#34;
         This method is used to make an animation that shows, how the FES was evolving during metadynamics simulation. It creates temporary folder and svaes plots of FES at different times during simulation, then it concatenates them to make a gif animation and removes the temporary files (remove can be switched off, if necessary). 
 
@@ -4713,6 +4920,8 @@ with PLUMED sum_hills function</p>
 
         * enable_loop (default=True) = whether the animation should be running in loop
         &#34;&#34;&#34;
+        tu = TU(tu)
+        
         current_directory = os.getcwd()
         final_directory = os.path.join(current_directory, temporary_folder_name)
         if os.path.exists(final_directory):
@@ -4723,25 +4932,40 @@ with PLUMED sum_hills function</p>
         flooding_fes = copy.deepcopy(self)
         step_fes = copy.deepcopy(self)
         
+        if time_min == time_max == 0:
+                print(&#34;Error: Values of start and end time are zero.&#34;)
+                return None
         if time_min != None:
+            time_min = tu.inps(time_min)
             if time_min &lt; 0:
-                print(&#34;Warning: Start time is lower than zero. &#34;)
-            if time_min &lt; int(self.hills.hills[0,0]):
-                print(f&#34;Warning: Start time {time_min} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
-                time_min = int(self.hills.hills[0,0])
+                print(&#34;Warning: Start time is lower than zero, it will be set to zero instead. &#34;)
+                time_min = 0
+            if time_min &lt; int(self.hills[0,0]):
+                print(f&#34;Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
+                time_min = int(self.hills[0,0])
         else:
-            time_min = int(self.hills.hills[0,0])
-        if time_max != None:     
+            time_min = int(self.hills[0,0])
+        if time_max != None:
+            time_max = tu.inps(time_max)
             if time_max &lt; time_min:
                 print(&#34;Warning: End time is lower than start time. Values are flipped. &#34;)
                 time_value = time_max
                 time_max = time_min
                 time_min = time_value
-            if time_max &gt; int(self.hills.hills[-1,0]):
-                print(f&#34;Warning: End time {time_max} is higher than number of lines in HILLS file {int(hills.hills[-1,0])}, which will be used instead. &#34;)
-                time_max = int(self.hills.hills[-1,0])
+            if time_max &gt; int(self.hills[-1,0]):
+                print(f&#34;Warning: End time {tu.inps(time_max)} ps is higher than number of lines in HILLS file {int(self.hills[-1,0])}, which will be used instead. &#34;)
+                time_max = int(self.hills[-1,0])
         else:
-            time_max = int(self.hills.hills[-1,0])
+            time_max = int(self.hills[-1,0])
+        
+        if not self.ignoretime:
+            time_max = int(round(((time_max - self.hills[0,0])/self.dt),0)) + 1
+            time_min = int(round(((time_min - self.hills[0,0])/self.dt),0)) + 1
+
+        if time_min==None:
+            time_min=1
+        if time_max==None:
+            time_max = int(self.hills[-1,0])
 
         if (vmax == None) and use_vmax_from_end:
             vmax = np.max(self.fes)+0.1
@@ -4770,15 +4994,17 @@ with PLUMED sum_hills function</p>
                     mf = Minima(flooding_fes)
                     if use_minima_from_end:
                         mf.minima = minima_final.minima
-                    mf.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f&#34;{final_directory}/{times[i]}.{suffix}&#34;, title=f&#34;{times[i]} {time_unit}&#34;)
+                    mf.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, dpi=dpi, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f&#34;{final_directory}/{times[i]}.{suffix}&#34;, title=f&#34;{times[i]} {time_unit}&#34;)
                 else:
-                    flooding_fes.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f&#34;{final_directory}/{times[i]}.{suffix}&#34;, title=f&#34;{times[i]} {time_unit}&#34;)
+                    flooding_fes.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, dpi = dpi, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f&#34;{final_directory}/{times[i]}.{suffix}&#34;, title=f&#34;{times[i]} {time_unit}&#34;)
                 plt.close()
             except ValueError:
                 print(&#34;Warning: The first frame of animation would be blank with the current ettings, but PyVista 3D plotter can not plot empty meshes. Try to increase the timestep between frames or decrease the spacing between isosurfaces.&#34;)
         print(&#34;\n&#34;)
+
+        duration = 1000/fps
         if enable_loop:
-            with imageio.get_writer(gif_name, format=&#34;GIF&#34;, fps = fps, loop=0) as writer:
+            with imageio.get_writer(gif_name, format=&#34;GIF&#34;, duration=duration, loop=0) as writer:
                 for image_file in image_files:
                     try:
                         image = imageio.imread(image_file)
@@ -4803,12 +5029,12 @@ with PLUMED sum_hills function</p>
             try: 
                 os.rmdir(final_directory)
             except OSError:
-                print(&#34;Warning: temporary_folder in this path is not empty and will not be removed. Metadynminer&#39;s temporary files inside were removed. &#34;)
+                print(f&#34;Warning: directory{final_directory} is not empty and will not be removed. Metadynminer&#39;s temporary files inside were removed. &#34;)
                
 
     
     def make_gif(self, gif_name=None, cmap = &#34;jet&#34;, 
-                 xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
+                 xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[6,4], 
                   opacity=0.2, levels=None, frames=64):
         &#34;&#34;&#34;
         Function that generates animation of 3D FES showing different isosurfaces.
@@ -4908,7 +5134,7 @@ with PLUMED sum_hills function</p>
 <h3>Methods</h3>
 <dl>
 <dt id="metadynminer.Fes.flooding_animation"><code class="name flex">
-<span>def <span class="ident">flooding_animation</span></span>(<span>self, gif_name='flooding.gif', use_vmax_from_end=True, with_minima=True, use_minima_from_end=False, cmap='jet', xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10, 7], time_min=None, time_max=None, step=1000, contours_spacing=20, levels=None, opacity=0.2, vmin=0, vmax=None, energy_unit='kJ/mole', clear_temporary_folder=True, temporary_folder_name='temporary_folder', time_unit='ps', fps=5, enable_loop=True)</span>
+<span>def <span class="ident">flooding_animation</span></span>(<span>self, gif_name='flooding.gif', use_vmax_from_end=True, with_minima=True, use_minima_from_end=False, cmap='jet', xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[8, 6], dpi=100, tu='ps', time_min=None, time_max=None, step=1000, contours_spacing=20, levels=None, opacity=0.2, vmin=0, vmax=None, energy_unit='kJ/mol', clear_temporary_folder=True, temporary_folder_name='temporary_folder', time_unit='ps', fps=5, enable_loop=True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This method is used to make an animation that shows, how the FES was evolving during metadynamics simulation. It creates temporary folder and svaes plots of FES at different times during simulation, then it concatenates them to make a gif animation and removes the temporary files (remove can be switched off, if necessary). </p>
@@ -4956,7 +5182,7 @@ with PLUMED sum_hills function</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def flooding_animation(self, gif_name = &#34;flooding.gif&#34;, use_vmax_from_end = True, with_minima = True, use_minima_from_end=False, cmap=&#34;jet&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], time_min=None, time_max=None, step=1000, contours_spacing = 20, levels=None, opacity = 0.2, vmin = 0, vmax = None, energy_unit=&#34;kJ/mole&#34;, clear_temporary_folder=True, temporary_folder_name=&#34;temporary_folder&#34;, time_unit=&#34;ps&#34;, fps=5, enable_loop = True):
+<pre><code class="python">def flooding_animation(self, gif_name = &#34;flooding.gif&#34;, use_vmax_from_end = True, with_minima = True, use_minima_from_end=False, cmap=&#34;jet&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[8,6], dpi=100, tu = &#34;ps&#34;, time_min=None, time_max=None, step=1000, contours_spacing = 20, levels=None, opacity = 0.2, vmin = 0, vmax = None, energy_unit=&#34;kJ/mol&#34;, clear_temporary_folder=True, temporary_folder_name=&#34;temporary_folder&#34;, time_unit=&#34;ps&#34;, fps=5, enable_loop = True):
     &#34;&#34;&#34;
     This method is used to make an animation that shows, how the FES was evolving during metadynamics simulation. It creates temporary folder and svaes plots of FES at different times during simulation, then it concatenates them to make a gif animation and removes the temporary files (remove can be switched off, if necessary). 
 
@@ -4994,6 +5220,8 @@ with PLUMED sum_hills function</p>
 
     * enable_loop (default=True) = whether the animation should be running in loop
     &#34;&#34;&#34;
+    tu = TU(tu)
+    
     current_directory = os.getcwd()
     final_directory = os.path.join(current_directory, temporary_folder_name)
     if os.path.exists(final_directory):
@@ -5004,25 +5232,40 @@ with PLUMED sum_hills function</p>
     flooding_fes = copy.deepcopy(self)
     step_fes = copy.deepcopy(self)
     
+    if time_min == time_max == 0:
+            print(&#34;Error: Values of start and end time are zero.&#34;)
+            return None
     if time_min != None:
+        time_min = tu.inps(time_min)
         if time_min &lt; 0:
-            print(&#34;Warning: Start time is lower than zero. &#34;)
-        if time_min &lt; int(self.hills.hills[0,0]):
-            print(f&#34;Warning: Start time {time_min} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
-            time_min = int(self.hills.hills[0,0])
+            print(&#34;Warning: Start time is lower than zero, it will be set to zero instead. &#34;)
+            time_min = 0
+        if time_min &lt; int(self.hills[0,0]):
+            print(f&#34;Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
+            time_min = int(self.hills[0,0])
     else:
-        time_min = int(self.hills.hills[0,0])
-    if time_max != None:     
+        time_min = int(self.hills[0,0])
+    if time_max != None:
+        time_max = tu.inps(time_max)
         if time_max &lt; time_min:
             print(&#34;Warning: End time is lower than start time. Values are flipped. &#34;)
             time_value = time_max
             time_max = time_min
             time_min = time_value
-        if time_max &gt; int(self.hills.hills[-1,0]):
-            print(f&#34;Warning: End time {time_max} is higher than number of lines in HILLS file {int(hills.hills[-1,0])}, which will be used instead. &#34;)
-            time_max = int(self.hills.hills[-1,0])
+        if time_max &gt; int(self.hills[-1,0]):
+            print(f&#34;Warning: End time {tu.inps(time_max)} ps is higher than number of lines in HILLS file {int(self.hills[-1,0])}, which will be used instead. &#34;)
+            time_max = int(self.hills[-1,0])
     else:
-        time_max = int(self.hills.hills[-1,0])
+        time_max = int(self.hills[-1,0])
+    
+    if not self.ignoretime:
+        time_max = int(round(((time_max - self.hills[0,0])/self.dt),0)) + 1
+        time_min = int(round(((time_min - self.hills[0,0])/self.dt),0)) + 1
+
+    if time_min==None:
+        time_min=1
+    if time_max==None:
+        time_max = int(self.hills[-1,0])
 
     if (vmax == None) and use_vmax_from_end:
         vmax = np.max(self.fes)+0.1
@@ -5051,15 +5294,17 @@ with PLUMED sum_hills function</p>
                 mf = Minima(flooding_fes)
                 if use_minima_from_end:
                     mf.minima = minima_final.minima
-                mf.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f&#34;{final_directory}/{times[i]}.{suffix}&#34;, title=f&#34;{times[i]} {time_unit}&#34;)
+                mf.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, dpi=dpi, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f&#34;{final_directory}/{times[i]}.{suffix}&#34;, title=f&#34;{times[i]} {time_unit}&#34;)
             else:
-                flooding_fes.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f&#34;{final_directory}/{times[i]}.{suffix}&#34;, title=f&#34;{times[i]} {time_unit}&#34;)
+                flooding_fes.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, dpi = dpi, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f&#34;{final_directory}/{times[i]}.{suffix}&#34;, title=f&#34;{times[i]} {time_unit}&#34;)
             plt.close()
         except ValueError:
             print(&#34;Warning: The first frame of animation would be blank with the current ettings, but PyVista 3D plotter can not plot empty meshes. Try to increase the timestep between frames or decrease the spacing between isosurfaces.&#34;)
     print(&#34;\n&#34;)
+
+    duration = 1000/fps
     if enable_loop:
-        with imageio.get_writer(gif_name, format=&#34;GIF&#34;, fps = fps, loop=0) as writer:
+        with imageio.get_writer(gif_name, format=&#34;GIF&#34;, duration=duration, loop=0) as writer:
             for image_file in image_files:
                 try:
                     image = imageio.imread(image_file)
@@ -5084,11 +5329,11 @@ with PLUMED sum_hills function</p>
         try: 
             os.rmdir(final_directory)
         except OSError:
-            print(&#34;Warning: temporary_folder in this path is not empty and will not be removed. Metadynminer&#39;s temporary files inside were removed. &#34;)</code></pre>
+            print(f&#34;Warning: directory{final_directory} is not empty and will not be removed. Metadynminer&#39;s temporary files inside were removed. &#34;)</code></pre>
 </details>
 </dd>
 <dt id="metadynminer.Fes.make_gif"><code class="name flex">
-<span>def <span class="ident">make_gif</span></span>(<span>self, gif_name=None, cmap='jet', xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10, 7], opacity=0.2, levels=None, frames=64)</span>
+<span>def <span class="ident">make_gif</span></span>(<span>self, gif_name=None, cmap='jet', xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[6, 4], opacity=0.2, levels=None, frames=64)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Function that generates animation of 3D FES showing different isosurfaces.</p>
@@ -5127,7 +5372,7 @@ If not provided, default values from contours parameters will be used instead. <
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def make_gif(self, gif_name=None, cmap = &#34;jet&#34;, 
-             xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
+             xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[6,4], 
               opacity=0.2, levels=None, frames=64):
     &#34;&#34;&#34;
     Function that generates animation of 3D FES showing different isosurfaces.
@@ -5226,7 +5471,7 @@ If not provided, default values from contours parameters will be used instead. <
 </details>
 </dd>
 <dt id="metadynminer.Fes.plot"><code class="name flex">
-<span>def <span class="ident">plot</span></span>(<span>self, png_name=None, contours=True, contours_spacing=0.0, aspect=1.0, cmap='jet', energy_unit='kJ/mole', xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10, 7], vmin=0, vmax=None, opacity=0.2, levels=None, title=None, off_screen=False)</span>
+<span>def <span class="ident">plot</span></span>(<span>self, png_name=None, contours=True, contours_spacing=0.0, aspect=1.0, cmap='jet', energy_unit='kJ/mol', xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[8, 6], dpi=100, vmin=0, vmax=None, opacity=0.2, levels=None, title=None, off_screen=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Function used to visualize FES, based on Matplotlib and PyVista. </p>
@@ -5260,7 +5505,10 @@ Otherwise, if contours=True, there will be five equally spaced contour levels.</
 <p>labelsize (default = 12) = size of text in labels</p>
 </li>
 <li>
-<p>image_size (default = [10,7]) = List of the width and height of the picture</p>
+<p>image_size (default = [8,6]) = List of the width and height of the picture</p>
+</li>
+<li>
+<p>dpi (default = 100) = DPI of the resulting image (for 1D and 2D FES). </p>
 </li>
 <li>
 <p>vmin (default=0) = real number, lower bound for the colormap on 2D FES</p>
@@ -5287,8 +5535,7 @@ If not provided, default values from contours parameters will be used instead. <
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = &#34;jet&#34;, 
-             energy_unit=&#34;kJ/mole&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
-             vmin = 0, vmax = None, opacity=0.2, levels=None, title = None, off_screen = False):
+             energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[8,6], dpi=100, vmin = 0, vmax = None, opacity=0.2, levels=None, title = None, off_screen = False):
     &#34;&#34;&#34;
     Function used to visualize FES, based on Matplotlib and PyVista. 
     
@@ -5315,7 +5562,9 @@ If not provided, default values from contours parameters will be used instead. <
     
     * labelsize (default = 12) = size of text in labels
     
-    * image_size (default = [10,7]) = List of the width and height of the picture
+    * image_size (default = [8,6]) = List of the width and height of the picture
+
+    * dpi (default = 100) = DPI of the resulting image (for 1D and 2D FES). 
     
     * vmin (default=0) = real number, lower bound for the colormap on 2D FES
     
@@ -5364,7 +5613,7 @@ If not provided, default values from contours parameters will be used instead. <
             cv3max = self.cv3per[1] 
     
     if self.cvs == 1:
-        plt.figure(figsize=(image_size[0],image_size[1]))
+        plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
         X = np.linspace(cv1min, cv1max, self.res)
         plt.plot(X, self.fes)
         if xlabel == None:
@@ -5381,7 +5630,7 @@ If not provided, default values from contours parameters will be used instead. <
             plt.savefig(png_name)
         
     if self.cvs == 2:
-        fig = plt.figure(figsize=(image_size[0],image_size[1]))
+        fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
         plt.imshow(np.rot90(self.fes, axes=(0,1)), cmap=cmap, interpolation=&#39;nearest&#39;, 
                    extent=[cv1min, cv1max, cv2min, cv2max], 
                    aspect = (((cv1max-cv1min)/(cv2max-cv2min))/(aspect)),
@@ -5390,10 +5639,10 @@ If not provided, default values from contours parameters will be used instead. <
         cbar.set_label(energy_unit, size=label_size)
         if contours:
             cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
-                     levels = np.arange(0, (vmax - 0.01), contours_spacing), 
+                     levels = np.arange(vmin, (vmax - 0.01), contours_spacing), 
                      extent=[cv1min, cv1max, cv2max, cv2min], 
-                     colors = &#34;k&#34;)
-            plt.clabel(cont, levels = np.arange(0, (vmax - 0.01), contours_spacing))
+                     colors = &#34;k&#34;, linestyles = &#34;solid&#34;)
+            plt.clabel(cont, levels = np.arange(vmin, (vmax - 0.01), contours_spacing))
         if xlabel == None:
             plt.xlabel(f&#39;CV1 - {self.cv1_name}&#39;, size=label_size)
         else:
@@ -5415,7 +5664,7 @@ If not provided, default values from contours parameters will be used instead. <
         if zlabel == None:
             zlabel = &#34;CV3 - &#34; + self.cv3_name
         
-        grid = pv.ImageData(
+        grid = pv.UniformGrid(
             dimensions=(self.res, self.res, self.res),
             spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
             origin=(cv1min, cv2min, cv3min)
@@ -5446,12 +5695,12 @@ If not provided, default values from contours parameters will be used instead. <
 </details>
 </dd>
 <dt id="metadynminer.Fes.removeCV"><code class="name flex">
-<span>def <span class="ident">removeCV</span></span>(<span>self, CV=None, energy_unit='kJ/mole', temp=300.0)</span>
+<span>def <span class="ident">removeCV</span></span>(<span>self, CV=None, energy_unit='kJ/mol', temp=300.0)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities
 are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. </p>
-<pre><code class="language-python">fes1 = fes.removeCV(CV=1)
+<pre><code class="language-python">fes_cv1 = fes.removeCV(CV=2)
 </code></pre>
 <p>Parameters:</p>
 <ul>
@@ -5469,13 +5718,13 @@ are summed along the CV to be removed, and resulting probability distribution wi
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def removeCV(self, CV=None, energy_unit=&#34;kJ/mole&#34;, temp=300.0):
+<pre><code class="python">def removeCV(self, CV=None, energy_unit=&#34;kJ/mol&#34;, temp=300.0):
     &#34;&#34;&#34;
     This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities 
     are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. 
 
     ```python
-    fes1 = fes.removeCV(CV=1)
+    fes_cv1 = fes.removeCV(CV=2)
     ```
     
     Parameters:
@@ -5661,7 +5910,7 @@ are summed along the CV to be removed, and resulting probability distribution wi
 </details>
 </dd>
 <dt id="metadynminer.Fes.surface_plot"><code class="name flex">
-<span>def <span class="ident">surface_plot</span></span>(<span>self, cmap='jet', energy_unit='kJ/mole', xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[12, 7], rstride=1, cstride=1, vmin=0, vmax=None)</span>
+<span>def <span class="ident">surface_plot</span></span>(<span>self, cmap='jet', energy_unit='kJ/mol', xlabel=None, ylabel=None, zlabel=None, dpi=100, label_size=12, image_size=[12, 7], rstride=1, cstride=1, vmin=0, vmax=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Function for visualization of 2D FES as 3D surface plot. For now, it is based on Matplotlib, but there are issues with interactivity. </p>
@@ -5675,7 +5924,7 @@ fes.surface_plot()
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def surface_plot(self, cmap = &#34;jet&#34;, 
-                 energy_unit=&#34;kJ/mole&#34;, xlabel=None, ylabel=None, zlabel=None, 
+                 energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, zlabel=None, dpi=100, 
                  label_size=12, image_size=[12,7], rstride=1, cstride=1, vmin = 0, vmax = None):
     &#34;&#34;&#34;
     Function for visualization of 2D FES as 3D surface plot. For now, it is based on Matplotlib, but there are issues with interactivity. 
@@ -5728,12 +5977,9 @@ fes.surface_plot()
         y = np.linspace(cv2min, cv2max, self.res)
         
         X, Y = np.meshgrid(x, y)
-        Z = self.fes
+        Z = self.fes.T
         
-        #grid = pv.StructuredGrid(X, Y, Z)
-        #grid.plot()
-        
-        fig = plt.figure()
+        fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
         ax = plt.axes(projection=&#34;3d&#34;)
         ax.plot_surface(X,Y,Z, cmap=cmap, rstride=rstride, cstride=cstride)
         
@@ -5757,7 +6003,7 @@ fes.surface_plot()
 </dd>
 <dt id="metadynminer.Hills"><code class="flex name class">
 <span>class <span class="ident">Hills</span></span>
-<span>(</span><span>name='HILLS', encoding='utf8', ignoretime=True, periodic=[False, False], cv1per=[-3.141592653589793, 3.141592653589793], cv2per=[-3.141592653589793, 3.141592653589793], cv3per=[-3.141592653589793, 3.141592653589793], timestep=None)</span>
+<span>(</span><span>name='HILLS', encoding='utf8', ignoretime=True, periodic=None, cv1per=[-3.141592653589793, 3.141592653589793], cv2per=[-3.141592653589793, 3.141592653589793], cv3per=[-3.141592653589793, 3.141592653589793], timestep=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Object of Hills class are created for loading HILLS files, and obtaining the necessary information from them. </p>
@@ -5814,7 +6060,7 @@ Has to be provided for each periodic CV.</p>
                                         Has to be provided for each periodic CV.
     &#34;&#34;&#34;
     
-    def __init__(self, name=&#34;HILLS&#34;, encoding=&#34;utf8&#34;, ignoretime=True, periodic=[False, False], 
+    def __init__(self, name=&#34;HILLS&#34;, encoding=&#34;utf8&#34;, ignoretime=True, periodic=None, 
                  cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=None):
         self.read(name, encoding, ignoretime, periodic, 
                  cv1per=cv1per,cv2per=cv2per,cv3per=cv3per, timestep=timestep)
@@ -5830,37 +6076,38 @@ Has to be provided for each periodic CV.</p>
         if number_of_columns_head == 5:
             self.cvs = 1
             self.cv1_name = lines[0].split()[3]
-            if periodic == None:
-                periodic = list(False)
-            
-            self.periodic = list(periodic[0:1])
+            #if periodic == None:
+            #    periodic = list(False)
+            #
+            #self.periodic = list(periodic[0:1])
             self.cv1per = cv1per
 
         elif number_of_columns_head == 7:
             self.cvs = 2
             self.cv1_name = lines[0].split()[3]
             self.cv2_name = lines[0].split()[4]
-            if len(periodic) == 2:
-                self.periodic = periodic[0:2]
-                self.cv1per = cv1per
-                self.cv2per = cv2per
-            else:
-                print(f&#34;Error: argument &#39;periodic&#39; has wrong number of parameters({len(periodic)})&#34;)
+            #if len(periodic) == 2:
+            #    self.periodic = periodic[0:2]
+            self.cv1per = cv1per
+            self.cv2per = cv2per
+            #else:
+            #    print(f&#34;Error: argument &#39;periodic&#39; has wrong number of parameters({len(periodic)})&#34;)
         elif number_of_columns_head == 9:
             self.cvs = 3
             self.cv1_name = lines[0].split()[3]
             self.cv2_name = lines[0].split()[4]
             self.cv3_name = lines[0].split()[5]
             
-            if len(periodic) == 3:
-                self.periodic = periodic[0:3]
-                self.cv1per = cv1per
-                self.cv2per = cv2per
-                self.cv3per = cv3per
-            else:
-                print(f&#34;Argument &#39;periodic&#39; has wrong number of parameters({len(periodic)})&#34;)
+            #if len(periodic) == 3:
+            #    self.periodic = periodic[0:3]
+            self.cv1per = cv1per
+            self.cv2per = cv2per
+            self.cv3per = cv3per
+            #else:
+            #    print(f&#34;Argument &#39;periodic&#39; has wrong number of parameters({len(periodic)})&#34;)
         else:
-            print(&#34;Unexpected number of columns in provided HILLS file.&#34;)
+            print(&#34;Error: Unexpected number of columns in provided HILLS file.&#34;)
+            return None
         
         self.ignoretime = ignoretime
         if not ignoretime:
@@ -5934,6 +6181,59 @@ Has to be provided for each periodic CV.</p>
             self.sigma3 = self.hills[:,6]
             self.heights = self.hills[:,7]
             self.biasf = self.hills[:,8]
+        print(f&#34;Loaded HILLS file named {name}. &#34;)
+        
+        # detect periodicity
+        if periodic == None:
+            if self.cvs &gt;= 1:
+                if np.max(np.diff(self.cv1)) &gt; 0.8*(np.max(self.cv1)-np.min(self.cv1)):
+                    periodic = list([True])
+                else:
+                    periodic = list([False])
+            if self.cvs &gt;= 2:
+                if np.max(np.diff(self.cv2)) &gt; 0.8*(np.max(self.cv2)-np.min(self.cv2)):
+                    periodic.append(True)
+                else:
+                    periodic.append(False)
+            if self.cvs &gt;= 3:
+                if np.max(np.diff(self.cv3)) &gt; 0.8*(np.max(self.cv3)-np.min(self.cv3)):
+                    periodic.append(True)
+                else:
+                    periodic.append(False)
+            print(f&#34;Automatically detected which CVs are periodic: {periodic}. &#34;)
+            print(&#34;This detection can be overriden by specifying the list of boolean values to &#39;periodic&#39; keyword. &#34;)
+        else:
+            if self.cvs == 1:
+                if len(periodic) != 1 or (type(periodic[0]) != type(True)):
+                    print(f&#34;Error: argument &#39;periodic&#39; has wrong number of parameters({len(periodic)})&#34;)
+            if self.cvs == 2:
+                if len(periodic) != 2 or (type(periodic[0]) != type(True)) or (type(periodic[1]) != type(True)):
+                    print(f&#34;Error: argument &#39;periodic&#39; has wrong number of parameters({len(periodic)})&#34;)
+            if self.cvs == 3:
+                if len(periodic) != 3 or (type(periodic[0]) != type(True)) or (type(periodic[1]) != type(True)) or (type(periodic[2]) != type(True)):
+                    print(f&#34;Error: argument &#39;periodic&#39; has wrong number of parameters({len(periodic)})&#34;)
+        
+        self.periodic = periodic
+        # check periodicity
+
+        if self.cvs &gt;= 1:
+            if periodic[0] == False and np.max(np.diff(self.cv1))&gt;0.8*(np.max(self.cv1)-np.min(self.cv1)):
+                print(f&#34;WARNING: It looks like CV 1 ({self.cv1_name}) is periodic, however you specified that it is not. This may be completely fine, however, if you forgot to specify the periodicity correctly, it will lead to errors later during FES calculation.&#34;)
+            if periodic[0] == True and np.max(np.diff(self.cv1))&lt;0.2*(np.max(self.cv1)-np.min(self.cv1)):
+                print(f&#34;WARNING: It looks like CV 1 ({self.cv1_name}) is not periodic, however you specified that it is. This may be completely fine, however, if you forgot to specify the periodicity correctly, it will lead to errors later during FES calculation.&#34;)
+                
+        if self.cvs &gt;= 2:
+            if periodic[1] == False and np.max(np.diff(self.cv2))&gt;0.8*(np.max(self.cv2)-np.min(self.cv2)):
+                print(f&#34;WARNING: It looks like CV 2 ({self.cv2_name}) is periodic, however you specified that it is not. This may be completely fine, however, if you forgot to specify the periodicity correctly, it will lead to errors later during FES calculation.&#34;)
+            if periodic[1] == True and np.max(np.diff(self.cv2))&lt;0.2*(np.max(self.cv2)-np.min(self.cv2)):
+                print(f&#34;WARNING: It looks like CV 2 ({self.cv2_name}) is not periodic, however you specified that it is. This may be completely fine, however, if you forgot to specify the periodicity correctly, it will lead to errors later during FES calculation.&#34;)
+        
+        if self.cvs &gt;= 3:
+            if periodic[2] == False and np.max(np.diff(self.cv3))&gt;0.8*(np.max(self.cv3)-np.min(self.cv3)):
+                print(f&#34;WARNING: It looks like CV 3 ({self.cv3_name}) is periodic, however you specified that it is not. This may be completely fine, however, if you forgot to specify the periodicity correctly, it will lead to errors later during FES calculation.&#34;)
+            if periodic[2] == True and np.max(np.diff(self.cv3))&lt;0.2*(np.max(self.cv3)-np.min(self.cv3)):
+                print(f&#34;WARNING: It looks like CV 3 ({self.cv3_name}) is not periodic, however you specified that it is. This may be completely fine, however, if you forgot to specify the periodicity correctly, it will lead to errors later during FES calculation.&#34;)
+                
         return self
     
     
@@ -5995,7 +6295,7 @@ Has to be provided for each periodic CV.</p>
     __pdoc__[&#34;Hills.get_heights&#34;] = False
     __pdoc__[&#34;Hills.read&#34;] = False
 
-    def plot_heights(self, png_name=None, energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, label_size=12, image_size=[10,7]):
+    def plot_heights(self, png_name=None, energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, label_size=12, image_size=[6,4], dpi=150, tu = &#34;ps&#34;, time_min=None, time_max=None):
         &#34;&#34;&#34;
         Function used to visualize heights of the hills that were added during the simulation. 
         
@@ -6013,13 +6313,54 @@ Has to be provided for each periodic CV.</p>
         
         * labelsize (default = 12) = size of text in labels
         
-        * image_size (default = [10,7]) = List of the width and height of the picture
+        * image_size (default = [6,4]) = List of the width and height of the picture
+
+        * dpi (default = 100) = DPI of the resulting image. 
         
         &#34;&#34;&#34;
-        plt.figure(figsize=(image_size[0],image_size[1]))
-        plt.plot(range(len(self.heights)), self.heights)
+        tu = TU(tu)
+        
+        if time_min == time_max == 0:
+                print(&#34;Error: Values of start and end time are zero.&#34;)
+                return None
+        if time_min != None:
+            time_min = tu.inps(time_min)
+            if time_min &lt; 0:
+                print(&#34;Warning: Start time is lower than zero, it will be set to zero instead. &#34;)
+                time_min = 0
+            if time_min &lt; int(self.hills[0,0]):
+                print(f&#34;Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
+                time_min = int(self.hills[0,0])
+        else:
+            time_min = int(self.hills[0,0])
+        if time_max != None:
+            time_max = tu.inps(time_max)
+            if time_max &lt; time_min:
+                print(&#34;Warning: End time is lower than start time. Values are flipped. &#34;)
+                time_value = time_max
+                time_max = time_min
+                time_min = time_value
+            if time_max &gt; int(self.hills[-1,0]):
+                print(f&#34;Warning: End time {tu.inps(time_max)} ps is higher than number of lines in HILLS file {int(self.hills[-1,0])}, which will be used instead. &#34;)
+                time_max = int(self.hills[-1,0])
+        else:
+            time_max = int(self.hills[-1,0])
+        #print(f&#34;Berofe fes: min {time_min}, max {time_max}&#34;)
+        
+        if not self.ignoretime:
+            time_max = int(round(((time_max - self.hills[0,0])/self.dt),0)) + 1
+            time_min = int(round(((time_min - self.hills[0,0])/self.dt),0)) + 1
+
+        if time_min==None:
+            time_min=1
+        if time_max==None:
+            time_max = int(self.hills[-1,0])
+        
+        
+        plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
+        plt.plot(tu.intu(np.array(range(len(self.heights))))[time_min-1:time_max], self.heights[time_min-1:time_max])
         if xlabel == None:
-            plt.xlabel(f&#39;time (ps)&#39;, size=label_size)
+            plt.xlabel(f&#39;time ({tu.name})&#39;, size=label_size)
         else:
             plt.xlabel(xlabel, size=label_size)
         if ylabel == None:
@@ -6030,7 +6371,7 @@ Has to be provided for each periodic CV.</p>
         if png_name != None:
             plt.savefig(png_name)
 
-    def plot_CV(self, png_name=None, CV=None, xlabel=None, ylabel=None, label_size=12, image_size=[10,7], time_min=None, time_max=None, points = True, point_size=1):
+    def plot_CV(self, png_name=None, CV=None, xlabel=None, ylabel=None, label_size=12, image_size=[6,4], dpi=150, tu = &#34;ps&#34;, time_min=None, time_max=None, points = True, point_size=1):
         &#34;&#34;&#34;
         Function used to visualize CV values from the simulation. 
         
@@ -6048,9 +6389,13 @@ Has to be provided for each periodic CV.</p>
         
         * labelsize (default = 12) = size of text in labels
         
-        * image_size (default = [10,7]) = List of the width and height of the picture
+        * image_size (default = [6,4]) = List of the width and height of the picture
 
-        * time_min, time_max = The time range for plotting (should be in the same units that are used in HILLS file)
+        * dpi (default = 100) = DPI of the resulting image. 
+        
+        * tu (default = &#34;ps&#34;) = string, time unit to be shown on x axis. Also aplies to time_min and time_max, if those are used. Available options: &#34;s&#34;, &#34;ms&#34;, &#34;us&#34;, &#34;ns&#34;, &#34;ps&#34;, &#34;fs&#34;
+
+        * time_min, time_max = The time range for plot
 
         * points (default=True) = Boolean value; if True, plot type will be scatter plot, which is better for periodic CVs; if False, it will be line plot, which is sometimes more suitable for non-periodic CVs. 
 
@@ -6073,30 +6418,33 @@ Has to be provided for each periodic CV.</p>
             print(f&#34;Error: supplied value of CV {CV} is not correct value&#34;)
             return None
 
+        tu = TU(tu)
+        
         if time_min == time_max == 0:
                 print(&#34;Error: Values of start and end time are zero.&#34;)
                 return None
         if time_min != None:
+            time_min = tu.inps(time_min)
             if time_min &lt; 0:
                 print(&#34;Warning: Start time is lower than zero, it will be set to zero instead. &#34;)
                 time_min = 0
             if time_min &lt; int(self.hills[0,0]):
-                print(&#34;Warning: Start time {time_min} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
+                print(f&#34;Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
                 time_min = int(self.hills[0,0])
         else:
             time_min = int(self.hills[0,0])
-        if time_max != None:     
+        if time_max != None:
+            time_max = tu.inps(time_max)
             if time_max &lt; time_min:
                 print(&#34;Warning: End time is lower than start time. Values are flipped. &#34;)
                 time_value = time_max
                 time_max = time_min
                 time_min = time_value
             if time_max &gt; int(self.hills[-1,0]):
-                print(f&#34;Warning: End time {time_max} is higher than number of lines in HILLS file {int(self.hills[-1,0])}, which will be used instead. &#34;)
+                print(f&#34;Warning: End time {tu.inps(time_max)} ps is higher than number of lines in HILLS file {int(self.hills[-1,0])}, which will be used instead. &#34;)
                 time_max = int(self.hills[-1,0])
         else:
             time_max = int(self.hills[-1,0])
-        #print(f&#34;Berofe fes: min {time_min}, max {time_max}&#34;)
         
         if not self.ignoretime:
             time_max = int(round(((time_max - self.hills[0,0])/self.dt),0)) + 1
@@ -6105,26 +6453,26 @@ Has to be provided for each periodic CV.</p>
         if time_min==None:
             time_min=1
         if time_max==None:
-            time_max = int(self.hills[-1,0])
+            time_max = int(self.hills[-1,0], dpi=dpi)
                 
-        plt.figure(figsize=(image_size[0],image_size[1]))
+        plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
         if points:
             if CV==1:
-                plt.scatter(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv1[time_min-1:time_max], s=point_size)
+                plt.scatter(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv1[time_min-1:time_max], s=point_size)
             if CV==2:
-                plt.scatter(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv2[time_min-1:time_max], s=point_size)
+                plt.scatter(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv2[time_min-1:time_max], s=point_size)
             if CV==3:
-                plt.scatter(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv3[time_min-1:time_max], s=point_size)
+                plt.scatter(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv3[time_min-1:time_max], s=point_size)
         else:
             if CV==1:
-                plt.plot(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv1[time_min-1:time_max], lw=point_size)
+                plt.plot(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv1[time_min-1:time_max], lw=point_size)
             if CV==2:
-                plt.plot(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv2[time_min-1:time_max], lw=point_size)
+                plt.plot(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv2[time_min-1:time_max], lw=point_size)
             if CV==3:
-                plt.plot(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv3[time_min-1:time_max], lw=point_size)
+                plt.plot(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv3[time_min-1:time_max], lw=point_size)
             
         if xlabel == None:
-            plt.xlabel(f&#39;time (ps)&#39;, size=label_size)
+            plt.xlabel(f&#39;time ({tu.name})&#39;, size=label_size)
         else:
             plt.xlabel(xlabel, size=label_size)
         if ylabel == None:
@@ -6143,7 +6491,7 @@ Has to be provided for each periodic CV.</p>
 <h3>Methods</h3>
 <dl>
 <dt id="metadynminer.Hills.plot_CV"><code class="name flex">
-<span>def <span class="ident">plot_CV</span></span>(<span>self, png_name=None, CV=None, xlabel=None, ylabel=None, label_size=12, image_size=[10, 7], time_min=None, time_max=None, points=True, point_size=1)</span>
+<span>def <span class="ident">plot_CV</span></span>(<span>self, png_name=None, CV=None, xlabel=None, ylabel=None, label_size=12, image_size=[6, 4], dpi=150, tu='ps', time_min=None, time_max=None, points=True, point_size=1)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Function used to visualize CV values from the simulation. </p>
@@ -6164,10 +6512,16 @@ Has to be provided for each periodic CV.</p>
 <p>labelsize (default = 12) = size of text in labels</p>
 </li>
 <li>
-<p>image_size (default = [10,7]) = List of the width and height of the picture</p>
+<p>image_size (default = [6,4]) = List of the width and height of the picture</p>
 </li>
 <li>
-<p>time_min, time_max = The time range for plotting (should be in the same units that are used in HILLS file)</p>
+<p>dpi (default = 100) = DPI of the resulting image. </p>
+</li>
+<li>
+<p>tu (default = "ps") = string, time unit to be shown on x axis. Also aplies to time_min and time_max, if those are used. Available options: "s", "ms", "us", "ns", "ps", "fs"</p>
+</li>
+<li>
+<p>time_min, time_max = The time range for plot</p>
 </li>
 <li>
 <p>points (default=True) = Boolean value; if True, plot type will be scatter plot, which is better for periodic CVs; if False, it will be line plot, which is sometimes more suitable for non-periodic CVs. </p>
@@ -6180,7 +6534,7 @@ Has to be provided for each periodic CV.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def plot_CV(self, png_name=None, CV=None, xlabel=None, ylabel=None, label_size=12, image_size=[10,7], time_min=None, time_max=None, points = True, point_size=1):
+<pre><code class="python">def plot_CV(self, png_name=None, CV=None, xlabel=None, ylabel=None, label_size=12, image_size=[6,4], dpi=150, tu = &#34;ps&#34;, time_min=None, time_max=None, points = True, point_size=1):
     &#34;&#34;&#34;
     Function used to visualize CV values from the simulation. 
     
@@ -6198,9 +6552,13 @@ Has to be provided for each periodic CV.</p>
     
     * labelsize (default = 12) = size of text in labels
     
-    * image_size (default = [10,7]) = List of the width and height of the picture
+    * image_size (default = [6,4]) = List of the width and height of the picture
 
-    * time_min, time_max = The time range for plotting (should be in the same units that are used in HILLS file)
+    * dpi (default = 100) = DPI of the resulting image. 
+    
+    * tu (default = &#34;ps&#34;) = string, time unit to be shown on x axis. Also aplies to time_min and time_max, if those are used. Available options: &#34;s&#34;, &#34;ms&#34;, &#34;us&#34;, &#34;ns&#34;, &#34;ps&#34;, &#34;fs&#34;
+
+    * time_min, time_max = The time range for plot
 
     * points (default=True) = Boolean value; if True, plot type will be scatter plot, which is better for periodic CVs; if False, it will be line plot, which is sometimes more suitable for non-periodic CVs. 
 
@@ -6223,30 +6581,33 @@ Has to be provided for each periodic CV.</p>
         print(f&#34;Error: supplied value of CV {CV} is not correct value&#34;)
         return None
 
+    tu = TU(tu)
+    
     if time_min == time_max == 0:
             print(&#34;Error: Values of start and end time are zero.&#34;)
             return None
     if time_min != None:
+        time_min = tu.inps(time_min)
         if time_min &lt; 0:
             print(&#34;Warning: Start time is lower than zero, it will be set to zero instead. &#34;)
             time_min = 0
         if time_min &lt; int(self.hills[0,0]):
-            print(&#34;Warning: Start time {time_min} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
+            print(f&#34;Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
             time_min = int(self.hills[0,0])
     else:
         time_min = int(self.hills[0,0])
-    if time_max != None:     
+    if time_max != None:
+        time_max = tu.inps(time_max)
         if time_max &lt; time_min:
             print(&#34;Warning: End time is lower than start time. Values are flipped. &#34;)
             time_value = time_max
             time_max = time_min
             time_min = time_value
         if time_max &gt; int(self.hills[-1,0]):
-            print(f&#34;Warning: End time {time_max} is higher than number of lines in HILLS file {int(self.hills[-1,0])}, which will be used instead. &#34;)
+            print(f&#34;Warning: End time {tu.inps(time_max)} ps is higher than number of lines in HILLS file {int(self.hills[-1,0])}, which will be used instead. &#34;)
             time_max = int(self.hills[-1,0])
     else:
         time_max = int(self.hills[-1,0])
-    #print(f&#34;Berofe fes: min {time_min}, max {time_max}&#34;)
     
     if not self.ignoretime:
         time_max = int(round(((time_max - self.hills[0,0])/self.dt),0)) + 1
@@ -6255,26 +6616,26 @@ Has to be provided for each periodic CV.</p>
     if time_min==None:
         time_min=1
     if time_max==None:
-        time_max = int(self.hills[-1,0])
+        time_max = int(self.hills[-1,0], dpi=dpi)
             
-    plt.figure(figsize=(image_size[0],image_size[1]))
+    plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
     if points:
         if CV==1:
-            plt.scatter(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv1[time_min-1:time_max], s=point_size)
+            plt.scatter(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv1[time_min-1:time_max], s=point_size)
         if CV==2:
-            plt.scatter(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv2[time_min-1:time_max], s=point_size)
+            plt.scatter(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv2[time_min-1:time_max], s=point_size)
         if CV==3:
-            plt.scatter(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv3[time_min-1:time_max], s=point_size)
+            plt.scatter(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv3[time_min-1:time_max], s=point_size)
     else:
         if CV==1:
-            plt.plot(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv1[time_min-1:time_max], lw=point_size)
+            plt.plot(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv1[time_min-1:time_max], lw=point_size)
         if CV==2:
-            plt.plot(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv2[time_min-1:time_max], lw=point_size)
+            plt.plot(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv2[time_min-1:time_max], lw=point_size)
         if CV==3:
-            plt.plot(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))), self.cv3[time_min-1:time_max], lw=point_size)
+            plt.plot(tu.intu(np.array(range(int(round(time_min,0)),int(round(time_max+1,0)),int(round(self.dt,0))))), self.cv3[time_min-1:time_max], lw=point_size)
         
     if xlabel == None:
-        plt.xlabel(f&#39;time (ps)&#39;, size=label_size)
+        plt.xlabel(f&#39;time ({tu.name})&#39;, size=label_size)
     else:
         plt.xlabel(xlabel, size=label_size)
     if ylabel == None:
@@ -6292,7 +6653,7 @@ Has to be provided for each periodic CV.</p>
 </details>
 </dd>
 <dt id="metadynminer.Hills.plot_heights"><code class="name flex">
-<span>def <span class="ident">plot_heights</span></span>(<span>self, png_name=None, energy_unit='kJ/mol', xlabel=None, ylabel=None, label_size=12, image_size=[10, 7])</span>
+<span>def <span class="ident">plot_heights</span></span>(<span>self, png_name=None, energy_unit='kJ/mol', xlabel=None, ylabel=None, label_size=12, image_size=[6, 4], dpi=150, tu='ps', time_min=None, time_max=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Function used to visualize heights of the hills that were added during the simulation. </p>
@@ -6313,14 +6674,17 @@ Has to be provided for each periodic CV.</p>
 <p>labelsize (default = 12) = size of text in labels</p>
 </li>
 <li>
-<p>image_size (default = [10,7]) = List of the width and height of the picture</p>
+<p>image_size (default = [6,4]) = List of the width and height of the picture</p>
+</li>
+<li>
+<p>dpi (default = 100) = DPI of the resulting image.</p>
 </li>
 </ul></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def plot_heights(self, png_name=None, energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, label_size=12, image_size=[10,7]):
+<pre><code class="python">def plot_heights(self, png_name=None, energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, label_size=12, image_size=[6,4], dpi=150, tu = &#34;ps&#34;, time_min=None, time_max=None):
     &#34;&#34;&#34;
     Function used to visualize heights of the hills that were added during the simulation. 
     
@@ -6338,13 +6702,54 @@ Has to be provided for each periodic CV.</p>
     
     * labelsize (default = 12) = size of text in labels
     
-    * image_size (default = [10,7]) = List of the width and height of the picture
+    * image_size (default = [6,4]) = List of the width and height of the picture
+
+    * dpi (default = 100) = DPI of the resulting image. 
     
     &#34;&#34;&#34;
-    plt.figure(figsize=(image_size[0],image_size[1]))
-    plt.plot(range(len(self.heights)), self.heights)
+    tu = TU(tu)
+    
+    if time_min == time_max == 0:
+            print(&#34;Error: Values of start and end time are zero.&#34;)
+            return None
+    if time_min != None:
+        time_min = tu.inps(time_min)
+        if time_min &lt; 0:
+            print(&#34;Warning: Start time is lower than zero, it will be set to zero instead. &#34;)
+            time_min = 0
+        if time_min &lt; int(self.hills[0,0]):
+            print(f&#34;Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. &#34;)
+            time_min = int(self.hills[0,0])
+    else:
+        time_min = int(self.hills[0,0])
+    if time_max != None:
+        time_max = tu.inps(time_max)
+        if time_max &lt; time_min:
+            print(&#34;Warning: End time is lower than start time. Values are flipped. &#34;)
+            time_value = time_max
+            time_max = time_min
+            time_min = time_value
+        if time_max &gt; int(self.hills[-1,0]):
+            print(f&#34;Warning: End time {tu.inps(time_max)} ps is higher than number of lines in HILLS file {int(self.hills[-1,0])}, which will be used instead. &#34;)
+            time_max = int(self.hills[-1,0])
+    else:
+        time_max = int(self.hills[-1,0])
+    #print(f&#34;Berofe fes: min {time_min}, max {time_max}&#34;)
+    
+    if not self.ignoretime:
+        time_max = int(round(((time_max - self.hills[0,0])/self.dt),0)) + 1
+        time_min = int(round(((time_min - self.hills[0,0])/self.dt),0)) + 1
+
+    if time_min==None:
+        time_min=1
+    if time_max==None:
+        time_max = int(self.hills[-1,0])
+    
+    
+    plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
+    plt.plot(tu.intu(np.array(range(len(self.heights))))[time_min-1:time_max], self.heights[time_min-1:time_max])
     if xlabel == None:
-        plt.xlabel(f&#39;time (ps)&#39;, size=label_size)
+        plt.xlabel(f&#39;time ({tu.name})&#39;, size=label_size)
     else:
         plt.xlabel(xlabel, size=label_size)
     if ylabel == None:
@@ -6803,8 +7208,7 @@ if this point is really a local minimum by comparing to the surrounding points o
         
 
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = &#34;jet&#34;, 
-                 energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
-                 color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0, title = None, off_screen = False):
+                 energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[8,6], dpi=100, color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0, title = None, off_screen = False):
         &#34;&#34;&#34;
         The same function as for visualizing Fes objects, but this time 
         with the positions of local minima shown as letters on the graph.
@@ -6832,7 +7236,9 @@ if this point is really a local minimum by comparing to the surrounding points o
         
         * labelsize (default = 12) = size of text in labels
         
-        * image_size (default = [10,7]) = List of the width and height of the picture
+        * image_size (default = [6,4]) = List of the width and height of the picture
+
+        * dpi (default = 100) = DPI of the resulting image. 
         
         * color = string = name of color in matplotlib, if set, the color will be used for the letters. 
                 If not set, the color should be automatically either black or white, 
@@ -6894,7 +7300,7 @@ if this point is really a local minimum by comparing to the surrounding points o
                 cv3max = self.cv3per[1] 
         
         if self.cvs == 1:
-            plt.figure(figsize=(image_size[0],image_size[1]))
+            plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
             X = np.linspace(cv1min, cv1max, self.res)
             plt.plot(X, self.fes)
             
@@ -6928,7 +7334,7 @@ if this point is really a local minimum by comparing to the surrounding points o
                 
             
         elif self.cvs == 2:
-            fig = plt.figure(figsize=(image_size[0],image_size[1]))
+            fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
             plt.imshow(np.rot90(self.fes, axes=(0,1)), cmap=cmap, interpolation=&#39;nearest&#39;, 
                        extent=[cv1min, cv1max, cv2min, cv2max], 
                        aspect = (((cv1max-cv1min)/(cv2max-cv2min))/(aspect)),
@@ -6987,7 +7393,9 @@ if this point is really a local minimum by comparing to the surrounding points o
             min_ar = self.minima.iloc[:,5:8].values
             min_ar = min_ar.astype(np.float32)
             min_pv = pv.PolyData(min_ar)
-            grid = pv.ImageData(
+            
+            
+            grid = pv.UniformGrid(
                 dimensions=(self.res, self.res, self.res),
                 spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
                 origin=(cv1min, cv2min, cv3min)
@@ -7104,7 +7512,7 @@ if this point is really a local minimum by comparing to the surrounding points o
             # Be sure to close the plotter when finished
             plotter.close()
         else:
-            print(&#34;Error: gif_plot is only available for FES with 3 CVs.&#34;)</code></pre>
+            print(&#34;Error: make_gif is only available for FES with 3 CVs.&#34;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -7600,11 +8008,11 @@ If not provided, default values from contours parameters will be used instead. <
         # Be sure to close the plotter when finished
         plotter.close()
     else:
-        print(&#34;Error: gif_plot is only available for FES with 3 CVs.&#34;)</code></pre>
+        print(&#34;Error: make_gif is only available for FES with 3 CVs.&#34;)</code></pre>
 </details>
 </dd>
 <dt id="metadynminer.Minima.plot"><code class="name flex">
-<span>def <span class="ident">plot</span></span>(<span>self, png_name=None, contours=True, contours_spacing=0.0, aspect=1.0, cmap='jet', energy_unit='kJ/mol', xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10, 7], color=None, vmin=0, vmax=None, opacity=0.2, levels=None, show_points=True, point_size=4.0, title=None, off_screen=False)</span>
+<span>def <span class="ident">plot</span></span>(<span>self, png_name=None, contours=True, contours_spacing=0.0, aspect=1.0, cmap='jet', energy_unit='kJ/mol', xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[8, 6], dpi=100, color=None, vmin=0, vmax=None, opacity=0.2, levels=None, show_points=True, point_size=4.0, title=None, off_screen=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>The same function as for visualizing Fes objects, but this time
@@ -7639,7 +8047,10 @@ Otherwise, if contours=True, there will be five equally spaced contour levels.</
 <p>labelsize (default = 12) = size of text in labels</p>
 </li>
 <li>
-<p>image_size (default = [10,7]) = List of the width and height of the picture</p>
+<p>image_size (default = [6,4]) = List of the width and height of the picture</p>
+</li>
+<li>
+<p>dpi (default = 100) = DPI of the resulting image. </p>
 </li>
 <li>
 <p>color = string = name of color in matplotlib, if set, the color will be used for the letters.
@@ -7677,8 +8088,7 @@ If not provided, default values from contours parameters will be used instead. <
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = &#34;jet&#34;, 
-             energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
-             color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0, title = None, off_screen = False):
+             energy_unit=&#34;kJ/mol&#34;, xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[8,6], dpi=100, color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0, title = None, off_screen = False):
     &#34;&#34;&#34;
     The same function as for visualizing Fes objects, but this time 
     with the positions of local minima shown as letters on the graph.
@@ -7706,7 +8116,9 @@ If not provided, default values from contours parameters will be used instead. <
     
     * labelsize (default = 12) = size of text in labels
     
-    * image_size (default = [10,7]) = List of the width and height of the picture
+    * image_size (default = [6,4]) = List of the width and height of the picture
+
+    * dpi (default = 100) = DPI of the resulting image. 
     
     * color = string = name of color in matplotlib, if set, the color will be used for the letters. 
             If not set, the color should be automatically either black or white, 
@@ -7768,7 +8180,7 @@ If not provided, default values from contours parameters will be used instead. <
             cv3max = self.cv3per[1] 
     
     if self.cvs == 1:
-        plt.figure(figsize=(image_size[0],image_size[1]))
+        plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
         X = np.linspace(cv1min, cv1max, self.res)
         plt.plot(X, self.fes)
         
@@ -7802,7 +8214,7 @@ If not provided, default values from contours parameters will be used instead. <
             
         
     elif self.cvs == 2:
-        fig = plt.figure(figsize=(image_size[0],image_size[1]))
+        fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
         plt.imshow(np.rot90(self.fes, axes=(0,1)), cmap=cmap, interpolation=&#39;nearest&#39;, 
                    extent=[cv1min, cv1max, cv2min, cv2max], 
                    aspect = (((cv1max-cv1min)/(cv2max-cv2min))/(aspect)),
@@ -7861,7 +8273,9 @@ If not provided, default values from contours parameters will be used instead. <
         min_ar = self.minima.iloc[:,5:8].values
         min_ar = min_ar.astype(np.float32)
         min_pv = pv.PolyData(min_ar)
-        grid = pv.ImageData(
+        
+        
+        grid = pv.UniformGrid(
             dimensions=(self.res, self.res, self.res),
             spacing=((cv1max-cv1min)/self.res,(cv2max-cv2min)/self.res,(cv3max-cv3min)/self.res),
             origin=(cv1min, cv2min, cv3min)
@@ -7894,6 +8308,90 @@ If not provided, default values from contours parameters will be used instead. <
 
         if png_name != None:
             p.save_graphic(png_name)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="metadynminer.TU"><code class="flex name class">
+<span>class <span class="ident">TU</span></span>
+<span>(</span><span>name='ps')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TU:
+    def __init__(self, name=&#34;ps&#34;):
+        if name == &#34;ps&#34;:
+            self.name = name
+            self.factor = 1.0
+        elif name == &#34;fs&#34;:
+            self.name = name
+            self.factor = 1e-3
+        elif name == &#34;ns&#34;:
+            self.name = name
+            self.factor = 1e3
+        elif name == &#34;us&#34;:
+            self.name = &#34;\u03bcs&#34;
+            self.factor = 1e6
+        elif name == &#34;\u03bcs&#34;:
+            self.name = &#34;\u03bcs&#34;
+            self.factor = 1e6
+        elif name == &#34;ms&#34;:
+            self.name = name
+            self.factor = 1e9
+        elif name == &#34;s&#34;:
+            self.name = name
+            self.factor = 1e12
+        else:
+            print(f&#34;Error: invalid name of time unit ({name})&#34;)
+            
+    def inps(self, i):
+        if type(i) == int:
+            return int(i*self.factor)
+        else:
+            return i*self.factor
+
+    def intu(self, i):
+        if type(i) == int:
+            return int(i/self.factor)
+        else:
+            return i/self.factor</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="metadynminer.TU.inps"><code class="name flex">
+<span>def <span class="ident">inps</span></span>(<span>self, i)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def inps(self, i):
+    if type(i) == int:
+        return int(i*self.factor)
+    else:
+        return i*self.factor</code></pre>
+</details>
+</dd>
+<dt id="metadynminer.TU.intu"><code class="name flex">
+<span>def <span class="ident">intu</span></span>(<span>self, i)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def intu(self, i):
+    if type(i) == int:
+        return int(i/self.factor)
+    else:
+        return i/self.factor</code></pre>
 </details>
 </dd>
 </dl>
@@ -7938,6 +8436,13 @@ If not provided, default values from contours parameters will be used instead. <
 <li><code><a title="metadynminer.Minima.findminima" href="#metadynminer.Minima.findminima">findminima</a></code></li>
 <li><code><a title="metadynminer.Minima.make_gif" href="#metadynminer.Minima.make_gif">make_gif</a></code></li>
 <li><code><a title="metadynminer.Minima.plot" href="#metadynminer.Minima.plot">plot</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="metadynminer.TU" href="#metadynminer.TU">TU</a></code></h4>
+<ul class="">
+<li><code><a title="metadynminer.TU.inps" href="#metadynminer.TU.inps">inps</a></code></li>
+<li><code><a title="metadynminer.TU.intu" href="#metadynminer.TU.intu">intu</a></code></li>
 </ul>
 </li>
 </ul>

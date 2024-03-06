@@ -6,9 +6,9 @@
 
 Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. 
 
-It is based on Metadynminer package for R programming language, but it is not just a port from R to Python, as it is updated and improved in many aspects. It supports HILLS files with one, two or three collective variables. 
+It is inspired by existing Metadynminer package for R. It supports HILLS files with one, two or three collective variables. 
 
-All these functions can be easily customized with many parameters. You can learn more about that later in the documentation. There are also other predefined functions allowing you to for example to enhance your presentation with animations of your 3D FES or remove a CV from existing FES. 
+All built-in functions can be customized with many parameters. You can learn more about that in the documentation. There are also other predefined functions allowing you to for example to enhance your presentation with animations of your 3D FES or remove a CV from existing FES. 
 
 Installation:
 ```bash
@@ -23,7 +23,7 @@ Sample code:
 
 Load your HILLS file: 
 ```python
-hillsfile = metadynminer.Hills(name="HILLS", periodic=[True,True])
+hillsfile = metadynminer.Hills(name="HILLS")
 ```
 Compute the free energy surface using the fast Bias Sum Algorithm:
 ```python
@@ -46,11 +46,11 @@ Find local minima on the FES, print them and save FES with minima as a picture:
 ```python
 minima = metadynminer.Minima(fes)
 print(minima.minima)
-minima.plot(png_name="fes.png")
+minima.plot(png_name="fes_with_minima.png")
 ```
 
 You can also plot free energy profile to see, how the differences between each minima were evolving 
-during the simulation. Convergence in the free energy profile suggests, that the resulting free energy surface converged to correct values.
+during the simulation. Convergence in the free energy profile suggests that the resulting free energy surface converged to correct values.
 ```python
 fep = metadynminer.FEProfile(minima, hillsfile)
 fep.plot(png_name="FEProfile.png")
