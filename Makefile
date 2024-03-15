@@ -7,6 +7,7 @@ build:
 	docker build -t ${image}:${tag} .
 	docker push ${image}:${tag}
 
+restart: uninstall install log
 
 
 install:
