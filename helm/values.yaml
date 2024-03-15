@@ -133,11 +133,7 @@ singleuser:
   storage:  
     type: "none"
   cmd: 
-    - start-hub.sh
-#    - jupyter
-#    - notebook 
-    - voila
-    - --theme=dark
+    - start-singleuser.sh
   uid: 1000
   fsGid: 100
   allowPrivilegeEscalation: false

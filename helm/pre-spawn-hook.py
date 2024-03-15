@@ -2,8 +2,9 @@ import asyncio
 import kubernetes_asyncio
 from kubernetes_asyncio import config, client
 
-nsprefix = 'mtdminer-'
-nssuffix = '-prod-ns'
+#nsprefix = 'mtdminer-'
+#nssuffix = '-prod-ns'
+ns = 'metadynminer-ns'
 
 from kubernetes_asyncio.client import (
     V1ObjectMeta,
@@ -192,14 +193,15 @@ async def bootstrap_pre_spawn(spawner):
 #  spawner.environment = {"JUPYTERHUB_API_URL": "http://hub.gmxhub-ns.svc.cluster.local:8081/hub/api",
 #                         "JUPYTERHUB_ACTIVITY_URL": "http://hub.gmxhub-ns.svc.cluster.local:8081/hub/api/users/"+username+"/activity"}
 
-  ns = await create_ns(username, original)
-  sa = await create_sa(username, ns)
-  await create_rb(sa, ns)
+#  ns = await create_ns(username, original)
+#  sa = await create_sa(username, ns)
+#  sa = 'hub'
+#  await create_rb(sa, ns)
 
   await mount_persistent_hub_home(spawner, username, ns)
 
 #    spawner.args += [ '--port=8888', '--ip=0.0.0.0', f'--NotebookApp.base_url=/user/{username}/' ]
-  spawner.args += [ '--port=8888', '--ip=0.0.0.0' ]
+#   spawner.args += [ '--port=8888', '--ip=0.0.0.0' ]
 
 
 #  gpu = spawner.user_options.get('gpu')
@@ -216,9 +218,10 @@ async def bootstrap_pre_spawn(spawner):
   spawner.container_security_context = {"capabilities": {"drop": ["ALL"]}}
 
 c.KubeSpawner.pre_spawn_hook = bootstrap_pre_spawn
-c.KubeSpawner.enable_user_namespaces = True
-c.KubeSpawner.user_namespace_template = nsprefix + "{username}" + nssuffix
+#c.KubeSpawner.enable_user_namespaces = True
+#c.KubeSpawner.user_namespace_template = nsprefix + "{username}" + nssuffix
 #c.KubeSpawner.enable_user_namespaces = False
 #c.KubeSpawner.user_namespace_template = "jupyterhub-{username}-prod-ns"
-c.KubeSpawner.automount_service_account_token = True
-c.KubeSpawner.service_account = "sa-{username}"
+c.KubeSpawner.automount_service_account_token = False
+#c.KubeSpawner.service_account = "sa-{username}"
+# c.KubeSpawner.service_account = "metadynminer-jobs"
