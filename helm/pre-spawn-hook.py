@@ -1,10 +1,12 @@
 import asyncio
 import kubernetes_asyncio
 from kubernetes_asyncio import config, client
+import datetime
 
 #nsprefix = 'mtdminer-'
 #nssuffix = '-prod-ns'
 ns = 'metadynminer-ns'
+usagelog = '/srv/jupyterhub/usage.log'
 
 from kubernetes_asyncio.client import (
     V1ObjectMeta,
@@ -203,6 +205,8 @@ async def bootstrap_pre_spawn(spawner):
 #    spawner.args += [ '--port=8888', '--ip=0.0.0.0', f'--NotebookApp.base_url=/user/{username}/' ]
 #   spawner.args += [ '--port=8888', '--ip=0.0.0.0' ]
 
+  with open(usagelog,"a") as l:
+    l.write(datetime.datetime.now(datetime.timezone.utc).strftime('%c %z:') + username + '\n')
 
 #  gpu = spawner.user_options.get('gpu')
 #  cpu = spawner.user_options.get('cpu')

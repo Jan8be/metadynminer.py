@@ -7,7 +7,7 @@ build:
 	docker build -t ${image}:${tag} .
 	docker push ${image}:${tag}
 
-restart: uninstall install log
+restart: uninstall install 
 
 
 install:
@@ -22,6 +22,9 @@ install:
 uninstall:
 	helm uninstall metadynminer -n ${ns}
 
-
 log:
 	kubectl -n ${ns} logs -f $(shell kubectl -n metadynminer-ns get pods | grep hub | cut -f1 -d' ')
+
+
+usage:
+	kubectl -n ${ns} exec $(shell kubectl -n metadynminer-ns get pods | grep hub | cut -f1 -d' ') -- cat /srv/jupyterhub/usage.log
