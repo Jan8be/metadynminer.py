@@ -44,11 +44,13 @@ ingress:
 
 hub:
   serviceAccount:
-    create: false
+    create: true
     name: hub
 
   #allowNamedServers: true
   containerSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
     allowPrivilegeEscalation: false
     capabilities:
      drop:
@@ -60,29 +62,23 @@ hub:
       type: RuntimeDefault
   extraConfig:
     form-0: blabla
-    form-1: blabla
     pre-spawn-hook: blabla
   config:
     notebookImage: bubububu
-# #    Authenticator:
-# #      allowed_users:
-# #        - ljocha
-    DummyAuthenticator:
-      password: budul9nek
-      auto_login: true
-      enable_auth_state: true
-#     GenericOAuthenticator:
-#       authorize_url: https://login.e-infra.cz/oidc/authorize
-#       token_url: https://login.e-infra.cz/oidc/token
-#       userdata_url: https://login.e-infra.cz/oidc/userinfo
-#       oauth_callback_url: https://gromacs-hub.dyn.cloud.e-infra.cz/hub/oauth_callback
-# 
-# #      authorize_url: https://login.cloud.e-infra.cz/auth
-# #      token_url: https://login.cloud.e-infra.cz/token
-# #      userdata_url: https://login.cloud.e-infra.cz/userinfo
-# #      oauth_callback_url: https://gromacs-hub.dyn.cloud.e-infra.cz/hub/oauth_callback
-#       client_id: f408e904-6eb7-4398-b9b6-26c97c5c3295
-#       client_secret: blabla
+#    Authenticator:
+#      allowed_users: []
+#      blocked_users: []
+#    DummyAuthenticator:
+#      password: budul9nek
+#      auto_login: true
+#      enable_auth_state: true
+    GenericOAuthenticator:
+      authorize_url: https://login.elixir-czech.org/oidc/authorize
+      token_url: https://login.elixir-czech.org/oidc/token
+      userdata_url: https://login.elixir-czech.org/oidc/userinfo
+      oauth_callback_url: https://metadynminer.dyn.cloud.e-infra.cz/hub/oauth_callback
+      client_id: f707f151-e605-4b02-bbe7-12f9d202093d
+      client_secret: blabla
       userdata_params:
         state: state
       scope:
@@ -90,12 +86,13 @@ hub:
         - profile
         - email
       username_key: preferred_username
+      allow_all: true
     JupyterHub:
       authenticator_class: generic-oauth
 #      authenticator_class: dummy
   image:
     name: cerit.io/hubs/jupyterhub
-    tag: 14-12-2022
+    tag: 28-02-2024
   resources:
     requests:
       cpu: 100m
@@ -113,20 +110,13 @@ hub:
     periodSeconds: 10
     failureThreshold: 10
     timeoutSeconds: 10
-#  extraEnv:
-#    OAUTH2_AUTHORIZE_URL: https://login.cloud.e-infra.cz/auth
-#    OAUTH2_TOKEN_URL: https://login.cloud.e-infra.cz/token 
-#    OAUTH2_CALLBACK_URL: https://gromacs-hub.dyn.cloud.e-infra.cz/hub/oauth_callback
+  extraEnv:
+    OAUTH2_AUTHORIZE_URL: https://login.elixir-czech.org/oidc/authorize
+    OAUTH2_TOKEN_URL: https://login.elixir-czech.org/oidc/token 
+    OAUTH2_CALLBACK_URL: https://metadynminer.dyn.cloud.e-infra.cz/hub/oauth_callback
   db:
     pvc:
       storageClassName: nfs-csi
-  containerSecurityContext:
-    runAsUser: 1000
-    runAsGroup: 1000
-    allowPrivilegeEscalation: false
-    capabilities:
-     drop:
-     - ALL
   consecutiveFailureLimit: 0
   networkPolicy:
     interNamespaceAccessLabels: "accept"
@@ -169,6 +159,8 @@ singleuser:
 
 scheduling:
   userScheduler:
+    enabled: false
+  userPlaceholder:
     enabled: false
 
 prePuller:
