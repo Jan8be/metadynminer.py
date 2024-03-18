@@ -1,0 +1,174 @@
+debug:
+  enabled: true
+
+proxy:
+  service:
+    type: ClusterIP
+  chp:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 1
+        memory: 256Mi
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+    extraPodSpec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+
+
+rbac:
+  create: true
+
+ingress:
+  enabled: true
+ #ingressClassName: nginx
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/proxy-body-size: 300m
+  hosts:
+    - metadynminer.dyn.cloud.e-infra.cz
+  tls:
+    - hosts:
+        - metadynminer.dyn.cloud.e-infra.cz
+      secretName: "metadynminer-dyn-cloud-e-infra-cz-tls"
+
+hub:
+  serviceAccount:
+    create: true
+    name: hub
+
+  #allowNamedServers: true
+  containerSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    allowPrivilegeEscalation: false
+    capabilities:
+     drop:
+     - ALL
+  podSecurityContext:
+    fsGroupChangePolicy: OnRootMismatch
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
+  extraConfig:
+    form-0: blabla
+    pre-spawn-hook: blabla
+  config:
+    notebookImage: bubububu
+#    Authenticator:
+#      allowed_users: []
+#      blocked_users: []
+#    DummyAuthenticator:
+#      password: budul9nek
+#      auto_login: true
+#      enable_auth_state: true
+    GenericOAuthenticator:
+      authorize_url: https://login.elixir-czech.org/oidc/authorize
+      token_url: https://login.elixir-czech.org/oidc/token
+      userdata_url: https://login.elixir-czech.org/oidc/userinfo
+      oauth_callback_url: https://metadynminer.dyn.cloud.e-infra.cz/hub/oauth_callback
+      client_id: f707f151-e605-4b02-bbe7-12f9d202093d
+      client_secret: blabla
+      userdata_params:
+        state: state
+      scope:
+        - openid
+        - profile
+        - email
+      username_key: preferred_username
+      allow_all: true
+    JupyterHub:
+      authenticator_class: generic-oauth
+#      authenticator_class: dummy
+  image:
+    name: cerit.io/hubs/jupyterhub
+    tag: 28-02-2024
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 1
+      memory: 512Mi
+  livenessProbe:
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    failureThreshold: 10
+    timeoutSeconds: 10
+  readinessProbe:
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    failureThreshold: 10
+    timeoutSeconds: 10
+  extraEnv:
+    OAUTH2_AUTHORIZE_URL: https://login.elixir-czech.org/oidc/authorize
+    OAUTH2_TOKEN_URL: https://login.elixir-czech.org/oidc/token 
+    OAUTH2_CALLBACK_URL: https://metadynminer.dyn.cloud.e-infra.cz/hub/oauth_callback
+  db:
+    pvc:
+      storageClassName: nfs-csi
+  consecutiveFailureLimit: 0
+  networkPolicy:
+    interNamespaceAccessLabels: "accept"
+    egressAllowRules:
+      cloudMetadataServer: false
+
+singleuser:
+  networkPolicy:
+    enabled: false
+  cloudMetadata:
+    blockWithIptables: false                                                                     
+  startTimeout: 600
+  defaultUrl: "/lab/tree/python_metadynminer.ipynb"
+  storage:  
+    type: "none"
+  cmd: 
+    - start-singleuser.sh
+  uid: 1000
+  fsGid: 100
+  allowPrivilegeEscalation: false
+  extraPodConfig:
+    securityContext:
+      fsGroupChangePolicy: OnRootMismatch
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+      capabilities:
+        drop:
+        - ALL
+  startTimeout: 300
+  networkPolicy:
+    enabled: false
+  cloudMetadata:
+    blockWithIptables: false
+  
+
+scheduling:
+  userScheduler:
+    enabled: false
+  userPlaceholder:
+    enabled: false
+
+prePuller:
+  hook:
+    enabled: false
+  continuous:
+    enabled: false
+
+# singleuser MappingKernel https://jupyter-notebook.readthedocs.io/en/stable/config.html
+# jupyterhub-idle-culler https://github.com/jupyterhub/zero-to-jupyterhub-k8s/blob/main/jupyterhub/values.yaml
+cull:
+  enabled: true
+  users: true
+  timeout: 259200
+  every: 3600
