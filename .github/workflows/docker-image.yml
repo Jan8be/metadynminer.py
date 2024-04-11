@@ -1,18 +1,14 @@
-name: Docker Image CI
+name: docker
 
-on:
-  push:
-    branches: [ "main", "hub" ]
-  pull_request:
-    branches: [ "main" ]
+on: [ workflow_dispatch ]
 
 jobs:
-
-  build:
-
+  docker-build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ${{ github.repository_owner }}/${{ github.repository }}:latest
