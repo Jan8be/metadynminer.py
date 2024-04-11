@@ -18,7 +18,7 @@ jobs:
       - name: Repo lowercase
         id: lc
         run: |
-          repo="${{ githlub.repository }}"
+          repo="${{ github.repository }}"
           echo "::set-output name=repo::${repo,,}"
 
       - name: Build and push
