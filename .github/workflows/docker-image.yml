@@ -1,8 +1,6 @@
 name: docker
 
-on: 
-  workflow_dispatch:
-    branches: [ 'main','hub' ]
+on: [ workflow_dispatch ]
 
 jobs:
   docker-build:
