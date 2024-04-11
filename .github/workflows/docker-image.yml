@@ -19,7 +19,7 @@ jobs:
         id: lc
         run: |
           repo="${{ github.repository }}"
-          echo "::set-output name=repo::${repo,,}"
+          echo "repo=${repo,,}" >>$GITHUB_OUTPUT
 
       - name: Build and push
         uses: docker/build-push-action@v5
