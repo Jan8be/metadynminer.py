@@ -65,6 +65,7 @@ hub:
     pre-spawn-hook: blabla
   config:
     notebookImage: bubububu
+    imagePullPolicy: Always
 #    Authenticator:
 #      allowed_users: []
 #      blocked_users: []

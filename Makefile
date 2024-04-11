@@ -1,4 +1,5 @@
-image=cerit.io/ljocha/metadynminer
+#image?=cerit.io/ljocha/metadynminer
+image?=ghcr.io/jan8be/metadynminer.py
 tag=latest
 
 ns=metadynminer-ns

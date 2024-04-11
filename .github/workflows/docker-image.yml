@@ -1,6 +1,6 @@
 name: docker
 
-on: [ workflow_dispatch ]
+on: [ workflow_dispatch, pull_request, push ]
 
 jobs:
   docker-build:
