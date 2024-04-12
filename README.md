@@ -11,7 +11,8 @@ Metadynminer is a package designed to help you analyse output HILLS files from P
 
 It is inspired by existing Metadynminer package for R. It supports HILLS files with one, two or three collective variables. 
 
-All built-in functions can be customized with many parameters. You can learn more about that in the documentation. There are also other predefined functions allowing you to for example to enhance your presentation with animations of your 3D FES or remove a CV from existing FES. 
+All built-in functions can be customized with many parameters. You can learn more about that in the [documentation](https://metadynreporter.cz/manual/index.html). 
+There are also other predefined functions allowing you to for example to enhance your presentation with animations of your 3D FES or remove a CV from existing FES. 
 
 ## Quickstart: run in Binder
 

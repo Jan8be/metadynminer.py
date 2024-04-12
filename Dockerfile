@@ -6,6 +6,9 @@ COPY metadynminer/ /tmp/build/metadynminer/
 
 RUN pip3 install /tmp/build
 
+COPY data/acealanme /home/jovyan
+COPY data/acealanme /usr/local/lib
+
 COPY python_metadynminer.ipynb /home/jovyan
 COPY python_metadynminer.ipynb /usr/local/lib
 COPY copy-notebook.sh /usr/local/bin/before-notebook.d
