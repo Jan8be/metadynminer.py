@@ -5,7 +5,7 @@ import os
 import numpy as np
 
 def test_1p():
-    expected = np.array([ 385.17567651, 1528.33533688])
+    expected = np.array([ 385.17552302, 1528.3351816 ])
     #load hills
     h1 = mm.Hills(name="./data/acealanme1d", periodic=[True])
     #find minima on FES
@@ -16,7 +16,7 @@ def test_1p():
     assert(np.allclose(fep, expected, 1e-3))
 
 def test_2p():
-    expected = np.array([ 371.9108889 ,  629.40182382, 1252.17936501, 3040.47957346])
+    expected = np.array([ 371.91080136,  629.40164896, 1289.9170257, 1252.1794877, 3040.4783994 ])
     #load hills
     h2 = mm.Hills(name="./data/acealanme", periodic=[True, True])
     #find minima on FES
@@ -27,10 +27,10 @@ def test_2p():
     assert(np.allclose(fep, expected, 1e-3))
 
 def test_3p():
-    expected = np.array([  -41.67918722,  -135.41854014,   243.58920429,  1060.11504292,
-        2378.11540026,  6513.85008335,  6598.73851877,  6418.38484675,
-        7694.86520632,  7869.748866  ,  8185.64504805,  8250.71152005,
-        9633.41481942, 12238.44803989])
+    expected = np.array([  -41.67860026,   243.58946343,  1237.95317909,  1060.11536049,
+        2378.11588445,  6418.3849335 ,  6513.84977833,  7869.74886734,
+        7694.86571792,  8185.64534757,  8250.71114721,  9633.41434977,
+       12238.44830729])
     #load hills
     h3 = mm.Hills(name="./data/acealanme3d", periodic=[True, True, True])
     #find minima on FES

@@ -2202,20 +2202,18 @@ class Minima():
 
             print("Searching for the nearest local minima... ")
             iteration = 0
-            old_m_fes = m_fes
             while 0.0 in m_fes[:]:
                 iteration += 1
-                if iteration > 10000:
+                if iteration > max_iteration:
                     print("Warning: Maximum number of iterations reached when searching. ")
                     break
                 for i in range(self.fes.shape[0]):
                     m_fes[i] = m_fes[int(dirs[i])]
-                if np.all(np.equal(old_m_fes, m_fes)):
-                    print("Warning: some of the FES bins were not associated to any local minimum. ")
-                    break
-                old_m_fes = m_fes
-            if iteration <= 10000:
+            if iteration <= max_iteration:
                 print("Done.")
+            if 0.0 in m_fes[:]:
+                print("Warning: some of the FES bins were not associated to any local minimum. ")
+
             self.minima = np.array(minima_list)
             self.m_fes = m_fes
             
@@ -2255,19 +2253,22 @@ class Minima():
                             okoli[ii,jj] = self.fes[int(a_indexes[ii,jj,0]),int(a_indexes[ii,jj,1])]
                     
                     m_i, m_j = np.unravel_index(np.argmin(okoli), okoli.shape, order='C')
-                    
-                    dirs[i,j, 0] = a_indexes[m_i,m_j,0]
-                    dirs[i,j, 1] = a_indexes[m_i,m_j,1]
-                    if self.fes[i,j] == self.fes[int(a_indexes[m_i,m_j,0]), int(a_indexes[m_i, m_j, 1])] and not np.all(okoli == np.min(okoli)):
-                        minima_count += 1
-                        m_fes[i,j] = minima_count
-                        min_cv1 = (((i)/self.res)*(cv1max-cv1min))+cv1min
-                        min_cv2 = (((j)/self.res)*(cv2max-cv2min))+cv2min
-                        minima_list.append([self.fes[i,j],i,j, min_cv1, min_cv2])
+
+                    if not np.all(okoli == np.min(okoli)):
+                        dirs[i,j, 0] = a_indexes[m_i,m_j,0]
+                        dirs[i,j, 1] = a_indexes[m_i,m_j,1]
+                        if self.fes[i,j] == self.fes[int(a_indexes[m_i,m_j,0]), int(a_indexes[m_i, m_j, 1])]:
+                            minima_count += 1
+                            m_fes[i,j] = minima_count
+                            min_cv1 = (((i)/self.res)*(cv1max-cv1min))+cv1min
+                            min_cv2 = (((j)/self.res)*(cv2max-cv2min))+cv2min
+                            minima_list.append([self.fes[i,j],i,j, min_cv1, min_cv2])
+                    else:
+                        dirs[i,j, 0] = i
+                        dirs[i,j, 1] = j
 
             print("Searching for the nearest local minima... ")
             iteration = 0
-            old_m_fes = m_fes
             while 0.0 in m_fes[:,:]:
                 iteration += 1
                 if iteration > max_iteration:
@@ -2276,12 +2277,11 @@ class Minima():
                 for i in range(self.fes.shape[0]):
                     for j in range(self.fes.shape[1]):
                         m_fes[i,j] = m_fes[int(dirs[i,j,0]), int(dirs[i,j,1])]
-                if np.all(np.equal(old_m_fes, m_fes)):
-                    print("Warning: some of the FES bins were not associated to any local minimum. ")
-                    break
-                old_m_fes = m_fes
-            if iteration <= 10000:
-                print("Done.")
+            if iteration <= max_iteration:
+                print("Done.")  
+            if 0.0 in m_fes[:,:]:
+                print("Warning: some of the FES bins were not associated to any local minimum. ")
+            
             self.minima = np.array(minima_list)
             self.m_fes = m_fes
             
@@ -2338,22 +2338,20 @@ class Minima():
 
             print("Searching for the nearest local minima... ")
             iteration = 0
-            old_m_fes = m_fes
             while 0.0 in m_fes[:,:,:]:
                 iteration += 1
-                if iteration > 10000:
+                if iteration > max_iteration:
                     print("Warning: Maximum number of iterations reached when searching. ")
                     break
                 for i in range(self.fes.shape[0]):
                     for j in range(self.fes.shape[1]):
                         for k in range(self.fes.shape[2]):
                             m_fes[i,j,k] = m_fes[int(dirs[i,j,k,0]), int(dirs[i,j,k,1]),int(dirs[i,j,k,2])]
-                if np.all(np.equal(old_m_fes, m_fes)):
-                    print("Warning: some of the FES bins were not associated to any local minimum. ")
-                    break
-                old_m_fes = m_fes
-            if iteration <= 10000:
+            if iteration <= max_iteration:
                 print("Done.")
+            if 0.0 in m_fes[:,:,:]:
+                print("Warning: some of the FES bins were not associated to any local minimum. ")
+
             self.minima = np.array(minima_list)
             self.m_fes = m_fes
             
