@@ -1,0 +1,28 @@
+#! vim: ts=2 expandtab:
+
+name: docker
+
+on: [ workflow_dispatch, pull_request, push ]
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ghcr.io login
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Repo lowercase
+        id: lc
+        run: |
+          repo="${{ github.repository }}"
+          echo "repo=${repo,,}" >>$GITHUB_OUTPUT
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ghcr.io/${{ steps.lc.outputs.repo }}:latest
