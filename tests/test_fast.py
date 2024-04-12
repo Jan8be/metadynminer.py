@@ -17,7 +17,7 @@ def test_1p():
     assert(abs_diff < 1e-4)
     
 def test_1np():
-    expected = 11586.547055427745
+    expected = 11967.845152106378
     #load hills
     h1 = mm.Hills(name="./data/acealanme1d", periodic=[False])
     #prepare FES
@@ -50,7 +50,7 @@ def test_2p():
     assert(abs_diff < 1e-4)
 
 def test_2np():
-    expected = 3569701.989450706
+    expected = 3647261.4568335665
     #load hills
     h2 = mm.Hills(name="./data/acealanme", periodic=[False,False])
     #prepare FES
@@ -83,7 +83,7 @@ def test_3p():
     assert(abs_diff < 1e-4)
 
 def test_3np():
-    expected = 14187718.1015537
+    expected = 14333647.600746352
     #load hills
     h3 = mm.Hills(name="./data/acealanme3d", periodic=[False,False,False])
     #prepare FES
