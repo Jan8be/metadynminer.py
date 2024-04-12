@@ -2161,7 +2161,7 @@ class Minima():
                 a_indexes = a_indexes[:,:,:-1,:]
         return a_indexes
     
-    def findminima2(self, temp=300.0, energy_unit="kJ/mol"):
+    def findminima2(self, temp=300.0, energy_unit="kJ/mol", max_iteration=10000):
         if self.cvs >= 1:
             cv1min = self.cv1min
             cv1max = self.cv1max
