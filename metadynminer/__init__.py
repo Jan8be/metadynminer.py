@@ -60,6 +60,8 @@ __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
 
+#print(f"""Welcome to Metadynminer version {__version__}. """)
+
 try:
     import numpy as np
 except:
@@ -437,10 +439,10 @@ class Hills:
                 print("Warning: Start time is lower than zero, it will be set to zero instead. ")
                 time_min = 0
             if tu.inps(time_min) < int(self.hills[0,0]):
-                print(f"Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(self.hills[0,0])}, which will be used instead. ")
+                print(f"Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(self.hills[0,0])} ps, which will be used instead. ")
                 time_min = tu.intu(self.hills[0,0])
         else:
-            time_min = int(self.hills[0,0])
+            time_min = tu.intu(self.hills[0,0])
         if time_max != None:
             #time_max = tu.inps(time_max)
             if time_max < time_min:
@@ -459,11 +461,6 @@ class Hills:
             time_max = int(round(((time_max - self.hills[0,0])/self.dt),0)) + 1
             time_min = int(round(((time_min - self.hills[0,0])/self.dt),0)) + 1
 
-        if time_min==None:
-            time_min=1
-        if time_max==None:
-            time_max = int(self.hills[-1,0])
-
         if image_size == None:
             image_size = [9,6]
         
@@ -479,10 +476,9 @@ class Hills:
         elif image_size_unit != "in":
             print(f"Warning: unknown image_size_unit value: {image_size_unit}. Using inches instead. ")
             
-        
         plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
         #plt.plot(tu.intu(np.array(range(len(self.heights))))[time_min-1:time_max], self.heights[time_min-1:time_max])
-        plt.plot(tu.intu(np.array(range(len(self.heights)))[int(tu.inps(time_min)):int(tu.inps(time_max)+1)]),
+        plt.plot(tu.intu(np.arange(int(self.hills[0,0]), self.heights.shape[0]+1)[int(tu.inps(time_min)-1):int(tu.inps(time_max))]),
                  self.heights[int(tu.inps(time_min)-1):int(tu.inps(time_max))])
         if xlabel == None:
             plt.xlabel(f'time ({tu.name})', size=label_size)
@@ -494,8 +490,11 @@ class Hills:
             plt.ylabel(ylabel, size=label_size)
         
         if title != None:
-            plt.title(title)
-            
+            plt.title(title, size=label_size)
+
+        plt.xticks(fontsize=label_size)
+        plt.yticks(fontsize=label_size)
+        
         ax = plt.gca()
         ax.set_xlim(xlim)
         ax.set_ylim(ylim)
@@ -567,10 +566,10 @@ class Hills:
                 print("Warning: Start time is lower than zero, it will be set to zero instead. ")
                 time_min = 0
             if tu.inps(time_min) < int(self.hills[0,0]):
-                print(f"Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(self.hills[0,0])}, which will be used instead. ")
+                print(f"Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(self.hills[0,0])} ps, which will be used instead. ")
                 time_min = tu.intu(self.hills[0,0])
         else:
-            time_min = int(self.hills[0,0])
+            time_min = tu.intu(self.hills[0,0])
         if time_max != None:
             #time_max = tu.inps(time_max)
             if time_max < time_min:
@@ -587,11 +586,6 @@ class Hills:
         if not self.ignoretime:
             time_max = int(round(((time_max - self.hills[0,0])/self.dt),0)) + 1
             time_min = int(round(((time_min - self.hills[0,0])/self.dt),0)) + 1
-
-        if time_min==None:
-            time_min=1
-        if time_max==None:
-            time_max = int(self.hills[-1,0])
 
         if image_size == None:
             image_size = [9,6]
@@ -643,8 +637,12 @@ class Hills:
                 plt.ylabel(f'CV {CV} - {self.cv3_name}', size=label_size)
         else:
             plt.ylabel(ylabel, size=label_size)
+        
         if title != None:
-            plt.title(title)
+            plt.title(title, size=label_size)
+
+        plt.xticks(fontsize=label_size)
+        plt.yticks(fontsize=label_size)
                 
         ax = plt.gca()
         ax.set_xlim(xlim)
@@ -1302,7 +1300,7 @@ class Fes:
             print(f"Error: unsupported number of CVs: {self.cvs}.")
     
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "jet", 
-             energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, 
+             energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, clabel_size = 12,
              image_size=None, image_size_unit="in", dpi=100, vmin = 0, vmax = None, 
              opacity=0.2, levels=None, title = None, off_screen = False, 
              xlim=[None, None], ylim=[None, None]):
@@ -1405,8 +1403,12 @@ class Fes:
                 plt.ylabel(f'free energy ({energy_unit})', size=label_size)
             else:
                 plt.ylabel(ylabel, size=label_size)
+        
             if title != None:
-                plt.title(title)
+                plt.title(title, size=label_size)
+    
+            plt.xticks(fontsize=label_size)
+            plt.yticks(fontsize=label_size)
                 
             ax = plt.gca()
             ax.set_xlim(xlim)
@@ -1422,13 +1424,21 @@ class Fes:
                        aspect = (((cv1max-cv1min)/(cv2max-cv2min))/(aspect)),
                        vmin = vmin, vmax = vmax)
             cbar = plt.colorbar()
+            cbar.ax.tick_params(labelsize=label_size) 
             cbar.set_label(energy_unit, size=label_size)
             if contours:
-                cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
-                         levels = np.arange(vmin, (vmax - 0.01), contours_spacing), 
-                         extent=[cv1min, cv1max, cv2max, cv2min], 
-                         colors = "k", linestyles = "solid")
-                plt.clabel(cont, levels = np.arange(vmin, (vmax - 0.01), contours_spacing))
+                if levels != None:
+                    cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
+                             levels = levels, 
+                             extent=[cv1min, cv1max, cv2max, cv2min], 
+                             colors = "k", linestyles = "solid")
+                    plt.clabel(cont, levels = levels, fontsize=clabel_size)
+                else:
+                    cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
+                             levels = np.arange(vmin, (vmax - 0.01), contours_spacing), 
+                             extent=[cv1min, cv1max, cv2max, cv2min], 
+                             colors = "k", linestyles = "solid")
+                    plt.clabel(cont, levels = np.arange(vmin, (vmax - 0.01), contours_spacing), fontsize=clabel_size)
             if xlabel == None:
                 plt.xlabel(f'CV1 - {self.cv1_name}', size=label_size)
             else:
@@ -1437,12 +1447,19 @@ class Fes:
                 plt.ylabel(f'CV2 - {self.cv2_name}', size=label_size)
             else:
                 plt.ylabel(ylabel, size=label_size)
+            
             if title != None:
-                plt.title(title)
+                plt.title(title, size=label_size)
+    
+            plt.xticks(fontsize=label_size)
+            plt.yticks(fontsize=label_size)
 
             ax = plt.gca()
             ax.set_xlim(xlim)
             ax.set_ylim(ylim)
+
+            ax.tick_params(axis='x', labelsize=label_size)
+            ax.tick_params(axis='y', labelsize=label_size)
             
             if png_name != None:
                 plt.savefig(png_name)
@@ -1489,7 +1506,7 @@ class Fes:
         self.fes = fes
         
     def surface_plot(self, cmap = "jet", 
-                     energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, dpi=100, label_size=12, image_size=None, image_size_unit="in", rstride=1, cstride=1, vmin = 0, vmax = None):
+                     energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, dpi=100, label_size=12, image_size=None, image_size_unit="in", rstride=1, cstride=1, vmin = 0, vmax = None, title=None):
         """
         Function for visualization of 2D FES as 3D surface plot. For now, it is based on Matplotlib, but there are issues with interactivity. 
         
@@ -1544,16 +1561,23 @@ class Fes:
                 ax.set_zlabel(f'free energy ({energy_unit})', size=label_size)
             else:
                 ax.set_zlabel(zlabel, size=label_size)
+
+            if title != None:
+                plt.title(title, size=label_size)
+    
+            plt.xticks(fontsize=label_size)
+            plt.yticks(fontsize=label_size)
+            
         else:
             print(f"Error: Surface plot only works for FES with exactly two CVs, and this FES has {self.cvs} CV.")
     
-    def removeCV(self, CV=None, energy_unit="kJ/mol", temp=300.0):
+    def remove_CV(self, CV=None, energy_unit="kJ/mol", temp=300.0):
         """
         This function is used to remove a CV from an existing FES. The function first recalculates the FES to an array of probabilities. The probabilities 
         are summed along the CV to be removed, and resulting probability distribution with 1 less dimension is converted back to FES. 
 
         ```python
-        fes_cv1 = fes.removeCV(CV=2)
+        fes_cv1 = fes.remove_CV(CV=2)
         ```
         
         Parameters:
@@ -1587,6 +1611,7 @@ class Fes:
                     new_fes.cv1max = self.cv2max
                     new_fes.cv1_name = self.cv2_name
                     new_fes.cv1per = self.cv2per
+                    new_fes.cv1_fes_range = self.cv2_fes_range
                 if CV == 2:
                     new_prob = np.sum(probabilities, axis=1)
                     new_fes = Fes(hills=None)
@@ -1599,6 +1624,7 @@ class Fes:
                     new_fes.cv1max = self.cv1max
                     new_fes.cv1_name = self.cv1_name
                     new_fes.cv1per = self.cv1per
+                    new_fes.cv1_fes_range = self.cv1_fes_range
                 return new_fes
             elif energy_unit == "kcal/mol":
                 probabilities = np.exp(-1000*4.184*self.fes/8.314/temp)
@@ -1614,6 +1640,7 @@ class Fes:
                     new_fes.cv1max = self.cv2max
                     new_fes.cv1_name = self.cv2_name
                     new_fes.cv1per = self.cv2per
+                    new_fes.cv1_fes_range = self.cv2_fes_range
                 if CV == 2:
                     new_prob = np.sum(probabilities, axis=0)
                     new_fes = Fes(hills=None)
@@ -1626,6 +1653,7 @@ class Fes:
                     new_fes.cv1max = self.cv1max
                     new_fes.cv1_name = self.cv1_name
                     new_fes.cv1per = self.cv1per
+                    new_fes.cv1_fes_range = self.cv1_fes_range
                 return new_fes
             else:
                 print("Error: unknown energy unit")
@@ -1649,6 +1677,8 @@ class Fes:
                     new_fes.cv2_name = self.cv3_name
                     new_fes.cv1per = self.cv2per
                     new_fes.cv2per = self.cv3per
+                    new_fes.cv1_fes_range = self.cv2_fes_range
+                    new_fes.cv2_fes_range = self.cv3_fes_range
                 if CV == 2:
                     new_prob = np.sum(probabilities, axis=1)
                     new_fes = Fes(hills=None)
@@ -1665,6 +1695,8 @@ class Fes:
                     new_fes.cv2_name = self.cv3_name
                     new_fes.cv1per = self.cv1per
                     new_fes.cv2per = self.cv3per
+                    new_fes.cv1_fes_range = self.cv1_fes_range
+                    new_fes.cv2_fes_range = self.cv3_fes_range
                 if CV == 3:
                     new_prob = np.sum(probabilities, axis=2)
                     new_fes = Fes(hills=None)
@@ -1681,6 +1713,8 @@ class Fes:
                     new_fes.cv2_name = self.cv2_name
                     new_fes.cv1per = self.cv1per
                     new_fes.cv2per = self.cv2per
+                    new_fes.cv1_fes_range = self.cv1_fes_range
+                    new_fes.cv2_fes_range = self.cv2_fes_range
                 return new_fes
             elif energy_unit == "kcal/mol":
                 probabilities = np.exp(-1000*4.184*self.fes/8.314/temp)
@@ -1700,6 +1734,8 @@ class Fes:
                     new_fes.cv2_name = self.cv3_name
                     new_fes.cv1per = self.cv2per
                     new_fes.cv2per = self.cv3per
+                    new_fes.cv1_fes_range = self.cv2_fes_range
+                    new_fes.cv2_fes_range = self.cv3_fes_range
                 if CV == 2:
                     new_prob = np.sum(probabilities, axis=1)
                     new_fes = Fes(hills=None)
@@ -1716,6 +1752,8 @@ class Fes:
                     new_fes.cv2_name = self.cv3_name
                     new_fes.cv1per = self.cv1per
                     new_fes.cv2per = self.cv3per
+                    new_fes.cv1_fes_range = self.cv1_fes_range
+                    new_fes.cv2_fes_range = self.cv3_fes_range
                 if CV == 3:
                     new_prob = np.sum(probabilities, axis=2)
                     new_fes = Fes(hills=None)
@@ -1732,12 +1770,15 @@ class Fes:
                     new_fes.cv2_name = self.cv2_name
                     new_fes.cv1per = self.cv1per
                     new_fes.cv2per = self.cv2per
+                    new_fes.cv1_fes_range = self.cv1_fes_range
+                    new_fes.cv2_fes_range = self.cv2_fes_range
                 return new_fes
             else:
                 print("Error: unknown energy unit")
                 return None
 
-    def flooding_animation(self, gif_name = "flooding.gif", use_vmax_from_end = True, with_minima = True, use_minima_from_end=False, cmap="jet", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=None, image_size_unit="in", dpi=100, tu = "ps", time_min=None, time_max=None, step=1000, contours_spacing = 20, levels=None, opacity = 0.2, vmin = 0, vmax = None, energy_unit="kJ/mol", clear_temporary_folder=True, temporary_folder_name="temporary_folder", time_unit="ps", fps=5, enable_loop = True, minima_precise = False, xlim=[None, None], ylim=[None, None]):
+    def flooding_animation(self, gif_name = "flooding.gif", use_vmax_from_end = True, with_minima = True, use_minima_from_end=False, cmap="jet", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=None, image_size_unit="in", dpi=100, tu = "ps", time_min=None, time_max=None, step=1000, contours_spacing = 20, levels=None, opacity = 0.2, vmin = 0, vmax = None, energy_unit="kJ/mol", clear_temporary_folder=True, temporary_folder_name="temporary_folder", time_unit="ps", fps=5, enable_loop = True, minima_precise = False, minima_nbins=8, temp=300.0, 
+                           xlim=[None, None], ylim=[None, None]):
         """
         This method is used to make an animation that shows, how the FES was evolving during metadynamics simulation. It creates temporary folder and svaes plots of FES at different times during simulation, then it concatenates them to make a gif animation and removes the temporary files (remove can be switched off, if necessary). 
 
@@ -1764,6 +1805,12 @@ class Fes:
         * with_minima (default = True), boolean value, if True, graphs will be shown with letters at each local minima found at each frame of the animation
 
         * use _minima_from_end (default = True), boolean value, if True, the local minima from the end point of the fes object wil be depicted at each frame of animation
+
+        * minima_precise (default=False) = whether the local minima should be calculated using the precise algorithm (see Minima for more info)
+
+        * minima_nbins (default = 8) = the nbins keyword for minima localization
+
+        * temp (default = 300.0), energy_unit (default = "kJ/mol") - keywords for minima localization in case minima_precise = True
 
         * step (default=1000), integer, frames for animation will be made at each n-th line in HILLS file
 
@@ -1832,14 +1879,14 @@ class Fes:
         times = np.array((range(time_min-1, time_max+1, step)))
         image_files = [f'{final_directory}/{times[i]}.{suffix}'.format(i) for i in range(1, len(times))]
         
-        minima_final = Minima(self, precise=False)
+        minima_final = Minima(self, precise=minima_precise, nbins=minima_nbins, energy_unit=energy_unit, temp=temp, print_output=False)
         
         for i in range(1,len(times)):
             print(f"Constructing flooding animation: {((i+1)/len(times)):.2%} finished", end="\r")
             if self.original==False:
-                step_fes.makefes(flooding_fes.res, flooding_fes.cv1range, flooding_fes.cv2range, flooding_fes.cv3range, time_min=(times[i-1]+1), time_max=times[i], print_output=False)
+                step_fes.makefes(flooding_fes.res, time_min=(times[i-1]+1), time_max=times[i], print_output=False)
             else:
-                step_fes.makefes2(flooding_fes.res, flooding_fes.cv1range, flooding_fes.cv2range, flooding_fes.cv3range, time_min=(times[i-1]+1), time_max=times[i], print_output=False)
+                step_fes.makefes2(flooding_fes.res, time_min=(times[i-1]+1), time_max=times[i], print_output=False)
             if i == 1:
                 flooding_fes.fes = step_fes.fes
             else:
@@ -1847,10 +1894,16 @@ class Fes:
             flooding_fes.fes = flooding_fes.fes - np.min(flooding_fes.fes)
             try:
                 if with_minima:
-                    mf = Minima(flooding_fes, precise=False)
+                    mf = Minima(flooding_fes, precise=minima_precise, print_output=False, nbins=minima_nbins, temp=temp, energy_unit=energy_unit)
                     if use_minima_from_end:
                         mf.minima = minima_final.minima
-                    mf.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, image_size_unit=image_size_unit, dpi=dpi, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f"{final_directory}/{times[i]}.{suffix}", title=f"{times[i]} {time_unit}", xlim=xlim, ylim=ylim)
+                    mf.plot(contours_spacing=contours_spacing, cmap = cmap, 
+                            xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, 
+                            label_size=label_size, image_size=image_size, 
+                            image_size_unit=image_size_unit, dpi=dpi, vmin = vmin, 
+                            vmax = vmax, levels=levels, energy_unit=energy_unit, 
+                            off_screen = True, opacity=opacity, 
+                            png_name=f"{final_directory}/{times[i]}.{suffix}", title=f"{times[i]} {time_unit}", xlim=xlim, ylim=ylim)
                 else:
                     flooding_fes.plot(contours_spacing=contours_spacing, cmap = cmap, xlabel = xlabel, ylabel = ylabel, zlabel=zlabel, label_size=label_size, image_size=image_size, image_size_unit=image_size_unit, dpi = dpi, vmin = vmin, vmax = vmax, levels=levels, energy_unit=energy_unit, off_screen = True, opacity=opacity, png_name=f"{final_directory}/{times[i]}.{suffix}", title=f"{times[i]} {time_unit}", xlim=xlim, ylim=ylim)
                 plt.close()
@@ -1977,7 +2030,7 @@ class Fes:
             # Be sure to close the plotter when finished
             plotter.close()
         else:
-            print("Error: gif_plot is only available for FES with 3 CVs.")     
+            print("Error: this method is only available for FES with 3 CVs.")     
  
 class Minima():
     """
@@ -2019,7 +2072,7 @@ class Minima():
     * max_iteration (default=10000), the maximum number of iteration the algorithm will last when assigning FES points to their respective local minima
     """
     
-    def __init__(self, fes, nbins = 8, precise=True, temp=300.0, energy_unit="kJ/mol", max_iteration=10000):
+    def __init__(self, fes, nbins = 8, precise=True, temp=300.0, energy_unit="kJ/mol", max_iteration=10000, print_output=True):
         self.fes = fes.fes
         self.periodic = fes.periodic
         self.cvs = fes.cvs
@@ -2046,7 +2099,7 @@ class Minima():
 
         if precise:
             if energy_unit in ["kJ/mol", "kcal/mol"]:
-                self.findminima2(temp=temp, energy_unit=energy_unit, max_iteration=max_iteration)
+                self.findminima2(temp=temp, energy_unit=energy_unit, max_iteration=max_iteration, print_output=print_output)
             else:
                 print("Error: energy_unit must be either 'kJ/mol' or 'kcal/mol'. ")
         else:
@@ -2161,7 +2214,7 @@ class Minima():
                 a_indexes = a_indexes[:,:,:-1,:]
         return a_indexes
     
-    def findminima2(self, temp=300.0, energy_unit="kJ/mol", max_iteration=10000):
+    def findminima2(self, temp=300.0, energy_unit="kJ/mol", max_iteration=10000, print_output=True):
         if self.cvs >= 1:
             cv1min = self.cv1min
             cv1max = self.cv1max
@@ -2174,7 +2227,8 @@ class Minima():
         
         self.minima = []
 
-        print(f"Calculating gradients for FES with {self.fes.flatten().shape[0]} bins... ")
+        if print_output:
+            print(f"Calculating gradients for FES with {self.fes.flatten().shape[0]} bins... ")
         
         if self.cvs == 1:
             m_fes = np.zeros((self.fes.shape))
@@ -2200,7 +2254,8 @@ class Minima():
                     min_cv1 = (((i)/self.res)*(cv1max-cv1min))+cv1min
                     minima_list.append([self.fes[i],i, min_cv1])
 
-            print("Searching for the nearest local minima... ")
+            if print_output:
+                print("Searching for the nearest local minima... ")
             iteration = 0
             while 0.0 in m_fes[:]:
                 iteration += 1
@@ -2209,10 +2264,11 @@ class Minima():
                     break
                 for i in range(self.fes.shape[0]):
                     m_fes[i] = m_fes[int(dirs[i])]
-            if iteration <= max_iteration:
+            if iteration <= max_iteration and print_output:
                 print("Done.")
             if 0.0 in m_fes[:]:
-                print("Warning: some of the FES bins were not associated to any local minimum. ")
+                if print_output:
+                    print("Warning: some of the FES bins were not associated to any local minimum. ")
 
             self.minima = np.array(minima_list)
             self.m_fes = m_fes
@@ -2267,20 +2323,24 @@ class Minima():
                         dirs[i,j, 0] = i
                         dirs[i,j, 1] = j
 
-            print("Searching for the nearest local minima... ")
+            if print_output:
+                print("Searching for the nearest local minima... ")
             iteration = 0
             while 0.0 in m_fes[:,:]:
                 iteration += 1
                 if iteration > max_iteration:
-                    print("Warning: Maximum number of iterations reached when searching. ")
+                    if print_output:
+                        print("Warning: Maximum number of iterations reached when searching. ")
                     break
                 for i in range(self.fes.shape[0]):
                     for j in range(self.fes.shape[1]):
                         m_fes[i,j] = m_fes[int(dirs[i,j,0]), int(dirs[i,j,1])]
             if iteration <= max_iteration:
-                print("Done.")  
+                if print_output:
+                    print("Done.")  
             if 0.0 in m_fes[:,:]:
-                print("Warning: some of the FES bins were not associated to any local minimum. ")
+                if print_output:
+                    print("Warning: some of the FES bins were not associated to any local minimum. ")
             
             self.minima = np.array(minima_list)
             self.m_fes = m_fes
@@ -2336,7 +2396,8 @@ class Minima():
                             min_cv3 = (((k)/self.res)*(cv3max-cv3min))+cv3min
                             minima_list.append([self.fes[i,j,k],i,j,k,min_cv1,min_cv2,min_cv3])
 
-            print("Searching for the nearest local minima... ")
+            if print_output:
+                print("Searching for the nearest local minima... ")
             iteration = 0
             while 0.0 in m_fes[:,:,:]:
                 iteration += 1
@@ -2348,9 +2409,11 @@ class Minima():
                         for k in range(self.fes.shape[2]):
                             m_fes[i,j,k] = m_fes[int(dirs[i,j,k,0]), int(dirs[i,j,k,1]),int(dirs[i,j,k,2])]
             if iteration <= max_iteration:
-                print("Done.")
+                if print_output:
+                    print("Done.")
             if 0.0 in m_fes[:,:,:]:
-                print("Warning: some of the FES bins were not associated to any local minimum. ")
+                if print_output:
+                    print("Warning: some of the FES bins were not associated to any local minimum. ")
 
             self.minima = np.array(minima_list)
             self.m_fes = m_fes
@@ -2415,7 +2478,7 @@ class Minima():
                                                                "CV1 - "+self.cv1_name, "CV2 - "+self.cv2_name,  "CV3 - "+self.cv3_name])
 
 
-    def findminima(self, nbins=8):
+    def findminima(self, nbins=8, print_output=True):
         if int(nbins) != nbins:
             nbins = int(nbins)
             print(f"Number of bins must be an integer, it will be set to {nbins}.")
@@ -2752,7 +2815,7 @@ class Minima():
         
 
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "jet", 
-                 energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=None, image_size_unit="in", dpi=100, color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0, title = None, off_screen = False, xlim=[None, None], ylim=[None, None]):
+                 energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, clabel_size = 12, image_size=None, image_size_unit="in", dpi=100, color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0, title = None, off_screen = False, xlim=[None, None], ylim=[None, None]):
         """
         The same function as for visualizing Fes objects, but this time 
         with the positions of local minima shown as letters on the graph.
@@ -2781,7 +2844,7 @@ class Minima():
         
         * xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graphs
         
-        * labelsize (default = 12) = size of text in labels
+        * label_size, clabel_size (default = 12) = size of text in labels or contours labels, respectively
         
         * image_size (default = [9,6]) = List of the width and height of the picture
 
@@ -2879,8 +2942,12 @@ class Minima():
                 plt.ylabel(f'free energy ({energy_unit})', size=label_size)
             else:
                 plt.ylabel(ylabel, size=label_size)
+            
             if title != None:
-                plt.title(title)
+                plt.title(title, size=label_size)
+    
+            plt.xticks(fontsize=label_size)
+            plt.yticks(fontsize=label_size)
 
             ax = plt.gca()
             ax.set_xlim(xlim)
@@ -2897,14 +2964,22 @@ class Minima():
                        aspect = (((cv1max-cv1min)/(cv2max-cv2min))/(aspect)),
                        vmin = vmin, vmax = vmax)
             cbar = plt.colorbar()
+            cbar.ax.tick_params(labelsize=label_size) 
             cbar.set_label(energy_unit, size=label_size)
 
             if contours:
-                cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
-                         levels = np.arange(0, (vmax + 0.01), contours_spacing), 
-                         extent=[cv1min, cv1max, cv2max, cv2min], 
-                         colors = "k")
-                plt.clabel(cont, levels = np.arange(0, (vmax + 0.01), contours_spacing))
+                if levels != None:
+                    cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
+                             levels = levels, 
+                             extent=[cv1min, cv1max, cv2max, cv2min], 
+                             colors = "k", linestyles = "solid")
+                    plt.clabel(cont, levels = levels, fontsize=clabel_size)
+                else:
+                    cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
+                             levels = np.arange(vmin, (vmax - 0.01), contours_spacing), 
+                             extent=[cv1min, cv1max, cv2max, cv2min], 
+                             colors = "k", linestyles = "solid")
+                    plt.clabel(cont, levels = np.arange(vmin, (vmax - 0.01), contours_spacing), fontsize=clabel_size)
             
             if self.minima.shape[0] == 1:
                 background = cmap((float(self.minima.iloc[0,1])-vmin)/(vmax-vmin))
@@ -2933,12 +3008,19 @@ class Minima():
                 plt.ylabel(f'CV2 - {self.cv2_name}', size=label_size)
             else:
                 plt.ylabel(ylabel, size=label_size)
+            
             if title != None:
-                plt.title(title)
+                plt.title(title, size=label_size)
+    
+            plt.xticks(fontsize=label_size)
+            plt.yticks(fontsize=label_size)
 
             ax = plt.gca()
             ax.set_xlim(xlim)
             ax.set_ylim(ylim)
+
+            ax.tick_params(axis='x', labelsize=label_size)
+            ax.tick_params(axis='y', labelsize=label_size)
         
             if png_name != None:
                 plt.savefig(png_name)
@@ -3061,16 +3143,16 @@ class Minima():
                 plotter.add_point_labels(min_pv, self.minima.iloc[:,0], 
                                show_points=True, always_visible = True, 
                                pickable = True, point_color="black", 
-                               point_size=4, font_size=16, shape=None)
+                               point_size=4, font_size=label_size, shape=None)
             plotter.set_background('white')
-            text = plotter.add_text(f"{values[0]:.2f}+kJ/mol", position='lower_right', font_size=12)
+            text = plotter.add_text(f"{values[0]:.2f}+kJ/mol", position='lower_right', font_size=label_size)
             plotter.show(auto_close=False)
             
             # Run through each frame
             for surf in range(len(surfaces)):
                 surface.copy_from(surfaces[surf])
                 plotter.remove_actor(text)
-                text = plotter.add_text(f"{values[surf]:.2f} {energy_unit}", position='lower_right', font_size=12)
+                text = plotter.add_text(f"{values[surf]:.2f} {energy_unit}", position='lower_right', font_size=label_size)
                 plotter.write_frame()  # Write this frame
             # Run through backwards
             for surf in range(len(surfaces)-1,0,-1):
@@ -3082,7 +3164,7 @@ class Minima():
             # Be sure to close the plotter when finished
             plotter.close()
         else:
-            print("Error: make_gif is only available for FES with 3 CVs.")
+            print("Error: this method is only available for FES with 3 CVs.")
 
 
 class FEProfile:
@@ -3363,11 +3445,17 @@ class FEProfile:
             plt.ylabel(ylabel, size=label_size)
         if legend:
             plt.legend(self.minima.iloc[:,0], loc="lower right")
+        
         if title != None:
-                plt.title(title)
+            plt.title(title, size=label_size)
+    
+        plt.xticks(fontsize=label_size)
+        plt.yticks(fontsize=label_size)
+        
         ax = plt.gca()
         ax.set_xlim(xlim)
         ax.set_ylim(ylim)
         if png_name != None:
             plt.savefig(png_name)
+
 
