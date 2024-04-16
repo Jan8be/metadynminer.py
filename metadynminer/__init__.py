@@ -500,7 +500,7 @@ class Hills:
         ax.set_ylim(ylim)
             
         if png_name != None:
-            plt.savefig(png_name)
+            plt.savefig(png_name, bbox_inches = 'tight')
 
     def plot_CV(self, png_name=None, CV=None, xlabel=None, ylabel=None, label_size=12, image_size=None, image_size_unit="in", dpi=100, tu = "ps", time_min=None, time_max=None, points = True, point_size=1, xlim=[None, None], ylim=[None, None], title=None):
         """
@@ -649,7 +649,7 @@ class Hills:
         ax.set_ylim(ylim)
             
         if png_name != None:
-            plt.savefig(png_name)
+            plt.savefig(png_name, bbox_inches = 'tight')
 
 class Fes: 
     """
@@ -1415,7 +1415,7 @@ class Fes:
             ax.set_ylim(ylim)
             
             if png_name != None:
-                plt.savefig(png_name)
+                plt.savefig(png_name, bbox_inches = 'tight')
             
         if self.cvs == 2:
             fig = plt.figure(figsize=(image_size[0], image_size[1]), dpi=dpi)
@@ -1462,7 +1462,7 @@ class Fes:
             ax.tick_params(axis='y', labelsize=label_size)
             
             if png_name != None:
-                plt.savefig(png_name)
+                plt.savefig(png_name, bbox_inches = 'tight')
         
         if self.cvs == 3:
             if xlabel == None:
@@ -2954,7 +2954,7 @@ class Minima():
             ax.set_ylim(ylim)
         
             if png_name != None:
-                plt.savefig(png_name)
+                plt.savefig(png_name, bbox_inches = 'tight')
                 
             
         elif self.cvs == 2:
@@ -3023,7 +3023,7 @@ class Minima():
             ax.tick_params(axis='y', labelsize=label_size)
         
             if png_name != None:
-                plt.savefig(png_name)
+                plt.savefig(png_name, bbox_inches = 'tight')
             
             
         elif self.cvs == 3:
@@ -3456,6 +3456,6 @@ class FEProfile:
         ax.set_xlim(xlim)
         ax.set_ylim(ylim)
         if png_name != None:
-            plt.savefig(png_name)
+            plt.savefig(png_name, bbox_inches = 'tight')
 
 
