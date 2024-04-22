@@ -562,7 +562,7 @@ class Hills:
         ax.set_ylim(ylim)
             
         if png_name != None:
-            plt.savefig(png_name)
+            plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
 
     def plot_CV(self, png_name=None, CV=None, xlabel=None, ylabel=None, label_size=12, image_size=None, image_size_unit=&#34;in&#34;, dpi=100, tu = &#34;ps&#34;, time_min=None, time_max=None, points = True, point_size=1, xlim=[None, None], ylim=[None, None], title=None):
         &#34;&#34;&#34;
@@ -711,7 +711,7 @@ class Hills:
         ax.set_ylim(ylim)
             
         if png_name != None:
-            plt.savefig(png_name)
+            plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
 
 class Fes: 
     &#34;&#34;&#34;
@@ -1477,7 +1477,7 @@ class Fes:
             ax.set_ylim(ylim)
             
             if png_name != None:
-                plt.savefig(png_name)
+                plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
             
         if self.cvs == 2:
             fig = plt.figure(figsize=(image_size[0], image_size[1]), dpi=dpi)
@@ -1524,7 +1524,7 @@ class Fes:
             ax.tick_params(axis=&#39;y&#39;, labelsize=label_size)
             
             if png_name != None:
-                plt.savefig(png_name)
+                plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
         
         if self.cvs == 3:
             if xlabel == None:
@@ -3016,7 +3016,7 @@ class Minima():
             ax.set_ylim(ylim)
         
             if png_name != None:
-                plt.savefig(png_name)
+                plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
                 
             
         elif self.cvs == 2:
@@ -3085,7 +3085,7 @@ class Minima():
             ax.tick_params(axis=&#39;y&#39;, labelsize=label_size)
         
             if png_name != None:
-                plt.savefig(png_name)
+                plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
             
             
         elif self.cvs == 3:
@@ -3518,7 +3518,7 @@ class FEProfile:
         ax.set_xlim(xlim)
         ax.set_ylim(ylim)
         if png_name != None:
-            plt.savefig(png_name)</code></pre>
+            plt.savefig(png_name, bbox_inches = &#39;tight&#39;)</code></pre>
 </details>
 </section>
 <section>
@@ -3844,7 +3844,7 @@ but not fully prooves, that the obtained FES did converge to the correct shape.<
         ax.set_xlim(xlim)
         ax.set_ylim(ylim)
         if png_name != None:
-            plt.savefig(png_name)</code></pre>
+            plt.savefig(png_name, bbox_inches = &#39;tight&#39;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -3986,7 +3986,7 @@ None means that Matplotlib will choose appropriate range, so this keyword is use
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
     if png_name != None:
-        plt.savefig(png_name)</code></pre>
+        plt.savefig(png_name, bbox_inches = &#39;tight&#39;)</code></pre>
 </details>
 </dd>
 </dl>
@@ -4792,7 +4792,7 @@ with PLUMED sum_hills function</p>
             ax.set_ylim(ylim)
             
             if png_name != None:
-                plt.savefig(png_name)
+                plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
             
         if self.cvs == 2:
             fig = plt.figure(figsize=(image_size[0], image_size[1]), dpi=dpi)
@@ -4839,7 +4839,7 @@ with PLUMED sum_hills function</p>
             ax.tick_params(axis=&#39;y&#39;, labelsize=label_size)
             
             if png_name != None:
-                plt.savefig(png_name)
+                plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
         
         if self.cvs == 3:
             if xlabel == None:
@@ -5952,7 +5952,7 @@ If not provided, default values from contours parameters will be used instead. <
         ax.set_ylim(ylim)
         
         if png_name != None:
-            plt.savefig(png_name)
+            plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
         
     if self.cvs == 2:
         fig = plt.figure(figsize=(image_size[0], image_size[1]), dpi=dpi)
@@ -5999,7 +5999,7 @@ If not provided, default values from contours parameters will be used instead. <
         ax.tick_params(axis=&#39;y&#39;, labelsize=label_size)
         
         if png_name != None:
-            plt.savefig(png_name)
+            plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
     
     if self.cvs == 3:
         if xlabel == None:
@@ -6740,7 +6740,7 @@ Has to be provided for each periodic CV.</p>
         ax.set_ylim(ylim)
             
         if png_name != None:
-            plt.savefig(png_name)
+            plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
 
     def plot_CV(self, png_name=None, CV=None, xlabel=None, ylabel=None, label_size=12, image_size=None, image_size_unit=&#34;in&#34;, dpi=100, tu = &#34;ps&#34;, time_min=None, time_max=None, points = True, point_size=1, xlim=[None, None], ylim=[None, None], title=None):
         &#34;&#34;&#34;
@@ -6889,7 +6889,7 @@ Has to be provided for each periodic CV.</p>
         ax.set_ylim(ylim)
             
         if png_name != None:
-            plt.savefig(png_name)</code></pre>
+            plt.savefig(png_name, bbox_inches = &#39;tight&#39;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -7094,7 +7094,7 @@ None means that Matplotlib will choose appropriate range, so this keyword is use
     ax.set_ylim(ylim)
         
     if png_name != None:
-        plt.savefig(png_name)</code></pre>
+        plt.savefig(png_name, bbox_inches = &#39;tight&#39;)</code></pre>
 </details>
 </dd>
 <dt id="metadynminer.Hills.plot_heights"><code class="name flex">
@@ -7252,7 +7252,7 @@ Available options: "s", "ms", "us", "ns", "ps", "fs"</p>
     ax.set_ylim(ylim)
         
     if png_name != None:
-        plt.savefig(png_name)</code></pre>
+        plt.savefig(png_name, bbox_inches = &#39;tight&#39;)</code></pre>
 </details>
 </dd>
 </dl>
@@ -8225,7 +8225,7 @@ which makes the calculation using precise algorithm slow and impractical. </p>
             ax.set_ylim(ylim)
         
             if png_name != None:
-                plt.savefig(png_name)
+                plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
                 
             
         elif self.cvs == 2:
@@ -8294,7 +8294,7 @@ which makes the calculation using precise algorithm slow and impractical. </p>
             ax.tick_params(axis=&#39;y&#39;, labelsize=label_size)
         
             if png_name != None:
-                plt.savefig(png_name)
+                plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
             
             
         elif self.cvs == 3:
@@ -9412,7 +9412,7 @@ If not provided, default values from contours parameters will be used instead. <
         ax.set_ylim(ylim)
     
         if png_name != None:
-            plt.savefig(png_name)
+            plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
             
         
     elif self.cvs == 2:
@@ -9481,7 +9481,7 @@ If not provided, default values from contours parameters will be used instead. <
         ax.tick_params(axis=&#39;y&#39;, labelsize=label_size)
     
         if png_name != None:
-            plt.savefig(png_name)
+            plt.savefig(png_name, bbox_inches = &#39;tight&#39;)
         
         
     elif self.cvs == 3:
