@@ -9,6 +9,9 @@ RUN pip3 install /tmp/build
 COPY data/oxytocin /home/jovyan
 COPY data/oxytocin /usr/local/lib
 
+COPY data/COLVAR_oxytocin /home/jovyan
+COPY data/COLVAR_oxytocin /usr/local/lib
+
 COPY tutorial.ipynb /home/jovyan
 COPY tutorial.ipynb /usr/local/lib
 

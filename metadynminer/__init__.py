@@ -55,7 +55,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.8.0"
+__version__ = "0.8.1"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -152,7 +152,7 @@ class Hills:
 
     Hills files are loaded with command:
     ```python
-    hillsfile = metadynminer.Hills(name="HILLS", periodic=[False,False])
+    hillsfile = metadynminer.Hills(name="HILLS")
     ```
     
     optional parameters:
@@ -169,6 +169,26 @@ class Hills:
     
     * cv1per, cv2per, cv3per (defaults = [-numpy.pi, numpy.pi]) = List of two numeric values defining the periodicity of given CV. 
                                         Has to be provided for each periodic CV.
+
+    Hills attributes: 
+
+    * Hills.hills = array of values from the HILLS file
+    
+    * Hills.cvs = number of CVs
+
+    * Hills.cv1_name = name of CV 1
+
+    * Hills.cv1per = list of two boundaries of the perodicity interval for CV 1
+
+    * Hills.dt = time step between hills in ps
+
+    * Hills.sigma1 = widths of hills along the CV 1 axis
+
+    * Hills.cv1 = list of CV 1 values during simulation
+
+    * Hills.biasf = biasfactors
+
+    * and analogous attributes for other CVs
     """
     
     def __init__(self, name="HILLS", encoding="utf8", ignoretime=True, periodic=None, 
@@ -431,8 +451,8 @@ class Hills:
         tu = TU(tu)
         
         if time_min == time_max == 0:
-                print("Error: Values of start and end time are zero.")
-                return None
+            print("Error: Values of start and end time are zero.")
+            return None
         if time_min != None:
             #time_min = tu.inps(time_min)
             if tu.inps(time_min) < 0:
@@ -558,8 +578,8 @@ class Hills:
         tu = TU(tu)
         
         if time_min == time_max == 0:
-                print("Error: Values of start and end time are zero.")
-                return None
+            print("Error: Values of start and end time are zero.")
+            return None
         if time_min != None:
             #time_min = tu.inps(time_min)
             if tu.inps(time_min) < 0:
@@ -675,6 +695,30 @@ class Fes:
 
     * tu (default = "ps") = string, time unit for time_min and time_max parameters, if those are used. Available options: "s", "ms", "us", "ns", "ps", "fs"
 
+    * print_output (default = True), tells whether the function should print messages like progress of calculation
+
+    * subtract_min (deault = True), whether the global minimum value should be subtracted from the whole FES, so that global minimum has zero free energy and other states have higher values
+
+    Fes atributes: 
+
+    * Fes.fes = free energy surface
+    
+    * Fes.res = resolution of the FES
+
+    * Fes.original = whether FES should be calculated by plumed's original precise algorithm
+
+    * Fes.cvs = number of CVs
+
+    * Fes.hills = array with values from the HILLS file
+
+    * Fes.periodic = list of boolean values setting which CVs are periodic
+
+    * Fes.cv1min, Fes.cv1max = minimum and maximum values on the FES, respectively
+
+    * Fes.cv1_fes_range, Fes.cv2_fes_range, Fes.cv3_fes_range = FES range = maximum - minimum values on FES for given CV
+
+    * Fes.cv1_name, Fes.cv2_name, Fes.cv3_name = CV names
+    
     """
     
     __pdoc__["Fes.makefes"] = False
@@ -683,7 +727,7 @@ class Fes:
     
     def __init__(self, hills=None, resolution=256, original=False, \
                  calculate_new_fes=True, cv1range=None, cv2range=None, cv3range=None, \
-                 time_min=None, time_max=None, tu="ps"):
+                 time_min=None, time_max=None, tu="ps", print_output=True, subtract_min = True):
         self.res = resolution
         self.original = original
         self.cv1range = cv1range
@@ -711,6 +755,8 @@ class Fes:
 
                 self.cv1_name = hills.get_cv1_name()
                 self.cv1per = hills.get_cv1per()
+
+                self.fes = np.zeros((resolution))
 
                 if self.periodic[0]:
                     cv1min = self.cv1per[0]
@@ -749,6 +795,8 @@ class Fes:
                 self.cv2_name = hills.get_cv2_name()
                 self.cv2per = hills.get_cv2per()
 
+                self.fes = np.zeros((resolution, resolution))
+
                 if self.periodic[1]:
                     cv2min = self.cv2per[0]
                     cv2max = self.cv2per[1]
@@ -786,6 +834,8 @@ class Fes:
 
                 self.cv3_name = hills.get_cv3_name()
                 self.cv3per = hills.get_cv3per()
+
+                self.fes = np.zeros((resolution, resolution, resolution))
                 
                 if self.periodic[2]:
                     cv3min = self.cv3per[0]
@@ -819,10 +869,10 @@ class Fes:
             tu = TU(tu)
         
             if time_min == time_max == 0:
-                    print("Error: Values of start and end time are zero.")
-                    return None
+                print("Error: Values of start and end time are zero.")
+                return None
             if time_min != None:
-                time_min = tu.inps(time_min)
+                #time_min = tu.inps(time_min)
                 if time_min < 0:
                     print("Warning: Start time is lower than zero, it will be set to zero instead. ")
                     time_min = 0
@@ -832,7 +882,7 @@ class Fes:
             else:
                 time_min = int(hills.hills[0,0])
             if time_max != None:
-                time_max = tu.inps(time_max)
+                #time_max = int(tu.inps(time_max))
                 if time_max < time_min:
                     print("Warning: End time is lower than start time. Values are flipped. ")
                     time_value = time_max
@@ -851,11 +901,13 @@ class Fes:
 
             if calculate_new_fes:
                 if original:
-                    self.makefes2(resolution, time_min, time_max)
+                    self.makefes2(resolution, int(tu.inps(time_min)), int(tu.inps(time_max)), 
+                                  print_output=print_output, subtract_min = subtract_min)
                 else:
-                    self.makefes(resolution, time_min, time_max)
+                    self.makefes(resolution, int(tu.inps(time_min)), int(tu.inps(time_max)), 
+                                 print_output=print_output, subtract_min = subtract_min)
         
-    def makefes(self, resolution, time_min, time_max, print_output=True):
+    def makefes(self, resolution, time_min, time_max, print_output=True, subtract_min = True):
         """
         Function used internally for summing hills in Hills object with the fast Bias Sum Algorithm. 
         """
@@ -917,7 +969,8 @@ class Fes:
                                     * self.heights[line]
             if print_output:
                 print("\n")
-            fes = fes-np.min(fes)
+            if subtract_min:
+                fes = fes-np.min(fes)
             self.fes = np.array(fes)
             
         elif self.cvs == 2:
@@ -1007,7 +1060,8 @@ class Fes:
                                     * self.heights[line]
             if print_output:
                 print("\n")
-            fes = fes-np.min(fes)
+            if subtract_min:
+                fes = fes-np.min(fes)
             self.fes = np.array(fes)
         elif self.cvs == 3:
             cv1bin = np.ceil((self.cv1-self.cv1min)*self.res/(self.cv1_fes_range))
@@ -1187,16 +1241,16 @@ class Fes:
             
             if print_output:
                 print("\n")
-            fes = fes-np.min(fes)
+            if subtract_min:
+                fes = fes-np.min(fes)
             self.fes = np.array(fes)
         else:
             print("Fes object doesn't have supported number of CVs.")
     
-    def makefes2(self, resolution, time_min, time_max, print_output=True):
+    def makefes2(self, resolution, time_min, time_max, print_output=True, subtract_min = True):
         """
         Function internally used to sum Hills in the same way as Plumed sum_hills. 
         """
-        
         self.res = resolution
         
         if self.cvs == 1:
@@ -1220,7 +1274,8 @@ class Fes:
                 tmp[dp2<6.25] = heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
                 fes[x] = -tmp.sum()
                     
-            fes = fes - np.min(fes)
+            if subtract_min:
+                fes = fes - np.min(fes)
             self.fes = np.array(fes)
             if print_output:
                 print("\n")
@@ -1252,7 +1307,8 @@ class Fes:
                     tmp[dp2<6.25] = heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
                     fes[x,y] = -tmp.sum()
                     
-            fes = fes - np.min(fes)
+            if subtract_min:
+                fes = fes - np.min(fes)
             self.fes = np.array(fes)
             if print_output:
                 print("\n")
@@ -1292,7 +1348,8 @@ class Fes:
                         tmp[dp2<6.25] = heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
                         fes[x,y,z] = -tmp.sum()
                         
-            fes = fes - np.min(fes)
+            if subtract_min:
+                fes = fes - np.min(fes)
             self.fes = np.array(fes)
             if print_output:
                 print("\n")
@@ -1835,8 +1892,8 @@ class Fes:
         step_fes = copy.deepcopy(self)
         
         if time_min == time_max == 0:
-                print("Error: Values of start and end time are zero.")
-                return None
+            print("Error: Values of start and end time are zero.")
+            return None
         if time_min != None:
             time_min = tu.inps(time_min)
             if time_min < 0:
@@ -2070,6 +2127,16 @@ class Minima():
     * energy_unit (default = "kJ/mol") = energy unit of the free energy surface; must be either "kJ/mol" or "kcal/mol". Used only if precise=True. 
 
     * max_iteration (default=10000), the maximum number of iteration the algorithm will last when assigning FES points to their respective local minima
+
+    Attributes: 
+
+    Minima.fes = source free energy surface 
+
+    Minima.minima = pandas dataframe with local minima and their properties
+
+    Minima.m_fes = if you use precise=True, this attribute contains the FES, but each bin contains the index of the minima to which it belongs
+
+    * and other attributes analogous to those of Fes objects
     """
     
     def __init__(self, fes, nbins = 8, precise=True, temp=300.0, energy_unit="kJ/mol", max_iteration=10000, print_output=True):

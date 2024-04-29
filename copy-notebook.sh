@@ -6,6 +6,9 @@ fi
 if [ ! -f $HOME/oxytocin ]; then
 	cp /usr/local/lib/oxytocin $HOME
 fi
+if [ ! -f $HOME/COLVAR_oxytocin ]; then
+	cp /usr/local/lib/COLVAR_oxytocin $HOME
+fi
 if [ ! -f $HOME/tutorial.ipynb ]; then
 	cp /usr/local/lib/tutorial.ipynb $HOME
 fi
