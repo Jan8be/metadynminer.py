@@ -5,6 +5,7 @@ on: [ push, pull_request ]
 env:
   CORE_CHANGED: false
   APP_CHANGED: false
+  PYTHON_VENV_ROOT: ${{ github.workspace }}/src/python-venv
 
 jobs:
   install-metadynminer:
@@ -27,6 +28,10 @@ jobs:
 
       - name: Install dependencies
         run: |
+          if [ "$RUNNER_OS" == "macOS" ]; then
+            python3 -m venv ${PYTHON_VENV_ROOT}
+            source ${PYTHON_VENV_ROOT}/bin/activate
+          fi
           python --version
           python3 -m pip install --upgrade pip
           pip3 install pytest pytest-cov
