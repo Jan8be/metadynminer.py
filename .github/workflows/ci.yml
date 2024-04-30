@@ -42,6 +42,10 @@ jobs:
       - name: Run tests on ${{ matrix.os }}
         if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
         run: |
+          if [ "$RUNNER_OS" == "macOS" ]; then
+            python3 -m venv ${PYTHON_VENV_ROOT}
+            source ${PYTHON_VENV_ROOT}/bin/activate
+          fi
           echo -e "Running tests"
           pytest tests/*.py
 
