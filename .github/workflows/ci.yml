@@ -27,7 +27,7 @@ jobs:
           channels: conda-forge,defaults
 
       - name: Install dependencies on macOS
-        if startsWith(matrix.os, 'macos')
+        if: startsWith(matrix.os, 'macos')
         run: |
           python3 -m venv ${PYTHON_VENV_ROOT}
           source ${PYTHON_VENV_ROOT}/bin/activate
@@ -37,7 +37,7 @@ jobs:
           python3 -m pip install -e .
 
       - name: Install dependencies
-        if startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'windows')
+        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'windows')
         run: |
           python --version
           python3 -m pip install --upgrade pip
