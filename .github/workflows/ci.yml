@@ -26,18 +26,23 @@ jobs:
           python-version: ${{ matrix.python-version }}
           channels: conda-forge,defaults
 
-      - name: Install dependencies
+      - name: Install dependencies on macOS
+        if startsWith(matrix.os, 'macos')
         run: |
-          if [ "$RUNNER_OS" == "macOS" ]; then
-            python3 -m venv ${PYTHON_VENV_ROOT}
-            source ${PYTHON_VENV_ROOT}/bin/activate
-          fi
+          python3 -m venv ${PYTHON_VENV_ROOT}
+          source ${PYTHON_VENV_ROOT}/bin/activate
           python --version
           python3 -m pip install --upgrade pip
           python3 -m pip install pytest pytest-cov
           python3 -m pip install -e .
-#          pip3 install pytest pytest-cov
-#          pip3 install -e .
+
+      - name: Install dependencies
+        if startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'windows')
+        run: |
+          python --version
+          python3 -m pip install --upgrade pip
+          pip3 install pytest pytest-cov
+          pip3 install -e .
 
       - name: Run tests on ${{ matrix.os }}
         if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
