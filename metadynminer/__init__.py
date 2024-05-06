@@ -1356,7 +1356,7 @@ class Fes:
         else:
             print(f"Error: unsupported number of CVs: {self.cvs}.")
     
-    def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "jet", 
+    def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "RdYlBu_r", 
              energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, clabel_size = 12,
              image_size=None, image_size_unit="in", dpi=100, vmin = 0, vmax = None, 
              opacity=0.2, levels=None, title = None, off_screen = False, 
@@ -1380,7 +1380,7 @@ class Fes:
         
         * aspect (default = 1.0) = aspect ratio of the graph. Works with 1D and 2D FES. 
         
-        * cmap (default = "jet") = Matplotlib colormap used to color 2D or 3D FES
+        * cmap (default = "RdYlBu_r") = Matplotlib colormap used to color 2D or 3D FES
         
         * energy_unit (default="kJ/mol") = String, used in description of colorbar
 
@@ -1562,7 +1562,7 @@ class Fes:
     def set_fes(self, fes):
         self.fes = fes
         
-    def surface_plot(self, cmap = "jet", 
+    def surface_plot(self, cmap = "RdYlBu_r", 
                      energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, dpi=100, label_size=12, image_size=None, image_size_unit="in", rstride=1, cstride=1, vmin = 0, vmax = None, title=None):
         """
         Function for visualization of 2D FES as 3D surface plot. For now, it is based on Matplotlib, but there are issues with interactivity. 
@@ -1834,7 +1834,7 @@ class Fes:
                 print("Error: unknown energy unit")
                 return None
 
-    def flooding_animation(self, gif_name = "flooding.gif", use_vmax_from_end = True, with_minima = True, use_minima_from_end=False, cmap="jet", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=None, image_size_unit="in", dpi=100, tu = "ps", time_min=None, time_max=None, step=1000, contours_spacing = 20, levels=None, opacity = 0.2, vmin = 0, vmax = None, energy_unit="kJ/mol", clear_temporary_folder=True, temporary_folder_name="temporary_folder", time_unit="ps", fps=5, enable_loop = True, minima_precise = False, minima_nbins=8, temp=300.0, 
+    def flooding_animation(self, gif_name = "flooding.gif", use_vmax_from_end = True, with_minima = True, use_minima_from_end=False, cmap="RdYlBu_r", xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=None, image_size_unit="in", dpi=100, tu = "ps", time_min=None, time_max=None, step=1000, contours_spacing = 20, levels=None, opacity = 0.2, vmin = 0, vmax = None, energy_unit="kJ/mol", clear_temporary_folder=True, temporary_folder_name="temporary_folder", time_unit="ps", fps=5, enable_loop = True, minima_precise = False, minima_nbins=8, temp=300.0, 
                            xlim=[None, None], ylim=[None, None]):
         """
         This method is used to make an animation that shows, how the FES was evolving during metadynamics simulation. It creates temporary folder and svaes plots of FES at different times during simulation, then it concatenates them to make a gif animation and removes the temporary files (remove can be switched off, if necessary). 
@@ -1999,7 +1999,7 @@ class Fes:
                
 
     
-    def make_gif(self, gif_name=None, cmap = "jet", energy_unit="kJ/mol",
+    def make_gif(self, gif_name=None, cmap = "RdYlBu_r", energy_unit="kJ/mol",
                  xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
                   opacity=0.2, levels=None, frames=64):
         """
@@ -2013,7 +2013,7 @@ class Fes:
         
         * gif_name (default="FES.gif") = String. Name of the gif of FES that will be saved in the current working directory.
         
-        * cmap (default = "jet") = Matplotlib colormap used to color the 3D FES
+        * cmap (default = "RdYlBu_r") = Matplotlib colormap used to color the 3D FES
         
         * xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graph
         
@@ -2060,7 +2060,7 @@ class Fes:
                 opacity=opacity,
                 clim=grid.get_data_range(),
                 show_scalar_bar=False,
-                cmap="jet"
+                cmap="RdYlBu_r"
             )
             plotter.add_mesh(grid.outline_corners(), color="k")
             text = plotter.add_text(f"{values[0]:.2f}+kJ/mol", position='lower_right', font_size=12)
@@ -2881,7 +2881,7 @@ class Minima():
                                                                "CV1 - "+self.cv1_name, "CV2 - "+self.cv2_name,  "CV3 - "+self.cv3_name])
         
 
-    def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "jet", 
+    def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "RdYlBu_r", 
                  energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, clabel_size = 12, image_size=None, image_size_unit="in", dpi=100, color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0, title = None, off_screen = False, xlim=[None, None], ylim=[None, None]):
         """
         The same function as for visualizing Fes objects, but this time 
@@ -2902,7 +2902,7 @@ class Minima():
         
         * aspect (default = 1.0) = aspect ratio of the graph. Works with 1D and 2D FES. 
         
-        * cmap (default = "jet") = Matplotlib colormap used to color 2D or 3D FES
+        * cmap (default = "RdYlBu_r") = Matplotlib colormap used to color 2D or 3D FES
         
         * energy_unit (default="kJ/mol") = String, used in description of colorbar
 
@@ -3141,7 +3141,7 @@ class Minima():
                 p.save_graphic(png_name)
             
 
-    def make_gif(self, gif_name=None, cmap = "jet", energy_unit="kJ/mol", 
+    def make_gif(self, gif_name=None, cmap = "RdYlBu_r", energy_unit="kJ/mol", 
                  xlabel=None, ylabel=None, zlabel=None, label_size=12, image_size=[10,7], 
                   opacity=0.2, levels=None, show_points=True, point_size=4.0, frames=64):
         """
@@ -3155,7 +3155,7 @@ class Minima():
         
         * gif_name (default="minima.gif") = String. Name of the gif that will be saved in the working directory.
         
-        * cmap (default = "jet") = Matplotlib colormap used to color the 3D FES
+        * cmap (default = "RdYlBu_r") = Matplotlib colormap used to color the 3D FES
         
         * xlabel, ylabel, zlabel = Strings, if provided, they will be used as labels for the graph
         
@@ -3195,7 +3195,7 @@ class Minima():
                 opacity=0.3,
                 clim=grid.get_data_range(),
                 show_scalar_bar=False,
-                cmap="jet"
+                cmap="RdYlBu_r"
             )
             plotter.add_mesh(grid.outline_corners(), color="k")
             
@@ -3436,7 +3436,7 @@ class FEProfile:
         else:
             print("Fes object doesn't have supported number of CVs.")
     
-    def plot(self, png_name=None, image_size=None, image_size_unit="in", dpi=100, tu = "ps", xlabel=None, ylabel=None, label_size=12, cmap="jet", legend=True, xlim=[None, None], ylim=[None, None], title=None):
+    def plot(self, png_name=None, image_size=None, image_size_unit="in", dpi=100, tu = "ps", xlabel=None, ylabel=None, label_size=12, cmap="RdYlBu_r", legend=True, xlim=[None, None], ylim=[None, None], title=None):
         """
         Visualization function for free energy profiles. 
         
@@ -3464,7 +3464,7 @@ class FEProfile:
         
         * label_size (default=12) = size of labels
         
-        * cmap (default="jet") = matplotlib colormap used for coloring the line of the minima
+        * cmap (default="RdYlBu_r") = matplotlib colormap used for coloring the line of the minima
 
         * legend (default=True) = whether there should be a matplotlib's legend in the graph
 
@@ -3496,7 +3496,7 @@ class FEProfile:
         
         cmap=cm.get_cmap(cmap)
         
-        #colors = cm.jet((self.minima.iloc[:,1].to_numpy()).astype(float)/\
+        #colors = cm.RdYlBu_r((self.minima.iloc[:,1].to_numpy()).astype(float)/\
         #                (np.max(self.minima.iloc[:,1].to_numpy().astype(float))))
         colors = cmap(np.linspace(0,1,self.minima.shape[0]))
         for m in range(self.minima.shape[0]):
