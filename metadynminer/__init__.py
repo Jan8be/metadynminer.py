@@ -55,7 +55,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.8.1"
+__version__ = "0.8.2"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -201,7 +201,7 @@ class Hills:
                  cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=None):
         with open(name, 'r', encoding=encoding) as hillsfile:
             lines = hillsfile.readlines()
-        columns = lines[0].split() 
+        columns = lines[0].split()
         number_of_columns_head = len(columns) - 2
         
         if number_of_columns_head == 5:
@@ -414,7 +414,7 @@ class Hills:
     __pdoc__["Hills.get_heights"] = False
     __pdoc__["Hills.read"] = False
 
-    def plot_heights(self, png_name=None, energy_unit="kJ/mol", xlabel=None, ylabel=None, label_size=12, image_size=None, image_size_unit="in", dpi=100, tu = "ps", time_min=None, time_max=None, xlim=[None, None], ylim=[None, None], title=None):
+    def plot_heights(self, png_name=None, energy_unit="kJ/mol", xlabel=None, ylabel=None, label_size=12, image_size=None, image_size_unit="in", dpi=100, tu = "ps", time_min=None, time_max=None, xlim=[None, None], ylim=[None, None], title=None, return_fig=False):
         """
         Function used to visualize heights of the hills that were added during the simulation. 
         
@@ -447,6 +447,8 @@ class Hills:
         * time_min, time_max = The time range for plot, closed interval, in the time unit specified by "tu"
 
         * title = optional, string that defines the title of the graph
+
+        * return_fig (default=False) = whether the method should return the Matplotlib.Pyplot.figure object for further use
         """
         tu = TU(tu)
         
@@ -496,7 +498,7 @@ class Hills:
         elif image_size_unit != "in":
             print(f"Warning: unknown image_size_unit value: {image_size_unit}. Using inches instead. ")
             
-        plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
+        fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
         #plt.plot(tu.intu(np.array(range(len(self.heights))))[time_min-1:time_max], self.heights[time_min-1:time_max])
         plt.plot(tu.intu(np.arange(int(self.hills[0,0]), self.heights.shape[0]+1)[int(tu.inps(time_min)-1):int(tu.inps(time_max))]),
                  self.heights[int(tu.inps(time_min)-1):int(tu.inps(time_max))])
@@ -521,8 +523,11 @@ class Hills:
             
         if png_name != None:
             plt.savefig(png_name, bbox_inches = 'tight')
+        
+        if return_fig:
+            return fig
 
-    def plot_CV(self, png_name=None, CV=None, xlabel=None, ylabel=None, label_size=12, image_size=None, image_size_unit="in", dpi=100, tu = "ps", time_min=None, time_max=None, points = True, point_size=1, xlim=[None, None], ylim=[None, None], title=None):
+    def plot_CV(self, png_name=None, CV=None, xlabel=None, ylabel=None, label_size=12, image_size=None, image_size_unit="in", dpi=100, tu = "ps", time_min=None, time_max=None, points = True, point_size=1, xlim=[None, None], ylim=[None, None], title=None, return_fig=False):
         """
         Function used to visualize CV values from the simulation. 
         
@@ -558,6 +563,8 @@ class Hills:
         * point_size (default = 1) = The size of dots in the plot
 
         * title = optional, string that defines the title of the graph
+
+        * return_fig (default=False) = whether the method should return the Matplotlib.Pyplot.figure object for further use
         """
         if CV==None:
             print("Error: CV was not chosen")
@@ -622,7 +629,7 @@ class Hills:
         elif image_size_unit != "in":
             print(f"Warning: unknown image_size_unit value: {image_size_unit}. Using inches instead. ")
         
-        plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
+        fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
         if points:
             if CV==1:
                 plt.scatter(tu.intu(np.array(range(int(round(tu.inps(time_min),0)),int(round(tu.inps(time_max)+1,0)),int(round(self.dt,0))))), 
@@ -670,6 +677,9 @@ class Hills:
             
         if png_name != None:
             plt.savefig(png_name, bbox_inches = 'tight')
+        
+        if return_fig:
+            return fig
 
 class Fes: 
     """
@@ -1360,7 +1370,7 @@ class Fes:
              energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, clabel_size = 12,
              image_size=None, image_size_unit="in", dpi=100, vmin = 0, vmax = None, 
              opacity=0.2, levels=None, title = None, off_screen = False, 
-             xlim=[None, None], ylim=[None, None]):
+             xlim=[None, None], ylim=[None, None], return_fig=False):
         """
         Function used to visualize FES, based on Matplotlib for 1D and 2D FES or PyVista for 3D FES. 
         
@@ -1410,6 +1420,9 @@ class Fes:
         * title = optional, string that defines the title of the graph
 
         * offscreen (default = False) = for 3D FES only, grapf will not be shown after creation - used internally by metadynminer when making animations
+
+        * return_fig (default=False) = whether the method should return the Matplotlib.Pyplot.figure object for further use. 
+        In the case of plotting 3D FES, it returns Pyvista.plotter object instead. 
         """
         if vmax == None:
             vmax = np.max(self.fes)+0.01 # if the addition is smaller than 0.01, the 3d plot stops working. 
@@ -1449,7 +1462,7 @@ class Fes:
             
         
         if self.cvs == 1:
-            plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
+            fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
             X = np.linspace(cv1min, cv1max, self.res)
             plt.plot(X, self.fes)
             if xlabel == None:
@@ -1473,6 +1486,9 @@ class Fes:
             
             if png_name != None:
                 plt.savefig(png_name, bbox_inches = 'tight')
+
+            if return_fig:
+                return fig
             
         if self.cvs == 2:
             fig = plt.figure(figsize=(image_size[0], image_size[1]), dpi=dpi)
@@ -1483,6 +1499,7 @@ class Fes:
             cbar = plt.colorbar()
             cbar.ax.tick_params(labelsize=label_size) 
             cbar.set_label(energy_unit, size=label_size)
+            
             if contours:
                 if levels != None:
                     cont = plt.contour(np.rot90(self.fes, axes=(0,1)), 
@@ -1496,10 +1513,12 @@ class Fes:
                              extent=[cv1min, cv1max, cv2max, cv2min], 
                              colors = "k", linestyles = "solid")
                     plt.clabel(cont, levels = np.arange(vmin, (vmax - 0.01), contours_spacing), fontsize=clabel_size)
+            
             if xlabel == None:
                 plt.xlabel(f'CV1 - {self.cv1_name}', size=label_size)
             else:
                 plt.xlabel(xlabel, size=label_size)
+                
             if ylabel == None:
                 plt.ylabel(f'CV2 - {self.cv2_name}', size=label_size)
             else:
@@ -1520,6 +1539,9 @@ class Fes:
             
             if png_name != None:
                 plt.savefig(png_name, bbox_inches = 'tight')
+            
+            if return_fig:
+                return fig
         
         if self.cvs == 3:
             if xlabel == None:
@@ -1558,12 +1580,14 @@ class Fes:
             if png_name != None:
                 p.save_graphic(png_name)
             
+            if return_fig:
+                return p
     
     def set_fes(self, fes):
         self.fes = fes
         
-    def surface_plot(self, cmap = "RdYlBu_r", 
-                     energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, dpi=100, label_size=12, image_size=None, image_size_unit="in", rstride=1, cstride=1, vmin = 0, vmax = None, title=None):
+    def surface_plot(self, png_name=None, cmap = "RdYlBu_r", 
+                     energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, dpi=100, label_size=12, image_size=None, image_size_unit="in", rstride=1, cstride=1, vmin = 0, vmax = None, title=None, return_fig=False):
         """
         Function for visualization of 2D FES as 3D surface plot. For now, it is based on Matplotlib, but there are issues with interactivity. 
         
@@ -1586,7 +1610,7 @@ class Fes:
             
             X, Y = np.meshgrid(x, y)
             Z = self.fes.T
-
+    
             if image_size == None:
                 image_size = [9,9]
             
@@ -1603,7 +1627,7 @@ class Fes:
                 print(f"Warning: unknown image_size_unit value: {image_size_unit}. Using inches instead. ")
             
             fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
-            ax = plt.axes(projection="3d")
+            ax = fig.add_subplot(projection="3d")
             ax.plot_surface(X,Y,Z, cmap=cmap, rstride=rstride, cstride=cstride)
             
             if xlabel == None:
@@ -1618,13 +1642,19 @@ class Fes:
                 ax.set_zlabel(f'free energy ({energy_unit})', size=label_size)
             else:
                 ax.set_zlabel(zlabel, size=label_size)
-
+    
             if title != None:
                 plt.title(title, size=label_size)
     
             plt.xticks(fontsize=label_size)
             plt.yticks(fontsize=label_size)
+    
+            if png_name != None:
+                plt.savefig(png_name, bbox_inches = 'tight')
             
+            if return_fig:
+                return fig
+                
         else:
             print(f"Error: Surface plot only works for FES with exactly two CVs, and this FES has {self.cvs} CV.")
     
@@ -2882,7 +2912,7 @@ class Minima():
         
 
     def plot(self, png_name=None, contours=True, contours_spacing=0.0, aspect = 1.0, cmap = "RdYlBu_r", 
-                 energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, clabel_size = 12, image_size=None, image_size_unit="in", dpi=100, color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0, title = None, off_screen = False, xlim=[None, None], ylim=[None, None]):
+                 energy_unit="kJ/mol", xlabel=None, ylabel=None, zlabel=None, label_size=12, clabel_size = 12, image_size=None, image_size_unit="in", dpi=100, color=None, vmin = 0, vmax = None, opacity=0.2, levels=None, show_points=True, point_size=4.0, title = None, off_screen = False, xlim=[None, None], ylim=[None, None], return_fig=False):
         """
         The same function as for visualizing Fes objects, but this time 
         with the positions of local minima shown as letters on the graph.
@@ -2939,6 +2969,9 @@ class Minima():
         * title = optional, string that defines the title of the graph
 
         * offscreen (default = False) = for 3D FES only, grapf will not be shown after creation - used internally when making animations
+
+        * return_fig (default=False) = whether the method should return the Matplotlib.Pyplot.figure object for further use. 
+        In the case of plotting 3D FES, it returns Pyvista.plotter object instead. 
         """
         
         if vmax == None:
@@ -2982,7 +3015,7 @@ class Minima():
             print(f"Warning: unknown image_size_unit value: {image_size_unit}. Using inches instead. ")
             
         if self.cvs == 1:
-            plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
+            fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
             X = np.linspace(cv1min, cv1max, self.res)
             plt.plot(X, self.fes)
             
@@ -3022,6 +3055,9 @@ class Minima():
         
             if png_name != None:
                 plt.savefig(png_name, bbox_inches = 'tight')
+
+            if return_fig:
+                return fig
                 
             
         elif self.cvs == 2:
@@ -3091,6 +3127,9 @@ class Minima():
         
             if png_name != None:
                 plt.savefig(png_name, bbox_inches = 'tight')
+
+            if return_fig:
+                return fig
             
             
         elif self.cvs == 3:
@@ -3139,6 +3178,9 @@ class Minima():
 
             if png_name != None:
                 p.save_graphic(png_name)
+
+            if return_fig:
+                return p
             
 
     def make_gif(self, gif_name=None, cmap = "RdYlBu_r", energy_unit="kJ/mol", 
@@ -3436,7 +3478,7 @@ class FEProfile:
         else:
             print("Fes object doesn't have supported number of CVs.")
     
-    def plot(self, png_name=None, image_size=None, image_size_unit="in", dpi=100, tu = "ps", xlabel=None, ylabel=None, label_size=12, cmap="RdYlBu_r", legend=True, xlim=[None, None], ylim=[None, None], title=None):
+    def plot(self, png_name=None, image_size=None, image_size_unit="in", dpi=100, tu = "ps", xlabel=None, ylabel=None, label_size=12, cmap="RdYlBu_r", legend=True, xlim=[None, None], ylim=[None, None], title=None, return_fig=False):
         """
         Visualization function for free energy profiles. 
         
@@ -3472,6 +3514,8 @@ class FEProfile:
         None means that Matplotlib will choose appropriate range, so this keyword is useful when you need to overwrite it. 
 
         * title = optional, string that defines the title of the graph
+
+        * return_fig (default=False) = whether the method should return the Matplotlib.Pyplot.figure object for further use. 
         
         """
         
@@ -3492,7 +3536,7 @@ class FEProfile:
         elif image_size_unit != "in":
             print(f"Warning: unknown image_size_unit value: {image_size_unit}. Using inches instead. ")
         
-        plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
+        fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
         
         cmap=cm.get_cmap(cmap)
         
@@ -3524,5 +3568,13 @@ class FEProfile:
         ax.set_ylim(ylim)
         if png_name != None:
             plt.savefig(png_name, bbox_inches = 'tight')
+
+        if return_fig:
+            return fig
+
+
+
+
+
 
 
