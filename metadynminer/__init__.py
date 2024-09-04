@@ -55,7 +55,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.8.2"
+__version__ = "0.8.3"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -886,11 +886,11 @@ class Fes:
                 if time_min < 0:
                     print("Warning: Start time is lower than zero, it will be set to zero instead. ")
                     time_min = 0
-                if time_min < int(hills.hills[0,0]):
+                if tu.inps(time_min) < int(hills.hills[0,0]):
                     print(f"Warning: Start time {tu.inps(time_min)} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. ")
-                    time_min = int(hills.hills[0,0])
+                    time_min = tu.intu(int(hills.hills[0,0]))
             else:
-                time_min = int(hills.hills[0,0])
+                time_min = tu.intu(int(hills.hills[0,0]))
             if time_max != None:
                 #time_max = int(tu.inps(time_max))
                 if time_max < time_min:
@@ -898,11 +898,11 @@ class Fes:
                     time_value = time_max
                     time_max = time_min
                     time_min = time_value
-                if time_max > int(hills.hills[-1,0]):
+                if tu.inps(time_max) > int(hills.hills[-1,0]):
                     print(f"Warning: End time {tu.inps(time_max)} is higher than number of lines in HILLS file {int(hills.hills[-1,0])}, which will be used instead. ")
-                    time_max = int(hills.hills[-1,0])
+                    time_max = tu.intu(int(hills.hills[-1,0]))
             else:
-                time_max = int(hills.hills[-1,0])
+                time_max = tu.intu(int(hills.hills[-1,0]))
             
             if not self.ignoretime:
                 time_max = int(round(((time_max - hills.hills[0,0])/self.dt),0)) + 1
@@ -2537,9 +2537,24 @@ class Minima():
         else:
             print("Fes object has unsupported number of CVs.")
 
+        
         if len(self.minima.shape)>1:
             self.minima = self.minima[self.minima[:, 0].argsort()]
 
+            # renumber minima indexes in m_fes according to their energies (and letters)
+            new_m_fes = np.zeros((self.fes.shape))
+            
+            for m in range(self.minima.shape[0]):
+                if self.cvs == 1:
+                    m_old_id = self.m_fes[int(float(self.minima[m,1]))]
+                if self.cvs == 2:
+                    m_old_id = self.m_fes[int(float(self.minima[m,1])), int(float(self.minima[m,2]))]
+                if self.cvs == 3:
+                    m_old_id = self.m_fes[int(float(self.minima[m,1])), int(float(self.minima[m,2])), int(float(self.minima[m,3]))]
+                new_m_fes[self.m_fes == m_old_id] = m + 1
+            self.m_fes = new_m_fes
+
+        
         letters = list(map(chr, range(65, 91)))
         for letter1 in range(65, 91):
             for letter2 in range(65, 91):
