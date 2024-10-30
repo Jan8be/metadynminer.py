@@ -26,8 +26,7 @@ jobs:
       - name: Install dependencies on macOS
         if: startsWith(matrix.os, 'macos')
         run: |
-          python3 -m venv ${PYTHON_VENV_ROOT}
-          source ${PYTHON_VENV_ROOT}/bin/activate
+          conda activate test
           python --version
           python3 -m pip install pip --upgrade
           python3 -m pip install pytest pytest-cov
@@ -44,10 +43,8 @@ jobs:
       - name: Run tests on ${{ matrix.os }}
         if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
         run: |
-          if [ "$RUNNER_OS" == "macOS" ]; then
-            python3 -m venv ${PYTHON_VENV_ROOT}
-            source ${PYTHON_VENV_ROOT}/bin/activate
-          fi
+          conda activate test
+          python --version
           echo -e "Running tests"
           pytest tests/*.py
 
