@@ -18,6 +18,7 @@ setup(
     install_requires=['numpy>=2.1.1',
                       'matplotlib>=3.9.2',
                       'pandas>=2.2.2',
+                      'vtk',
                       'pyvista>=0.44.1',
                       'imageio>=2.35.1'
                       ],
