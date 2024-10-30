@@ -27,7 +27,8 @@ jobs:
         if: startsWith(matrix.os, 'macos')
         run: |
           echo $PYTHON_VENV_ROOT
-          echo "PYTHON_VENV_ROOT=${CONDA}/envs/test" >> $GITHUB_ENV
+          echo $CONDA
+          export PYTHON_VENV_ROOT=${CONDA}/envs/test
           echo $PYTHON_VENV_ROOT
           echo $GITHUB_ENV
           python3 -m venv $PYTHON_VENV_ROOT
