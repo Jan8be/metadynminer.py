@@ -26,11 +26,7 @@ jobs:
       - name: Install dependencies on macOS
         if: startsWith(matrix.os, 'macos')
         run: |
-          echo $PYTHON_VENV_ROOT
-          echo $CONDA
           export PYTHON_VENV_ROOT=${CONDA}/envs/test
-          echo $PYTHON_VENV_ROOT
-          echo $GITHUB_ENV
           python3 -m venv $PYTHON_VENV_ROOT
           source $PYTHON_VENV_ROOT/bin/activate
           python --version
@@ -50,8 +46,10 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
         run: |
           if [ "$RUNNER_OS" == "macOS" ]; then
-            python3 -m venv ${PYTHON_VENV_ROOT}
-            source ${PYTHON_VENV_ROOT}/bin/activate
+            export PYTHON_VENV_ROOT=${CONDA}/envs/test
+            python3 -m venv $PYTHON_VENV_ROOT
+            source $PYTHON_VENV_ROOT/bin/activate
+            python --version
           fi
           echo -e "Running tests"
           pytest tests/*.py

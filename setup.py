@@ -15,12 +15,11 @@ setup(
     license='GPL-3.0',
     packages=['metadynminer'],
     python_requires='>=3.9',
-    install_requires=['numpy>=2.1.1',
-                      'matplotlib>=3.9.2',
-                      'pandas>=2.2.2',
-                      'vtk>=9.3.1',
-                      'pyvista>=0.44.1',
-                      'imageio>=2.35.1'
+    install_requires=['numpy>=1.21.6',
+                      'matplotlib>=3.5.3',
+                      'pandas>=1.3.5',
+                      'pyvista>=0.43.0',
+                      'imageio>=2.31.1'
                       ],
 
     classifiers=[
