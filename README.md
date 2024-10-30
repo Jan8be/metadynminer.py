@@ -5,7 +5,7 @@
 [![Build](https://github.com/Jan8be/metadynminer.py/actions/workflows/ci.yml/badge.svg)](https://github.com/Jan8be/metadynminer.py/actions/workflows/ci.yml)
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/metadynminer?label=PyPI%20downloads&color=green&link=https%3A%2F%2Fpypi.org%2Fproject%2Fmetadynminer%2F)](https://pypi.org/project/metadynminer/)
 [![conda downloads](https://img.shields.io/conda/d/Jan8be/metadynminer?label=Conda%20total%20downloads&color=green&link=https%3A%2F%2Fanaconda.org%2FJan8be%2Fmetadynminer)](https://anaconda.org/Jan8be/metadynminer)
-
+[![DOI](https://img.shields.io/badge/DOI-10.1093/bioinformatics/btae614-blue)](https://doi.org/10.1093/bioinformatics/btae614)
 
 Metadynminer is a package designed to help you analyse output HILLS files from PLUMED metadynamics simulations. 
 
@@ -13,6 +13,8 @@ It is inspired by existing Metadynminer package for R. It supports HILLS files w
 
 All built-in functions can be customized with many parameters. You can learn more about that in the [documentation](https://metadynreporter.cz/manual/index.html). 
 There are also other predefined functions allowing you to for example to enhance your presentation with animations of your 3D FES or remove a CV from existing FES. 
+
+We hope metadynminer.py will help you analyse your metadynamics results in an efficient and convenient way. If you use metadynminer in published work, please read and cite [our article](https://doi.org/10.1093/bioinformatics/btae614).
 
 ## Quickstart: run in Binder
 
