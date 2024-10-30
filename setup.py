@@ -14,12 +14,12 @@ setup(
     author_email='Jan1.Beranek@vscht.cz',
     license='GPL-3.0',
     packages=['metadynminer'],
-    python_requires='>=3.8',
-    install_requires=['numpy>=1.21.6',
-                      'matplotlib>=3.5.3',
-                      'pandas>=1.3.5',
-                      'pyvista>=0.43.0',
-                      'imageio>=2.31.1'
+    python_requires='>=3.9',
+    install_requires=['numpy>=2.1.1',
+                      'matplotlib>=3.9.2',
+                      'pandas>=2.2.2',
+                      'pyvista>=0.44.1',
+                      'imageio>=2.35.1'
                       ],
 
     classifiers=[
