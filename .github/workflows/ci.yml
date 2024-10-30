@@ -27,8 +27,11 @@ jobs:
         if: startsWith(matrix.os, 'macos')
         run: |
           echo $PYTHON_VENV_ROOT
+          echo "PYTHON_VENV_ROOT=${CONDA}/envs/test" >> $GITHUB_ENV
+          echo $PYTHON_VENV_ROOT
+          echo $GITHUB_ENV
           python3 -m venv $PYTHON_VENV_ROOT
-          source ${PYTHON_VENV_ROOT}/bin/activate
+          source $PYTHON_VENV_ROOT/bin/activate
           python --version
           python3 -m pip install pip --upgrade
           python3 -m pip install pytest pytest-cov
