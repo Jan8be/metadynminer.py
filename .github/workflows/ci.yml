@@ -31,7 +31,7 @@ jobs:
           python --version
           python3 -m pip install pip --upgrade
           python3 -m pip install pytest pytest-cov
-          python3 -m pip install -e . --no-deps
+          python3 -m pip install -e .
 
       - name: Install dependencies
         if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'windows')
