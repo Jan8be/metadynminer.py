@@ -55,7 +55,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.8.3"
+__version__ = "0.9.0"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -133,16 +133,10 @@ class TU:
             print(f"Error: invalid name of time unit ({name})")
             
     def inps(self, i):
-        if type(i) == int:
-            return int(i*self.factor)
-        else:
-            return i*self.factor
+        return i*self.factor
 
     def intu(self, i):
-        if type(i) == int:
-            return int(i/self.factor)
-        else:
-            return i/self.factor
+        return i/self.factor
 
 
 
@@ -169,6 +163,8 @@ class Hills:
     
     * cv1per, cv2per, cv3per (defaults = [-numpy.pi, numpy.pi]) = List of two numeric values defining the periodicity of given CV. 
                                         Has to be provided for each periodic CV.
+                                        
+    * tu (default="ps") = string, time unit of the "time" column in the HILLS file. Available options: "s", "ms", "us", "ns", "ps", "fs"
 
     Hills attributes: 
 
@@ -188,38 +184,46 @@ class Hills:
 
     * Hills.biasf = biasfactors
 
+    * Hills.time = the time column, internally stored in picoseconds
+
     * and analogous attributes for other CVs
     """
     
     def __init__(self, name="HILLS", encoding="utf8", ignoretime=True, periodic=None, 
-                 cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=None):
-        self.read(name, encoding, ignoretime, periodic, 
-                 cv1per=cv1per,cv2per=cv2per,cv3per=cv3per, timestep=timestep)
+                 cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=None, tu="ps"):
+#        self.read(name, encoding, ignoretime, periodic, 
+#                 cv1per=cv1per,cv2per=cv2per,cv3per=cv3per, timestep=timestep)
         self.hillsfilename = name
-    
-    def read(self, name="HILLS", encoding="utf8", ignoretime=True, periodic=None, 
-                 cv1per=[-np.pi, np.pi],cv2per=[-np.pi, np.pi],cv3per=[-np.pi, np.pi], timestep=None):
-        with open(name, 'r', encoding=encoding) as hillsfile:
-            lines = hillsfile.readlines()
-        columns = lines[0].split()
-        number_of_columns_head = len(columns) - 2
+
+        try:
+            self.hills = np.loadtxt(name, encoding=encoding)
+            with open(name, encoding=encoding) as f:
+                first_line = f.readline().strip('\n').split()
+        except:
+            print(f"Error while loading file {name}")
+            return None
         
-        if number_of_columns_head == 5:
+        tu = TU(tu)
+        
+        #number_of_columns_head = len(first_line) - 2
+        
+        if self.hills.shape[1] == 5:
             self.cvs = 1
-            self.cv1_name = lines[0].split()[3]
+            self.cv1_name = first_line[3]
             self.cv1per = cv1per
 
-        elif number_of_columns_head == 7:
+        elif self.hills.shape[1] == 7:
             self.cvs = 2
-            self.cv1_name = lines[0].split()[3]
-            self.cv2_name = lines[0].split()[4]
+            self.cv1_name = first_line[3]
+            self.cv2_name = first_line[4]
             self.cv1per = cv1per
             self.cv2per = cv2per
-        elif number_of_columns_head == 9:
+            
+        elif self.hills.shape[1] == 9:
             self.cvs = 3
-            self.cv1_name = lines[0].split()[3]
-            self.cv2_name = lines[0].split()[4]
-            self.cv3_name = lines[0].split()[5]
+            self.cv1_name = first_line[3]
+            self.cv2_name = first_line[4]
+            self.cv3_name = first_line[5]
             
             self.cv1per = cv1per
             self.cv2per = cv2per
@@ -229,56 +233,28 @@ class Hills:
             return None
         
         self.ignoretime = ignoretime
-        if not ignoretime:
+        if not ignoretime: # do not ignore time
             if timestep != None:
-                dt = timestep
+                dt = tu.inps(timestep)
             else:
-                for line in range(len(lines)):
-                    if lines[line][0] != "#":
-                        dt = round(float(lines[line+1].split()[0]),14) - round(float(lines[line].split()[0]),14)
-                        break
-        else:
+                dt = tu.inps(self.hills[1,0]) - tu.inps(self.hills[0,0])
+
+            self.time = tu.inps(self.hills[:,0])
+
+            # multi-simulations detection
+            if np.min(self.time[1:] - self.time[:-1]) < 0: # it happens at least once that the following time value is smaller than the previous one. 
+                print("Error: the time values read from the HILLS file are discontinuous. Functions using time may not work or may give wrong results. If your HILLS file contains data from multiple simulations, consider using `ignoretime=True`. ")
+            
+        else: # ignore time
             if timestep != None:
-                dt = timestep
+                dt = tu.inps(timestep)
             else:
-                dt = 1.0
-        self.dt = dt
-        t = 0
-        for line in range(len(lines)):
-            if lines[line][0] != "#":
-                t += 1 
-                if t == 1:
-                    if self.cvs == 1:
-                        self.sigma1 = float(lines[line].split()[2])
-                        self.biasf = float(lines[line].split()[4])
-                    elif self.cvs == 2:
-                        self.sigma1 = float(lines[line].split()[3])
-                        self.sigma2 = float(lines[line].split()[4])
-                        self.biasf = float(lines[line].split()[6])
-                    elif self.cvs == 3:
-                        self.sigma1 = float(lines[line].split()[4])
-                        self.sigma2 = float(lines[line].split()[5])
-                        self.sigma3 = float(lines[line].split()[6])
-                        self.biasf = float(lines[line].split()[8])
-                    self.hills = [lines[line].split()]
-                    if ignoretime:
-                        self.hills[t-1][0] = t*dt
-                else:
-                    if self.cvs == 1 and len(lines[line].split()) == 5:
-                        self.hills.append(lines[line].split())
-                        if ignoretime:
-                            self.hills[t-1][0] = t*dt
-                    if self.cvs == 2 and len(lines[line].split()) == 7:
-                        self.hills.append(lines[line].split())
-                        if ignoretime:
-                            self.hills[t-1][0] = t*dt
-                    if self.cvs == 3 and len(lines[line].split()) == 9:
-                        self.hills.append(lines[line].split())
-                        if ignoretime:
-                            self.hills[t-1][0] = t*dt
-        
-        self.hills = np.array(self.hills, dtype=np.double)
+                dt = tu.inps(self.hills[1,0]) - tu.inps(self.hills[0,0])
                 
+            self.time = np.arange(tu.inps(self.hills[0,0]), tu.inps(self.hills.shape[0]*tu.intu(dt)+tu.intu(dt)), step=dt)
+            
+        self.dt = dt
+        
         if self.cvs == 1:
             self.cv1 = self.hills[:,1]
             self.sigma1 = self.hills[:,2]
@@ -325,36 +301,36 @@ class Hills:
             if self.cvs == 1:
                 if len(periodic) != 1 or (type(periodic[0]) != type(True)):
                     print(f"Error: argument 'periodic' has wrong number of parameters({len(periodic)})")
+                    return None
+                    
+                if periodic[0] == False and np.max(np.diff(self.cv1))>0.8*(np.max(self.cv1)-np.min(self.cv1)):
+                    print(f"WARNING: It looks like CV 1 ({self.cv1_name}) is periodic, however you specified that it is not. This may be completely fine, however, if you forgot to specify the periodicity correctly, it can lead to errors later during FES calculation.")
+                if periodic[0] == True and np.max(np.diff(self.cv1))<0.2*(np.max(self.cv1)-np.min(self.cv1)):
+                    print(f"WARNING: It looks like CV 1 ({self.cv1_name}) is not periodic, however you specified that it is. This may be completely fine, however, if you forgot to specify the periodicity correctly, it can lead to errors later during FES calculation.")
+                
             if self.cvs == 2:
                 if len(periodic) != 2 or (type(periodic[0]) != type(True)) or (type(periodic[1]) != type(True)):
                     print(f"Error: argument 'periodic' has wrong number of parameters({len(periodic)})")
+                    return None
+
+                if periodic[1] == False and np.max(np.diff(self.cv2))>0.8*(np.max(self.cv2)-np.min(self.cv2)):
+                    print(f"WARNING: It looks like CV 2 ({self.cv2_name}) is periodic, however you specified that it is not. This may be completely fine, however, if you forgot to specify the periodicity correctly, it can lead to errors later during FES calculation.")
+                if periodic[1] == True and np.max(np.diff(self.cv2))<0.2*(np.max(self.cv2)-np.min(self.cv2)):
+                    print(f"WARNING: It looks like CV 2 ({self.cv2_name}) is not periodic, however you specified that it is. This may be completely fine, however, if you forgot to specify the periodicity correctly, it can lead to errors later during FES calculation.")
+                    
             if self.cvs == 3:
                 if len(periodic) != 3 or (type(periodic[0]) != type(True)) or (type(periodic[1]) != type(True)) or (type(periodic[2]) != type(True)):
                     print(f"Error: argument 'periodic' has wrong number of parameters({len(periodic)})")
+                    return None
+                    
+                if periodic[2] == False and np.max(np.diff(self.cv3))>0.8*(np.max(self.cv3)-np.min(self.cv3)):
+                    print(f"WARNING: It looks like CV 3 ({self.cv3_name}) is periodic, however you specified that it is not. This may be completely fine, however, if you forgot to specify the periodicity correctly, it can lead to errors later during FES calculation.")
+                if periodic[2] == True and np.max(np.diff(self.cv3))<0.2*(np.max(self.cv3)-np.min(self.cv3)):
+                    print(f"WARNING: It looks like CV 3 ({self.cv3_name}) is not periodic, however you specified that it is. This may be completely fine, however, if you forgot to specify the periodicity correctly, it can lead to errors later during FES calculation.")
         
         self.periodic = periodic
-        # check periodicity
-
-        if self.cvs >= 1:
-            if periodic[0] == False and np.max(np.diff(self.cv1))>0.8*(np.max(self.cv1)-np.min(self.cv1)):
-                print(f"WARNING: It looks like CV 1 ({self.cv1_name}) is periodic, however you specified that it is not. This may be completely fine, however, if you forgot to specify the periodicity correctly, it can lead to errors later during FES calculation.")
-            if periodic[0] == True and np.max(np.diff(self.cv1))<0.2*(np.max(self.cv1)-np.min(self.cv1)):
-                print(f"WARNING: It looks like CV 1 ({self.cv1_name}) is not periodic, however you specified that it is. This may be completely fine, however, if you forgot to specify the periodicity correctly, it can lead to errors later during FES calculation.")
-                
-        if self.cvs >= 2:
-            if periodic[1] == False and np.max(np.diff(self.cv2))>0.8*(np.max(self.cv2)-np.min(self.cv2)):
-                print(f"WARNING: It looks like CV 2 ({self.cv2_name}) is periodic, however you specified that it is not. This may be completely fine, however, if you forgot to specify the periodicity correctly, it can lead to errors later during FES calculation.")
-            if periodic[1] == True and np.max(np.diff(self.cv2))<0.2*(np.max(self.cv2)-np.min(self.cv2)):
-                print(f"WARNING: It looks like CV 2 ({self.cv2_name}) is not periodic, however you specified that it is. This may be completely fine, however, if you forgot to specify the periodicity correctly, it can lead to errors later during FES calculation.")
         
-        if self.cvs >= 3:
-            if periodic[2] == False and np.max(np.diff(self.cv3))>0.8*(np.max(self.cv3)-np.min(self.cv3)):
-                print(f"WARNING: It looks like CV 3 ({self.cv3_name}) is periodic, however you specified that it is not. This may be completely fine, however, if you forgot to specify the periodicity correctly, it can lead to errors later during FES calculation.")
-            if periodic[2] == True and np.max(np.diff(self.cv3))<0.2*(np.max(self.cv3)-np.min(self.cv3)):
-                print(f"WARNING: It looks like CV 3 ({self.cv3_name}) is not periodic, however you specified that it is. This may be completely fine, however, if you forgot to specify the periodicity correctly, it can lead to errors later during FES calculation.")
-                
-        return self
-    
+        return None
     
     def get_cv1(self):
         return self.cv1
@@ -412,7 +388,6 @@ class Hills:
     __pdoc__["Hills.get_sigma2"] = False
     __pdoc__["Hills.get_sigma3"] = False
     __pdoc__["Hills.get_heights"] = False
-    __pdoc__["Hills.read"] = False
 
     def plot_heights(self, png_name=None, energy_unit="kJ/mol", xlabel=None, ylabel=None, label_size=12, image_size=None, image_size_unit="in", dpi=100, tu = "ps", time_min=None, time_max=None, xlim=[None, None], ylim=[None, None], title=None, return_fig=False):
         """
@@ -456,33 +431,32 @@ class Hills:
             print("Error: Values of start and end time are zero.")
             return None
         if time_min != None:
-            #time_min = tu.inps(time_min)
-            if tu.inps(time_min) < 0:
+            time_min = tu.inps(time_min)
+            if time_min < 0:
                 print("Warning: Start time is lower than zero, it will be set to zero instead. ")
                 time_min = 0
-            if tu.inps(time_min) < int(self.hills[0,0]):
-                print(f"Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(self.hills[0,0])} ps, which will be used instead. ")
-                time_min = tu.intu(self.hills[0,0])
+            if time_min < self.time[0]:
+                print(f"Warning: Start time {time_min} ps is lower than the first time from HILLS file {self.time[0]} ps, which will be used instead. ")
+                time_min = self.time[0]
         else:
-            time_min = tu.intu(self.hills[0,0])
+            time_min = self.time[0]
+            
         if time_max != None:
-            #time_max = tu.inps(time_max)
+            time_max = tu.inps(time_max)
             if time_max < time_min:
                 print("Warning: End time is lower than start time. Values are flipped. ")
                 time_value = time_max
                 time_max = time_min
                 time_min = time_value
-            if tu.inps(time_max) > int(self.hills[-1,0]):
-                print(f"Warning: End time {tu.inps(time_max)} ps is higher than number of lines in HILLS file {int(self.hills[-1,0])} ps, which will be used instead. ")
-                time_max = tu.intu(self.hills[-1,0])
+            if time_max > self.time[-1]:
+                print(f"Warning: End time {time_max} ps is higher than the last time in HILLS file {self.time[-1]} ps, which will be used instead. ")
+                time_max = self.time[-1]
         else:
-            time_max = tu.intu(self.hills[-1,0])
-        #print(f"Berofe fes: min {time_min}, max {time_max}")
-        
-        if not self.ignoretime:
-            time_max = int(round(((time_max - self.hills[0,0])/self.dt),0)) + 1
-            time_min = int(round(((time_min - self.hills[0,0])/self.dt),0)) + 1
+            time_max = self.time[-1]
 
+        time_min_index = max(0, np.searchsorted(self.time, time_min))
+        time_max_index = np.searchsorted(self.time, time_max, side="right")
+        
         if image_size == None:
             image_size = [9,6]
         
@@ -499,9 +473,8 @@ class Hills:
             print(f"Warning: unknown image_size_unit value: {image_size_unit}. Using inches instead. ")
             
         fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
-        #plt.plot(tu.intu(np.array(range(len(self.heights))))[time_min-1:time_max], self.heights[time_min-1:time_max])
-        plt.plot(tu.intu(np.arange(int(self.hills[0,0]), self.heights.shape[0]+1)[int(tu.inps(time_min)-1):int(tu.inps(time_max))]),
-                 self.heights[int(tu.inps(time_min)-1):int(tu.inps(time_max))])
+        plt.plot(tu.intu(self.time[time_min_index:time_max_index]), 
+                    self.heights[np.all(np.vstack((self.time>=time_min, self.time<=time_max)), axis=0)])
         if xlabel == None:
             plt.xlabel(f'time ({tu.name})', size=label_size)
         else:
@@ -579,7 +552,7 @@ class Hills:
         if CV==3.0:
             CV=3
         if CV!=1 and CV!=2 and CV!=3:
-            print(f"Error: supplied value of CV {CV} is not correct value")
+            print(f"Error: supplied value of CV {CV} is not correct. ")
             return None
             
         tu = TU(tu)
@@ -588,32 +561,32 @@ class Hills:
             print("Error: Values of start and end time are zero.")
             return None
         if time_min != None:
-            #time_min = tu.inps(time_min)
+            time_min = tu.inps(time_min)
             if tu.inps(time_min) < 0:
                 print("Warning: Start time is lower than zero, it will be set to zero instead. ")
                 time_min = 0
-            if tu.inps(time_min) < int(self.hills[0,0]):
-                print(f"Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(self.hills[0,0])} ps, which will be used instead. ")
-                time_min = tu.intu(self.hills[0,0])
+            if tu.inps(time_min) < self.time[0]:
+                print(f"Warning: Start time {time_min} ps is lower than the first time from HILLS file {self.time[0]} ps, which will be used instead. ")
+                time_min = self.time[0]
         else:
-            time_min = tu.intu(self.hills[0,0])
+            time_min = self.time[0]
+            
         if time_max != None:
-            #time_max = tu.inps(time_max)
+            time_max = tu.inps(time_max)
             if time_max < time_min:
                 print("Warning: End time is lower than start time. Values are flipped. ")
                 time_value = time_max
                 time_max = time_min
                 time_min = time_value
-            if tu.inps(time_max) > int(self.hills[-1,0]):
-                print(f"Warning: End time {tu.inps(time_max)} ps is higher than number of lines in HILLS file {int(self.hills[-1,0])} ps, which will be used instead. ")
-                time_max = tu.intu(self.hills[-1,0])
+            if time_max > self.time[-1]:
+                print(f"Warning: End time {time_max} ps is higher than the last time in HILLS file {self.time[-1]} ps, which will be used instead. ")
+                time_max = self.time[-1]
         else:
-            time_max = tu.intu(self.hills[-1,0])
-        
-        if not self.ignoretime:
-            time_max = int(round(((time_max - self.hills[0,0])/self.dt),0)) + 1
-            time_min = int(round(((time_min - self.hills[0,0])/self.dt),0)) + 1
+            time_max = self.time[-1]
 
+        time_min_index = max(0, np.searchsorted(self.time, time_min))
+        time_max_index = np.searchsorted(self.time, time_max, side="right")
+        
         if image_size == None:
             image_size = [9,6]
         
@@ -628,28 +601,30 @@ class Hills:
             image_size[1] /= dpi
         elif image_size_unit != "in":
             print(f"Warning: unknown image_size_unit value: {image_size_unit}. Using inches instead. ")
-        
+            
         fig = plt.figure(figsize=(image_size[0],image_size[1]), dpi=dpi)
+        #print(time_min, time_max, self.dt)
+        #print(tu.intu(np.arange(time_min,time_max+self.dt,self.dt)).shape, self.cv1[np.all(np.vstack((self.time>=time_min, self.time<=time_max)), axis=0)].shape)
         if points:
             if CV==1:
-                plt.scatter(tu.intu(np.array(range(int(round(tu.inps(time_min),0)),int(round(tu.inps(time_max)+1,0)),int(round(self.dt,0))))), 
-                            self.cv1[int(tu.inps(time_min)-1):int(tu.inps(time_max))], s=point_size)
+                plt.scatter(tu.intu(self.time[time_min_index:time_max_index]), 
+                            self.cv1[np.all(np.vstack((self.time>=time_min, self.time<=time_max)), axis=0)], s=point_size)
             if CV==2:
-                plt.scatter(tu.intu(np.array(range(int(round(tu.inps(time_min),0)),int(round(tu.inps(time_max)+1,0)),int(round(self.dt,0))))), 
-                            self.cv2[int(tu.inps(time_min)-1):int(tu.inps(time_max))], s=point_size)
+                plt.scatter(tu.intu(self.time[time_min_index:time_max_index]), 
+                            self.cv2[np.all(np.vstack((self.time>=time_min, self.time<=time_max)), axis=0)], s=point_size)
             if CV==3:
-                plt.scatter(tu.intu(np.array(range(int(round(tu.inps(time_min),0)),int(round(tu.inps(time_max)+1,0)),int(round(self.dt,0))))), 
-                            self.cv3[int(tu.inps(time_min)-1):int(tu.inps(time_max))], s=point_size)
+                plt.scatter(tu.intu(self.time[time_min_index:time_max_index]),  
+                            self.cv3[np.all(np.vstack((self.time>=time_min, self.time<=time_max)), axis=0)], s=point_size)
         else:
             if CV==1:
-                plt.plot(tu.intu(np.array(range(int(round(tu.inps(time_min),0)),int(round(tu.inps(time_max)+1,0)),int(round(self.dt,0))))), 
-                         self.cv1[int(tu.inps(time_min)-1):int(tu.inps(time_max))], lw=point_size)
+                plt.plot(tu.intu(self.time[time_min_index:time_max_index]), 
+                            self.cv1[np.all(np.vstack((self.time>=time_min, self.time<=time_max)), axis=0)], lw=point_size)
             if CV==2:
-                plt.plot(tu.intu(np.array(range(int(round(tu.inps(time_min),0)),int(round(tu.inps(time_max)+1,0)),int(round(self.dt,0))))), 
-                         self.cv2[int(tu.inps(time_min)-1):int(tu.inps(time_max))], lw=point_size)
+                plt.plot(tu.intu(self.time[time_min_index:time_max_index]), 
+                            self.cv2[np.all(np.vstack((self.time>=time_min, self.time<=time_max)), axis=0)], lw=point_size)
             if CV==3:
-                plt.plot(tu.intu(np.array(range(int(round(tu.inps(time_min),0)),int(round(tu.inps(time_max)+1,0)),int(round(self.dt,0))))), 
-                         self.cv3[int(tu.inps(time_min)-1):int(tu.inps(time_max))], lw=point_size)
+                plt.plot(tu.intu(self.time[time_min_index:time_max_index]), 
+                            self.cv3[np.all(np.vstack((self.time>=time_min, self.time<=time_max)), axis=0)], lw=point_size)
             
         if xlabel == None:
             plt.xlabel(f'time ({tu.name})', size=label_size)
@@ -754,10 +729,13 @@ class Fes:
             
             if cv1range!=None and len(cv1range) != 2:
                 print("Error: You have to specify CV1 range as a list of two values. ")
+                return None
             if cv2range!=None and len(cv2range) != 2:
                 print("Error: You have to specify CV2 range as a list of two values. ")
+                return None
             if cv3range!=None and len(cv3range) != 2:
                 print("Error: You have to specify CV3 range as a list of two values. ")
+                return None
             
             if self.cvs >= 1:
                 self.cv1 = hills.get_cv1()
@@ -882,49 +860,43 @@ class Fes:
                 print("Error: Values of start and end time are zero.")
                 return None
             if time_min != None:
-                #time_min = tu.inps(time_min)
+                time_min = tu.inps(time_min)
                 if time_min < 0:
                     print("Warning: Start time is lower than zero, it will be set to zero instead. ")
                     time_min = 0
-                if tu.inps(time_min) < int(hills.hills[0,0]):
-                    print(f"Warning: Start time {tu.inps(time_min)} is lower than the first time from HILLS file {int(hills.hills[0,0])}, which will be used instead. ")
-                    time_min = tu.intu(int(hills.hills[0,0]))
+                if time_min < self.hills.time[0]:
+                    print(f"Warning: Start time {time_min} ps is lower than the first time from HILLS file {self.hills.time[0]} ps, which will be used instead. ")
+                    time_min = self.hills.time[0]
             else:
-                time_min = tu.intu(int(hills.hills[0,0]))
+                time_min = self.hills.time[0]
+                
             if time_max != None:
-                #time_max = int(tu.inps(time_max))
+                time_max = tu.inps(time_max)
                 if time_max < time_min:
                     print("Warning: End time is lower than start time. Values are flipped. ")
                     time_value = time_max
                     time_max = time_min
                     time_min = time_value
-                if tu.inps(time_max) > int(hills.hills[-1,0]):
-                    print(f"Warning: End time {tu.inps(time_max)} is higher than number of lines in HILLS file {int(hills.hills[-1,0])}, which will be used instead. ")
-                    time_max = tu.intu(int(hills.hills[-1,0]))
+                if time_max > self.hills.time[-1]:
+                    print(f"Warning: End time {time_max} ps is higher than the last time in HILLS file {self.hills.time[-1]} ps, which will be used instead. ")
+                    time_max = self.hills.time[-1]
             else:
-                time_max = tu.intu(int(hills.hills[-1,0]))
-            
-            if not self.ignoretime:
-                time_max = int(round(((time_max - hills.hills[0,0])/self.dt),0)) + 1
-                time_min = int(round(((time_min - hills.hills[0,0])/self.dt),0)) + 1
-                #print(f"Berofe fes: min {time_min}, max {time_max}")
+                time_max = self.hills.time[-1]
 
             if calculate_new_fes:
                 if original:
-                    self.makefes2(resolution, int(tu.inps(time_min)), int(tu.inps(time_max)), 
+                    self.makefes2(resolution, time_min, time_max,
                                   print_output=print_output, subtract_min = subtract_min)
                 else:
-                    self.makefes(resolution, int(tu.inps(time_min)), int(tu.inps(time_max)), 
+                    self.makefes(resolution, time_min, time_max,
                                  print_output=print_output, subtract_min = subtract_min)
         
-    def makefes(self, resolution, time_min, time_max, print_output=True, subtract_min = True):
+    def makefes(self, resolution, time_min, time_max, print_output=True, subtract_min=True):
         """
         Function used internally for summing hills in Hills object with the fast Bias Sum Algorithm. 
         """
-        #self.res = resolution
-        #if self.res % 2 == 0:
-        #    self.res += 1
-        #print(f"min: {time_min}, max: {time_max}")
+        time_min_index = max(0, np.searchsorted(self.hills.time, time_min))
+        time_max_index = np.searchsorted(self.hills.time, time_max, side="right")
         
         if self.cvs == 1:
             cv1bin = np.ceil((self.cv1-self.cv1min)*self.res/(self.cv1_fes_range))
@@ -946,9 +918,9 @@ class Fes:
                 
             fes = np.zeros((self.res))
             
-            for line in range(time_min-1, time_max):
-                if print_output and (((line) % 500 == 0) or (line == time_max-1)):
-                    print(f"Constructing free energy surface: {((line+1-time_min+1)/(time_max-time_min+1)):.1%} finished", end="\r")
+            for line in range(time_min_index, time_max_index):
+                if print_output and (((line) % 500 == 0) or (line == time_max_index-1)):
+                    print(f"Constructing free energy surface: {((line+1-time_min_index+1)/(time_max_index-time_min_index+1)):.1%} finished", end="\r")
                 
                 gauss_center_to_end = int((gauss_res-1)/2)
                 
@@ -1008,9 +980,9 @@ class Fes:
                     gauss[int(i), int(j)] = -np.exp(-(((i+1)-gauss_center)**2/(2*s1res**2) + ((j+1)-gauss_center)**2/(2*s2res**2)))
             
             fes = np.zeros((self.res,self.res))
-            for line in range(time_min-1, time_max):
-                if print_output and (((line) % 500 == 0) or (line == time_max-1)):
-                    print(f"Constructing free energy surface: {((line+1-time_min+1)/(time_max-time_min+1)):.1%} finished.", end="\r")
+            for line in range(time_min_index, time_max_index):
+                if print_output and (((line) % 500 == 0) or (line == time_max_index-1)):
+                    print(f"Constructing free energy surface: {((line+1-time_min_index+1)/(time_max_index-time_min_index+1)):.1%} finished.", end="\r")
                 
                 #fes_center = int((self.res-1)/2)
                 gauss_center_to_end = int((gauss_res-1)/2)
@@ -1104,9 +1076,9 @@ class Fes:
             
             fes = np.zeros((self.res, self.res, self.res))
             
-            for line in range(time_min-1, time_max):
-                if print_output and (((line) % 500 == 0) or (line == time_max-1)):
-                    print(f"Constructing free energy surface: {((line+1-time_min+1)/(time_max-time_min+1)):.1%} finished", end="\r")
+            for line in range(time_min_index, time_max_index):
+                if print_output and (((line) % 500 == 0) or (line == time_max_index-1)):
+                    print(f"Constructing free energy surface: {((line+1-time_min_index+1)/(time_max_index-time_min_index+1)):.1%} finished", end="\r")
                 
                 #fes_center = int((self.res-1)/2)
                 gauss_center_to_end = int((gauss_res-1)/2)
@@ -1261,7 +1233,8 @@ class Fes:
         """
         Function internally used to sum Hills in the same way as Plumed sum_hills. 
         """
-        self.res = resolution
+        time_min_index = max(0, np.searchsorted(self.hills.time, time_min))
+        time_max_index = np.searchsorted(self.hills.time, time_max, side="right")
         
         if self.cvs == 1:
             fes = np.zeros((self.res))
@@ -1273,14 +1246,14 @@ class Fes:
                 if print_output and (((progress) % 200 == 0) or (progress == max_progress)):
                     print(f"Constructing free energy surface: {(progress/max_progress):.2%} finished", end="\r")
                 
-                dist_cv1 = self.cv1[time_min-1:time_max]-(self.cv1min+(x)*self.cv1_fes_range/(self.res))
+                dist_cv1 = self.cv1[time_min_index:time_max_index]-(self.cv1min+(x)*self.cv1_fes_range/(self.res))
                 if self.periodic[0]:
                     dist_cv1[dist_cv1<-0.5*self.cv1_fes_range] += self.cv1_fes_range
                     dist_cv1[dist_cv1>+0.5*self.cv1_fes_range] -= self.cv1_fes_range
                 
-                dp2 = dist_cv1**2/(2*self.s1[time_min-1:time_max]**2)
-                tmp = np.zeros(time_max-time_min+1)
-                heights = self.heights[time_min-1:time_max]
+                dp2 = dist_cv1**2/(2*self.s1[time_min_index:time_max_index]**2)
+                tmp = np.zeros(time_max_index-time_min_index)
+                heights = self.heights[time_min_index:time_max_index]
                 tmp[dp2<6.25] = heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
                 fes[x] = -tmp.sum()
                     
@@ -1296,7 +1269,7 @@ class Fes:
             max_progress = self.res ** self.cvs
             
             for x in range(self.res):
-                dist_cv1 = self.cv1[time_min-1:time_max]-(self.cv1min+(x)*self.cv1_fes_range/(self.res))
+                dist_cv1 = self.cv1[time_min_index:time_max_index]-(self.cv1min+(x)*self.cv1_fes_range/(self.res))
                 if self.periodic[0]:
                     dist_cv1[dist_cv1<-0.5*self.cv1_fes_range] += self.cv1_fes_range
                     dist_cv1[dist_cv1>+0.5*self.cv1_fes_range] -= self.cv1_fes_range
@@ -1306,14 +1279,15 @@ class Fes:
                     if print_output and ((progress) % 200 == 0 or (progress == max_progress)):
                         print(f"Constructing free energy surface: {(progress/max_progress):.2%} finished", end="\r")
                     
-                    dist_cv2 = self.cv2[time_min-1:time_max]-(self.cv2min+(y)*self.cv2_fes_range/(self.res))
+                    dist_cv2 = self.cv2[time_min_index:time_max_index]-(self.cv2min+(y)*self.cv2_fes_range/(self.res))
                     if self.periodic[1]:
                         dist_cv2[dist_cv2<-0.5*self.cv2_fes_range] += self.cv2_fes_range
                         dist_cv2[dist_cv2>+0.5*self.cv2_fes_range] -= self.cv2_fes_range
                         
-                    dp2 = dist_cv1**2/(2*self.s1[time_min-1:time_max]**2) + dist_cv2**2/(2*self.s2[time_min-1:time_max]**2)
-                    tmp = np.zeros(time_max-time_min+1)
-                    heights = self.heights[time_min-1:time_max]
+                    dp2 = (dist_cv1**2/(2*self.s1[time_min_index:time_max_index]**2) + 
+                           dist_cv2**2/(2*self.s2[time_min_index:time_max_index]**2))
+                    tmp = np.zeros(time_max_index-time_min_index)
+                    heights = self.heights[time_min_index:time_max_index]
                     tmp[dp2<6.25] = heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
                     fes[x,y] = -tmp.sum()
                     
@@ -1329,13 +1303,13 @@ class Fes:
             max_progress = self.res ** self.cvs
             
             for x in range(self.res):
-                dist_cv1 = self.cv1[time_min-1:time_max]-(self.cv1min+(x)*self.cv1_fes_range/(self.res))
+                dist_cv1 = self.cv1[time_min_index:time_max_index]-(self.cv1min+(x)*self.cv1_fes_range/(self.res))
                 if self.periodic[0]:
                     dist_cv1[dist_cv1<-0.5*self.cv1_fes_range] += self.cv1_fes_range
                     dist_cv1[dist_cv1>+0.5*self.cv1_fes_range] -= self.cv1_fes_range
                     
                 for y in range(self.res):
-                    dist_cv2 = self.cv2[time_min-1:time_max]-(self.cv2min+(y)*self.cv2_fes_range/(self.res))
+                    dist_cv2 = self.cv2[time_min_index:time_max_index]-(self.cv2min+(y)*self.cv2_fes_range/(self.res))
                     if self.periodic[1]:
                         dist_cv2[dist_cv2<-0.5*self.cv2_fes_range] += self.cv2_fes_range
                         dist_cv2[dist_cv2>+0.5*self.cv2_fes_range] -= self.cv2_fes_range
@@ -1345,16 +1319,16 @@ class Fes:
                         if print_output and ((progress) % 200 == 0 or (progress == max_progress)):
                             print(f"Constructing free energy surface: {(progress/max_progress):.2%} finished", end="\r")
                         
-                        dist_cv3 = self.cv3[time_min-1:time_max]-(self.cv3min+(z)*self.cv3_fes_range/(self.res))
+                        dist_cv3 = self.cv3[time_min_index:time_max_index]-(self.cv3min+(z)*self.cv3_fes_range/(self.res))
                         if self.periodic[2]:
                             dist_cv3[dist_cv3<-0.5*self.cv3_fes_range] += self.cv3_fes_range
                             dist_cv3[dist_cv3>+0.5*self.cv3_fes_range] -= self.cv3_fes_range
                         
-                        dp2 = dist_cv1**2/(2*self.s1[time_min-1:time_max]**2) + \
-                              dist_cv2**2/(2*self.s2[time_min-1:time_max]**2) + \
-                              dist_cv3**2/(2*self.s3[time_min-1:time_max]**2)
-                        tmp = np.zeros(time_max-time_min+1)
-                        heights = self.heights[time_min-1:time_max]
+                        dp2 = dist_cv1**2/(2*self.s1[time_min_index:time_max_index]**2) + \
+                              dist_cv2**2/(2*self.s2[time_min_index:time_max_index]**2) + \
+                              dist_cv3**2/(2*self.s3[time_min_index:time_max_index]**2)
+                        tmp = np.zeros(time_max_index-time_min_index)
+                        heights = self.heights[time_min_index:time_max_index]
                         tmp[dp2<6.25] = heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
                         fes[x,y,z] = -tmp.sum()
                         
@@ -1716,7 +1690,7 @@ class Fes:
             elif energy_unit == "kcal/mol":
                 probabilities = np.exp(-1000*4.184*self.fes/8.314/temp)
                 if CV == 1:
-                    new_prob = np.sum(probabilities, axis=1)
+                    new_prob = np.sum(probabilities, axis=0)
                     new_fes = Fes(hills=None)
                     new_fes.fes = -8.314*temp*np.log(new_prob)/1000/4.184
                     new_fes.fes = new_fes.fes - np.min(new_fes.fes)
@@ -1729,7 +1703,7 @@ class Fes:
                     new_fes.cv1per = self.cv2per
                     new_fes.cv1_fes_range = self.cv2_fes_range
                 if CV == 2:
-                    new_prob = np.sum(probabilities, axis=0)
+                    new_prob = np.sum(probabilities, axis=1)
                     new_fes = Fes(hills=None)
                     new_fes.fes = -8.314*temp*np.log(new_prob)/1000/4.184
                     new_fes.fes = new_fes.fes - np.min(new_fes.fes)
@@ -1921,6 +1895,8 @@ class Fes:
         flooding_fes = copy.deepcopy(self)
         step_fes = copy.deepcopy(self)
         
+        tu = TU(tu)
+        
         if time_min == time_max == 0:
             print("Error: Values of start and end time are zero.")
             return None
@@ -1929,11 +1905,12 @@ class Fes:
             if time_min < 0:
                 print("Warning: Start time is lower than zero, it will be set to zero instead. ")
                 time_min = 0
-            if time_min < int(self.hills.hills[0,0]):
-                print(f"Warning: Start time {tu.inps(time_min)} ps is lower than the first time from HILLS file {int(self.hills.hills[0,0])}, which will be used instead. ")
-                time_min = int(self.hills.hills[0,0])
+            if time_min < self.hills.time[0]:
+                print(f"Warning: Start time {time_min} ps is lower than the first time from HILLS file {self.hills.time[0]} ps, which will be used instead. ")
+                time_min = self.hills.time[0]
         else:
-            time_min = int(self.hills.hills[0,0])
+            time_min = self.hills.time[0]
+            
         if time_max != None:
             time_max = tu.inps(time_max)
             if time_max < time_min:
@@ -1941,21 +1918,17 @@ class Fes:
                 time_value = time_max
                 time_max = time_min
                 time_min = time_value
-            if time_max > int(self.hills.hills[-1,0]):
-                print(f"Warning: End time {tu.inps(time_max)} ps is higher than number of lines in HILLS file {int(self.hills.hills[-1,0])}, which will be used instead. ")
-                time_max = int(self.hills.hills[-1,0])
+            if time_max > self.hills.time[-1]:
+                print(f"Warning: End time {time_max} ps is higher than the last time in HILLS file {self.hills.time[-1]} ps, which will be used instead. ")
+                time_max = self.hills.time[-1]
         else:
-            time_max = int(self.hills.hills[-1,0])
+            time_max = self.hills.time[-1]
         
-        if not self.ignoretime:
-            time_max = int(round(((time_max - self.hills.hills[0,0])/self.dt),0)) + 1
-            time_min = int(round(((time_min - self.hills.hills[0,0])/self.dt),0)) + 1
 
-        if time_min==None:
-            time_min=1
-        if time_max==None:
-            time_max = int(self.hills.hills[-1,0])
+        time_min_index = max(0, np.searchsorted(self.hills.time, time_min))
+        time_max_index = np.searchsorted(self.hills.time, time_max, side="right")
 
+        
         if (vmax == None) and use_vmax_from_end:
             vmax = np.max(self.fes)+0.1
         if self.cvs == 1 or self.cvs == 2:
@@ -1963,7 +1936,7 @@ class Fes:
         if self.cvs == 3:
             suffix="eps"
         
-        times = np.array((range(time_min-1, time_max+1, step)))
+        times = np.array((range(time_min_index, time_max_index, step)))
         image_files = [f'{final_directory}/{times[i]}.{suffix}'.format(i) for i in range(1, len(times))]
         
         minima_final = Minima(self, precise=minima_precise, nbins=minima_nbins, energy_unit=energy_unit, temp=temp, print_output=False)
@@ -1971,9 +1944,9 @@ class Fes:
         for i in range(1,len(times)):
             print(f"Constructing flooding animation: {((i+1)/len(times)):.2%} finished", end="\r")
             if self.original==False:
-                step_fes.makefes(flooding_fes.res, time_min=(times[i-1]+1), time_max=times[i], print_output=False)
+                step_fes.makefes(flooding_fes.res, time_min_index=(times[i-1]+1), time_max_index=times[i], print_output=False)
             else:
-                step_fes.makefes2(flooding_fes.res, time_min=(times[i-1]+1), time_max=times[i], print_output=False)
+                step_fes.makefes2(flooding_fes.res, time_min_index=(times[i-1]+1), time_max_index=times[i], print_output=False)
             if i == 1:
                 flooding_fes.fes = step_fes.fes
             else:
@@ -3586,10 +3559,3 @@ class FEProfile:
 
         if return_fig:
             return fig
-
-
-
-
-
-
-
