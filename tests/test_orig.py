@@ -87,7 +87,7 @@ def test_1lim():
     h1 = mm.Hills(name="./data/acealanme1d", periodic=[True])
     h2 = mm.Hills(name="./data/acealanme1d-100-1000", periodic=[True])
     #prepare FES
-    f1 = mm.Fes(h1, resolution=256, original=True, time_min=100, time_max=1000).fes.T
+    f1 = mm.Fes(h1, resolution=256, original=True, time_min=100, time_max=1000.01).fes.T
     f2 = mm.Fes(h2, resolution=256, original=True).fes.T
     assert(np.allclose(f1, f2, 1e-4))
 
@@ -96,7 +96,7 @@ def test_2lim():
     h1 = mm.Hills(name="./data/acealanme", periodic=[True,True])
     h2 = mm.Hills(name="./data/acealanme-100-1000", periodic=[True,True])
     #prepare FES
-    f1 = mm.Fes(h1, resolution=256, original=True, time_min=100, time_max=1000).fes.T
+    f1 = mm.Fes(h1, resolution=256, original=True, time_min=100, time_max=1000.01).fes.T
     f2 = mm.Fes(h2, resolution=256, original=True).fes.T
     assert(np.allclose(f1, f2, 1e-4))
 
@@ -105,7 +105,7 @@ def test_3lim():
     h1 = mm.Hills(name="./data/acealanme3d", periodic=[True,True,True])
     h2 = mm.Hills(name="./data/acealanme3d-100-1000", periodic=[True,True,True])
     #prepare FES
-    f1 = mm.Fes(h1, resolution=256, original=True, time_min=100, time_max=1000).fes.T
+    f1 = mm.Fes(h1, resolution=256, original=True, time_min=100, time_max=1000.01).fes.T
     f2 = mm.Fes(h2, resolution=256, original=True).fes.T
     assert(np.allclose(f1, f2, 1e-4))
 

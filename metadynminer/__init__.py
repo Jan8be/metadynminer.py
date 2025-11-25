@@ -55,7 +55,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.9.0"
+__version__ = "0.9.1"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -251,7 +251,7 @@ class Hills:
             else:
                 dt = tu.inps(self.hills[1,0]) - tu.inps(self.hills[0,0])
                 
-            self.time = np.arange(tu.inps(self.hills[0,0]), tu.inps(self.hills.shape[0]*tu.intu(dt)+tu.intu(dt)), step=dt)
+            self.time = np.arange(tu.inps(1.0), tu.inps(self.hills.shape[0]*tu.intu(dt)), step=dt)
             
         self.dt = dt
         
@@ -388,6 +388,7 @@ class Hills:
     __pdoc__["Hills.get_sigma2"] = False
     __pdoc__["Hills.get_sigma3"] = False
     __pdoc__["Hills.get_heights"] = False
+    __pdoc__["Hills.read"] = False
 
     def plot_heights(self, png_name=None, energy_unit="kJ/mol", xlabel=None, ylabel=None, label_size=12, image_size=None, image_size_unit="in", dpi=100, tu = "ps", time_min=None, time_max=None, xlim=[None, None], ylim=[None, None], title=None, return_fig=False):
         """
@@ -720,9 +721,9 @@ class Fes:
         self.cv3range = cv3range
         if hills != None:
             self.hills = hills
-            self.cvs = hills.get_number_of_cvs()
-            self.heights = hills.get_heights()
-            self.periodic = hills.get_periodic()
+            self.cvs = hills.cvs
+            self.heights = hills.heights
+            self.periodic = hills.periodic
             self.biasf = hills.biasf
             self.ignoretime = hills.ignoretime
             self.dt = hills.dt
