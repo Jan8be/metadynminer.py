@@ -1,7 +1,7 @@
 FROM jupyter/base-notebook
 
 RUN mkdir /tmp/build
-COPY README.md meta.yaml /tmp/build/
+COPY README.md meta.yaml pyproject.toml /tmp/build/
 COPY metadynminer/ /tmp/build/metadynminer/
 
 RUN pip3 install /tmp/build
