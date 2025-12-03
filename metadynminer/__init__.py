@@ -55,7 +55,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.9.1"
+__version__ = "0.9.2"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -2346,7 +2346,7 @@ class Minima():
             
             if energy_unit == "kJ/mol":
                 prob = np.exp(-1000*self.fes/8.314/temp)
-            elif energy_unit == "kcal_mol":
+            elif energy_unit == "kcal/mol":
                 prob = np.exp(-1000*4.184*self.fes/8.314/temp)
 
             m_sum_probabilities = np.zeros((self.minima[:,0].shape))
@@ -2356,7 +2356,7 @@ class Minima():
 
             if energy_unit == "kJ/mol":
                 m_energies = -8.314*temp*np.log(m_sum_probabilities)/1000
-            elif energy_unit == "kcal_mol":
+            elif energy_unit == "kcal/mol":
                 m_energies = -8.314*temp*np.log(m_sum_probabilities)/1000/4.184
 
             m_energies = m_energies - np.min(m_energies)
@@ -2418,7 +2418,7 @@ class Minima():
             
             if energy_unit == "kJ/mol":
                 prob = np.exp(-1000*self.fes/8.314/temp)
-            elif energy_unit == "kcal_mol":
+            elif energy_unit == "kcal/mol":
                 prob = np.exp(-1000*4.184*self.fes/8.314/temp)
 
             m_sum_probabilities = np.zeros((self.minima[:,0].shape))
@@ -2429,7 +2429,7 @@ class Minima():
 
             if energy_unit == "kJ/mol":
                 m_energies = -8.314*temp*np.log(m_sum_probabilities)/1000
-            elif energy_unit == "kcal_mol":
+            elif energy_unit == "kcal/mol":
                 m_energies = -8.314*temp*np.log(m_sum_probabilities)/1000/4.184
 
             m_energies = m_energies - np.min(m_energies)
@@ -2491,7 +2491,7 @@ class Minima():
             
             if energy_unit == "kJ/mol":
                 prob = np.exp(-1000*self.fes/8.314/temp)
-            elif energy_unit == "kcal_mol":
+            elif energy_unit == "kcal/mol":
                 prob = np.exp(-1000*4.184*self.fes/8.314/temp)
 
             m_sum_probabilities = np.zeros((self.minima[:,0].shape))
@@ -2503,7 +2503,7 @@ class Minima():
 
             if energy_unit == "kJ/mol":
                 m_energies = -8.314*temp*np.log(m_sum_probabilities)/1000
-            elif energy_unit == "kcal_mol":
+            elif energy_unit == "kcal/mol":
                 m_energies = -8.314*temp*np.log(m_sum_probabilities)/1000/4.184
 
             m_energies = m_energies - np.min(m_energies)
