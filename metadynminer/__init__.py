@@ -55,7 +55,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.9.4"
+__version__ = "0.9.5"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -541,7 +541,7 @@ class Hills:
         * return_fig (default=False) = whether the method should return the Matplotlib.Pyplot.figure object for further use
         """
         if CV==None:
-            if self.Cvs == 1:
+            if self.cvs == 1:
                 CV=1
             else:
                 print("Error: CV was not chosen")
