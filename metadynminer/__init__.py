@@ -55,7 +55,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.9.2"
+__version__ = "0.9.3"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -251,7 +251,7 @@ class Hills:
             else:
                 dt = tu.inps(self.hills[1,0]) - tu.inps(self.hills[0,0])
                 
-            self.time = np.arange(tu.inps(1.0), tu.inps(self.hills.shape[0]*tu.intu(dt)), step=dt)
+            self.time = np.arange(tu.inps(1.0), tu.inps(self.hills.shape[0]*tu.intu(dt)+tu.inps(1.0)), step=dt)
             
         self.dt = dt
         
@@ -541,8 +541,11 @@ class Hills:
         * return_fig (default=False) = whether the method should return the Matplotlib.Pyplot.figure object for further use
         """
         if CV==None:
-            print("Error: CV was not chosen")
-            return None
+            if self.Cvs == 1:
+                CV=1
+            else:
+                print("Error: CV was not chosen")
+                return None
         if CV>self.cvs:
             print(f"Error: CV {CV} is not available. ")
             return None
@@ -585,8 +588,10 @@ class Hills:
         else:
             time_max = self.time[-1]
 
-        time_min_index = max(0, np.searchsorted(self.time, time_min))
+        time_min_index = max(0, np.searchsorted(self.time, time_min, side="left"))
         time_max_index = np.searchsorted(self.time, time_max, side="right")
+
+        print(time_min_index, time_max_index)
         
         if image_size == None:
             image_size = [9,6]
@@ -2304,7 +2309,7 @@ class Minima():
         if self.cvs == 1:
             m_fes = np.zeros((self.fes.shape))
             minima_count = 0
-            dirs = np.zeros((self.fes.shape[0], 1))
+            dirs = np.zeros((self.fes.shape[0]))
             minima_list = []
             
             periodic=self.periodic
@@ -2318,15 +2323,16 @@ class Minima():
                 
                 m_i = np.unravel_index(np.argmin(okoli), okoli.shape, order='C')
                 
-                dirs[i,0] = a_indexes[m_i]
+                dirs[i] = a_indexes[m_i]
                 if self.fes[i] == self.fes[int(a_indexes[m_i])] and not np.all(okoli == np.min(okoli)):
                     minima_count += 1
                     m_fes[i] = minima_count
                     min_cv1 = (((i)/self.res)*(cv1max-cv1min))+cv1min
                     minima_list.append([self.fes[i],i, min_cv1])
-
+            
             if print_output:
                 print("Searching for the nearest local minima... ")
+                
             iteration = 0
             while 0.0 in m_fes[:]:
                 iteration += 1
