@@ -55,7 +55,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.9.3"
+__version__ = "0.9.4"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -1901,8 +1901,6 @@ class Fes:
         flooding_fes = copy.deepcopy(self)
         step_fes = copy.deepcopy(self)
         
-        tu = TU(tu)
-        
         if time_min == time_max == 0:
             print("Error: Values of start and end time are zero.")
             return None
@@ -1943,6 +1941,7 @@ class Fes:
             suffix="eps"
         
         times = np.array((range(time_min_index, time_max_index, step)))
+
         image_files = [f'{final_directory}/{times[i]}.{suffix}'.format(i) for i in range(1, len(times))]
         
         minima_final = Minima(self, precise=minima_precise, nbins=minima_nbins, energy_unit=energy_unit, temp=temp, print_output=False)
@@ -1950,9 +1949,9 @@ class Fes:
         for i in range(1,len(times)):
             print(f"Constructing flooding animation: {((i+1)/len(times)):.2%} finished", end="\r")
             if self.original==False:
-                step_fes.makefes(flooding_fes.res, time_min_index=(times[i-1]+1), time_max_index=times[i], print_output=False)
+                step_fes.makefes(flooding_fes.res, time_min=(times[i-1]+1), time_max=times[i], print_output=False)
             else:
-                step_fes.makefes2(flooding_fes.res, time_min_index=(times[i-1]+1), time_max_index=times[i], print_output=False)
+                step_fes.makefes2(flooding_fes.res, time_min=(times[i-1]+1), time_max=times[i], print_output=False)
             if i == 1:
                 flooding_fes.fes = step_fes.fes
             else:
