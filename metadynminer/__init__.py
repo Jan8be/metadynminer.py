@@ -55,7 +55,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.9.5"
+__version__ = "0.9.6"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -590,8 +590,6 @@ class Hills:
 
         time_min_index = max(0, np.searchsorted(self.time, time_min, side="left"))
         time_max_index = np.searchsorted(self.time, time_max, side="right")
-
-        print(time_min_index, time_max_index)
         
         if image_size == None:
             image_size = [9,6]
