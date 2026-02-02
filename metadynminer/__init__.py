@@ -3364,7 +3364,7 @@ class FEProfile:
             lasttime = -1
             for time in self.scantimes:
                 for m in range(number_of_minima):
-                    dist_cv1 = h.cv1[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]-float(self.minima.iloc[m,3])
+                    dist_cv1 = hills.cv1[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]-float(self.minima.iloc[m,3])
                     if self.periodic[0]:
                         dist_cv1[dist_cv1<-0.5*self.cv1_fes_range] += self.cv1_fes_range
                         dist_cv1[dist_cv1>+0.5*self.cv1_fes_range] -= self.cv1_fes_range
