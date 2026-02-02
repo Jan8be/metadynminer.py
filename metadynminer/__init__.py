@@ -55,7 +55,7 @@ fep.plot()
 """
 
 name = "metadynminer"
-__version__ = "0.9.6"
+__version__ = "0.9.7"
 __author__ = 'Jan Beránek'
 
 __pdoc__ = {}
@@ -251,7 +251,7 @@ class Hills:
             else:
                 dt = tu.inps(self.hills[1,0]) - tu.inps(self.hills[0,0])
                 
-            self.time = np.arange(tu.inps(1.0), tu.inps(self.hills.shape[0]*tu.intu(dt)+tu.inps(1.0)), step=dt)
+            self.time = np.arange(tu.inps(self.hills[0,0]), tu.inps(self.hills.shape[0]*tu.intu(dt)+tu.inps(self.hills[0,0])), step=dt)
             
         self.dt = dt
         
@@ -3292,6 +3292,7 @@ class FEProfile:
     
     def __init__(self, minima, hills):
         self.cvs = minima.cvs
+        self.time = hills.time
         self.res = minima.res
         self.minima = minima.minima
         self.periodic = minima.periodic
@@ -3335,15 +3336,15 @@ class FEProfile:
         
         if hillslenght < 256:
             profilelenght = hillslenght
-            scantimes = np.array(range(hillslenght))
+            scantimes = self.time
         else:
             profilelenght = 256
-            scantimes = np.array(((hillslenght/(profilelenght))*np.array((range(1,profilelenght+1)))))
+            scantimes = np.array(((self.time.max()/(profilelenght))*np.array((range(1,profilelenght+1)))))
             scantimes[0:-1] -= 1
             #scantimes[-1] += 1
             scantimes = scantimes.astype(int)
         number_of_minima = self.minima.shape[0]
-        
+        self.scantimes=scantimes
         self.feprofile = np.zeros((self.minima.Minimum.shape[0]+1))
 
         if self.cvs >= 1:
@@ -3360,21 +3361,19 @@ class FEProfile:
             
             fes = np.zeros((self.res))
             
-            lasttime = 0
-            for time in scantimes:
-                if time == scantimes[-1]:
-                    time += 1
-                for m in range(number_of_minima):#self.minima.iloc[:,3]
-                    dist_cv1 = self.cv1[lasttime:time]-float(self.minima.iloc[m,3])
+            lasttime = -1
+            for time in self.scantimes:
+                for m in range(number_of_minima):
+                    dist_cv1 = h.cv1[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]-float(self.minima.iloc[m,3])
                     if self.periodic[0]:
                         dist_cv1[dist_cv1<-0.5*self.cv1_fes_range] += self.cv1_fes_range
                         dist_cv1[dist_cv1>+0.5*self.cv1_fes_range] -= self.cv1_fes_range
 
-                    dp2 = dist_cv1**2/(2*self.s1[lasttime:time]**2)
+                    dp2 = dist_cv1**2/(2*self.s1[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]**2)
                     tmp = np.zeros(dp2.shape)
-                    heights = self.heights[lasttime:time]
+                    heights = self.heights[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]
                     tmp[dp2<6.25] = heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
-                    #fes[int(float(self.minima.iloc[x,2]))] -= tmp.sum()
+
                     fes[int(float(self.minima.iloc[m,2]))] -= tmp.sum()
                 #fes = fes - np.min(fes)
                 profileline = [time-1]
@@ -3389,25 +3388,26 @@ class FEProfile:
             
             fes = np.zeros((self.res, self.res))
             
-            lasttime = 0
-            line = 0
+            lasttime = -1
             for time in scantimes:
                 if time == scantimes[-1]:
                     time += 1
                 for m in range(number_of_minima):
-                    dist_cv1 = self.cv1[lasttime:time]-float(self.minima.iloc[m,4])
+                    dist_cv1 = self.cv1[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]-float(self.minima.iloc[m,4])
                     if self.periodic[0]:
                         dist_cv1[dist_cv1<-0.5*self.cv1_fes_range] += self.cv1_fes_range
                         dist_cv1[dist_cv1>+0.5*self.cv1_fes_range] -= self.cv1_fes_range
                     
-                    dist_cv2 = self.cv2[lasttime:time]-float(self.minima.iloc[m,5])
+                    dist_cv2 = self.cv2[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]-float(self.minima.iloc[m,5])
                     if self.periodic[1]:
                         dist_cv2[dist_cv2<-0.5*self.cv2_fes_range] += self.cv2_fes_range
                         dist_cv2[dist_cv2>+0.5*self.cv2_fes_range] -= self.cv2_fes_range
                 
-                    dp2 = dist_cv1**2/(2*self.s1[lasttime:time]**2) + dist_cv2**2/(2*self.s2[lasttime:time]**2)
-                    tmp = np.zeros(self.cv1[lasttime:time].shape)
-                    heights = self.heights[lasttime:time]
+                    dp2 = (dist_cv1**2/(2*self.s1[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]**2) + 
+                           dist_cv2**2/(2*self.s2[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]**2) )
+                    
+                    tmp = np.zeros(dp2.shape)
+                    heights = self.heights[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]
                     tmp[dp2<6.25] = heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399)
                     fes[int(float(self.minima.iloc[m,2])),int(float(self.minima.iloc[m,3]))] -= tmp.sum()
                 
@@ -3424,31 +3424,32 @@ class FEProfile:
             
             fes = np.zeros((self.res, self.res, self.res))
             
-            lasttime = 0
+            lasttime = -1
             for time in scantimes:
                 if time == scantimes[-1]:
                     time += 1
                 for m in range(number_of_minima):
-                    dist_cv1 = self.cv1[lasttime:time]-float(self.minima.iloc[m,5])
+                    dist_cv1 = self.cv1[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]-float(self.minima.iloc[m,5])
                     if self.periodic[0]:
                         dist_cv1[dist_cv1<-0.5*self.cv1_fes_range] += self.cv1_fes_range
                         dist_cv1[dist_cv1>+0.5*self.cv1_fes_range] -= self.cv1_fes_range
                     
-                    dist_cv2 = self.cv2[lasttime:time]-float(self.minima.iloc[m,6])
+                    dist_cv2 = self.cv2[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]-float(self.minima.iloc[m,6])
                     if self.periodic[1]:
                         dist_cv2[dist_cv2<-0.5*self.cv2_fes_range] += self.cv2_fes_range
                         dist_cv2[dist_cv2>+0.5*self.cv2_fes_range] -= self.cv2_fes_range
                     
-                    dist_cv3 = self.cv3[lasttime:time]-float(self.minima.iloc[m,7])
+                    dist_cv3 = self.cv3[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]-float(self.minima.iloc[m,7])
                     if self.periodic[2]:
                         dist_cv3[dist_cv3<-0.5*self.cv3_fes_range] += self.cv3_fes_range
                         dist_cv3[dist_cv3>+0.5*self.cv3_fes_range] -= self.cv3_fes_range
             
-                    dp2 = (dist_cv1**2/(2*self.s1[lasttime:time]**2) + 
-                           dist_cv2**2/(2*self.s2[lasttime:time]**2) + 
-                           dist_cv3**2/(2*self.s3[lasttime:time]**2))
+                    dp2 = (dist_cv1**2/(2*self.s1[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]**2) + 
+                           dist_cv2**2/(2*self.s2[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]**2) + 
+                           dist_cv3**2/(2*self.s3[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]**2) )
+                    
                     tmp = np.zeros(dp2.shape)
-                    heights = self.heights[lasttime:time]
+                    heights = self.heights[np.all(np.vstack((hills.time>(lasttime+1), hills.time<(time+1))), axis=0)]
                     tmp[dp2<6.25] = (heights[dp2<6.25] * (np.exp(-dp2[dp2<6.25]) * 1.00193418799744762399 - 0.00193418799744762399))
                     fes[int(float(self.minima.iloc[m,2])),
                         int(float(self.minima.iloc[m,3])),
